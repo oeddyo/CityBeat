@@ -1,7 +1,7 @@
 import MySQLdb
 
 def connect_to_mysql():
-    sql_conn = MySQLdb.connect(host='localhost', user='root', passwd='131415', db='quan_arch', charset='utf8', use_unicode = True)
+    sql_conn = MySQLdb.connect(host='localhost', user='root', passwd='sci', db='heatmap', charset='utf8', use_unicode = True)
     sql_conn.autocommit(True)
     sql_db = sql_conn.cursor(MySQLdb.cursors.DictCursor)
     return sql_db
