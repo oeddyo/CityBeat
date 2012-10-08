@@ -1,0 +1,2 @@
+/Users/eddiexie/work/CityBeat/lib/storage_interface.py:23: Warning: Data truncated for column 'name' at row 1
+  cursor.execute("INSERT INTO hereNow(venue_id, hereNow, lat, lng, time, name) values (%s" + ",%s"*5 + ")",(venue_id, hereNow, lat, lng, curtime, name) )
