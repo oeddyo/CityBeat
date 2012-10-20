@@ -10,7 +10,7 @@ def connect_to_mysql():
 def add_table_herenow_region():
     sql = """
     CREATE TABLE IF NOT EXISTS herenow_region(
-    auto_id MEDIUMINT NOT NULL AUTO_INCREMENT,
+    auto_id BIGINT NOT NULL AUTO_INCREMENT,
     mid_lat DOUBLE,
     mid_lng DOUBLE,
     lat_length DOUBLE,
@@ -25,7 +25,7 @@ def add_table_herenow_region():
 def add_table_herenow():
     sql = """
     CREATE TABLE IF NOT EXISTS herenow(
-    auto_id MEDIUMINT NOT NULL AUTO_INCREMENT,
+    auto_id BIGINT NOT NULL AUTO_INCREMENT,
     venue_id VARCHAR(50) NOT NULL,
     hereNow INT(10),
     lat DOUBLE,
@@ -41,7 +41,7 @@ def add_table_herenow():
 def add_table_hereNow_foursquare():
     sql = """
     CREATE TABLE IF NOT EXISTS hereNow(
-    auto_id MEDIUMINT NOT NULL AUTO_INCREMENT,
+    auto_id BIGINT NOT NULL AUTO_INCREMENT,
     venue_id VARCHAR(50) NOT NULL,
     hereNow INT(10),
     lat DOUBLE,
@@ -57,7 +57,7 @@ def add_table_hereNow_foursquare():
 def add_table_region():
     sql  = """
     CREATE TABLE IF NOT EXISTS hereNow(
-    auto_id MEDIUMINT NOT NULL AUTO_INCREMENT,
+    auto_id BIGINT NOT NULL AUTO_INCREMENT,
     hereNow INT(10),
     lat DOUBLE,
     lng DOUBLE,
@@ -163,7 +163,7 @@ def add_table_venue_photo_instagram():
 def add_table_venue_stats():
     sql = """
     CREATE TABLE IF NOT EXISTS venue_stats(
-    auto_id MEDIUMINT NOT NULL AUTO_INCREMENT,
+    auto_id BIGINT NOT NULL AUTO_INCREMENT,
     id VARCHAR(50) NOT NULL,
     time DATETIME NOT NULL,
     checkinsCount INT(12),

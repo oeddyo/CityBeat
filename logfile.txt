@@ -1,2 +1,92 @@
-/Users/eddiexie/work/CityBeat/lib/storage_interface.py:23: Warning: Data truncated for column 'name' at row 1
-  cursor.execute("INSERT INTO hereNow(venue_id, hereNow, lat, lng, time, name) values (%s" + ",%s"*5 + ")",(venue_id, hereNow, lat, lng, curtime, name) )
+/home/eddie/CityBeat/lib/mysql_connect.py:39: Warning: Table 'herenow' already exists
+  cursor.execute(sql)
+/home/eddie/CityBeat/lib/mysql_connect.py:24: Warning: Table 'herenow_region' already exists
+  cursor.execute(sql)
+Exception in thread Thread-1:
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/threading.py", line 552, in __bootstrap_inner
+    self.run()
+  File "/home/eddie/CityBeat/foursquare_scanner.py", line 53, in run
+    save_herenow(venue)
+  File "/home/eddie/CityBeat/lib/storage_interface.py", line 37, in save_herenow
+    cursor.execute("INSERT INTO herenow(venue_id, hereNow, lat, lng, time, name) values (%s" + ",%s"*5 + ")",(venue_id, hereNow, lat, lng, curtime, name) )
+  File "/usr/local/lib/python2.7/dist-packages/MySQLdb/cursors.py", line 181, in execute
+    self.errorhandler(self, exc, value)
+  File "/usr/local/lib/python2.7/dist-packages/MySQLdb/connections.py", line 36, in defaulterrorhandler
+    raise errorclass, errorvalue
+IntegrityError: (1062, "Duplicate entry '8388607' for key 'PRIMARY'")
+
+/home/eddie/CityBeat/lib/mysql_connect.py:39: Warning: Table 'herenow' already exists
+  cursor.execute(sql)
+/home/eddie/CityBeat/lib/mysql_connect.py:24: Warning: Table 'herenow_region' already exists
+  cursor.execute(sql)
+Exception in thread Thread-4:
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/threading.py", line 552, in __bootstrap_inner
+    self.run()
+  File "/home/eddie/CityBeat/foursquare_scanner.py", line 53, in run
+    save_herenow(venue)
+  File "/home/eddie/CityBeat/lib/storage_interface.py", line 36, in save_herenow
+    cursor.execute("INSERT INTO herenow(venue_id, hereNow, lat, lng, time, name) values (%s" + ",%s"*5 + ")",(venue_id, hereNow, lat, lng, curtime, name) )
+  File "/usr/local/lib/python2.7/dist-packages/MySQLdb/cursors.py", line 181, in execute
+    self.errorhandler(self, exc, value)
+  File "/usr/local/lib/python2.7/dist-packages/MySQLdb/connections.py", line 36, in defaulterrorhandler
+    raise errorclass, errorvalue
+IntegrityError: (1062, "Duplicate entry '0' for key 'PRIMARY'")
+
+Exception in thread Thread-1:
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/threading.py", line 552, in __bootstrap_inner
+    self.run()
+  File "/home/eddie/CityBeat/foursquare_scanner.py", line 53, in run
+    save_herenow(venue)
+  File "/home/eddie/CityBeat/lib/storage_interface.py", line 36, in save_herenow
+    cursor.execute("INSERT INTO herenow(venue_id, hereNow, lat, lng, time, name) values (%s" + ",%s"*5 + ")",(venue_id, hereNow, lat, lng, curtime, name) )
+  File "/usr/local/lib/python2.7/dist-packages/MySQLdb/cursors.py", line 181, in execute
+    self.errorhandler(self, exc, value)
+  File "/usr/local/lib/python2.7/dist-packages/MySQLdb/connections.py", line 36, in defaulterrorhandler
+    raise errorclass, errorvalue
+IntegrityError: (1062, "Duplicate entry '0' for key 'PRIMARY'")
+
+Exception in thread Thread-3:
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/threading.py", line 552, in __bootstrap_inner
+    self.run()
+  File "/home/eddie/CityBeat/foursquare_scanner.py", line 53, in run
+    save_herenow(venue)
+  File "/home/eddie/CityBeat/lib/storage_interface.py", line 36, in save_herenow
+    cursor.execute("INSERT INTO herenow(venue_id, hereNow, lat, lng, time, name) values (%s" + ",%s"*5 + ")",(venue_id, hereNow, lat, lng, curtime, name) )
+  File "/usr/local/lib/python2.7/dist-packages/MySQLdb/cursors.py", line 181, in execute
+    self.errorhandler(self, exc, value)
+  File "/usr/local/lib/python2.7/dist-packages/MySQLdb/connections.py", line 36, in defaulterrorhandler
+    raise errorclass, errorvalue
+IntegrityError: (1062, "Duplicate entry '0' for key 'PRIMARY'")
+
+Exception in thread Thread-2:
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/threading.py", line 552, in __bootstrap_inner
+    self.run()
+  File "/home/eddie/CityBeat/foursquare_scanner.py", line 53, in run
+    save_herenow(venue)
+  File "/home/eddie/CityBeat/lib/storage_interface.py", line 36, in save_herenow
+    cursor.execute("INSERT INTO herenow(venue_id, hereNow, lat, lng, time, name) values (%s" + ",%s"*5 + ")",(venue_id, hereNow, lat, lng, curtime, name) )
+  File "/usr/local/lib/python2.7/dist-packages/MySQLdb/cursors.py", line 181, in execute
+    self.errorhandler(self, exc, value)
+  File "/usr/local/lib/python2.7/dist-packages/MySQLdb/connections.py", line 36, in defaulterrorhandler
+    raise errorclass, errorvalue
+IntegrityError: (1062, "Duplicate entry '0' for key 'PRIMARY'")
+
+Exception in thread Thread-5:
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/threading.py", line 552, in __bootstrap_inner
+    self.run()
+  File "/home/eddie/CityBeat/foursquare_scanner.py", line 53, in run
+    save_herenow(venue)
+  File "/home/eddie/CityBeat/lib/storage_interface.py", line 36, in save_herenow
+    cursor.execute("INSERT INTO herenow(venue_id, hereNow, lat, lng, time, name) values (%s" + ",%s"*5 + ")",(venue_id, hereNow, lat, lng, curtime, name) )
+  File "/usr/local/lib/python2.7/dist-packages/MySQLdb/cursors.py", line 181, in execute
+    self.errorhandler(self, exc, value)
+  File "/usr/local/lib/python2.7/dist-packages/MySQLdb/connections.py", line 36, in defaulterrorhandler
+    raise errorclass, errorvalue
+IntegrityError: (1062, "Duplicate entry '0' for key 'PRIMARY'")
+

@@ -20,7 +20,6 @@ venue - Venue object """
     herenow = region[4]
     cursor = mysql_connect.connect_to_mysql()
     cursor.execute("INSERT INTO herenow_region(mid_lat, mid_lng, lat_length, lng_length, time, herenow) values (%s" + ",%s"*5 + ")",(mid_lat, mid_lng, lat_length, lng_length, curtime, herenow) ) 
-
 def save_herenow(venue):
     """Save hereNow data for a single venue into mysql (table venue_meta)
 See table 'hereNow_foursquare' for details of fields
@@ -34,7 +33,7 @@ venue - Venue object """
     hereNow = venue_dic['hereNow']['count']
     lat = venue_dic['location']['lat']
     lng = venue_dic['location']['lng']
-    cursor.execute("INSERT INTO hereNow(venue_id, hereNow, lat, lng, time, name) values (%s" + ",%s"*5 + ")",(venue_id, hereNow, lat, lng, curtime, name) ) 
+    cursor.execute("INSERT INTO herenow(venue_id, hereNow, lat, lng, time, name) values (%s" + ",%s"*5 + ")",(venue_id, hereNow, lat, lng, curtime, name) ) 
     """
     venue_dic = venue['venue']
     id = venue_dic['id']
