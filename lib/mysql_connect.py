@@ -38,6 +38,21 @@ def add_table_herenow():
     cursor = connect_to_mysql()
     cursor.execute(sql)
 
+def add_table_pics_count():
+    sql = """
+    CREATE TABLE IF NOT EXISTS pics_count(
+    auto_id BIGINT NOT NULL AUTO_INCREMENT,
+    pics_count INT(10),
+    mid_lat DOUBLE,
+    mid_lng DOUBLE,
+    radius  DOUBLE,
+    time DATETIME,
+    PRIMARY KEY(auto_id)
+    )ENGINE InnoDB DEFAULT CHARSET=utf8;
+    """
+    cursor = connect_to_mysql()
+    cursor.execute(sql)
+
 def add_table_hereNow_foursquare():
     sql = """
     CREATE TABLE IF NOT EXISTS hereNow(

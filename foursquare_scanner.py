@@ -42,7 +42,7 @@ class ThreadUpdate(threading.Thread):
             logging.debug('job is '+sw+" "+ne + ' and it is ' + str(self.counter)+'-th')
             logging.debug('mid is '+str(mid_lat)+","+str(mid_lng))
             res = self.client.venues.search(params={'sw':sw, 'ne':ne, 'limit':50, 'intent':'browse'})
-            herenow_sum = 0
+            herenow_sum = -1
             for r in res['venues']:
                 herenow_sum += r['hereNow']['count']
             region = [mid_lat, mid_lng, lat_length, lng_length, herenow_sum]

@@ -1,8 +1,8 @@
 foursquare_client_id = 'DLUNE4USSPBVIT4EHHRVELL23DPM5JREGXIXMPIF5VR5AWIB'
 foursquare_client_secret = 'W30U1BPIOUY1RD0MF0EPXO2DG40URUR1E0PVP4UNUVGOFISX'
 
-instagram_client_id = '5399dad2544d47a7956b4eb5ef4abd85'
-instagram_client_secret = '6e462cc234d8448e9cfb1d6544d89366'
+instagram_client_id = '4d9231b411eb4ef69435b40eb83999d6'
+instagram_client_secret = '204c565fa1244437b9034921e034bdd6'
 
 mysql_username = 'root'
 mysql_password = 'sci'
