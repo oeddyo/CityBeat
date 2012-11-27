@@ -174,6 +174,26 @@ def add_table_venue_photo_instagram():
     cursor = connect_to_mysql()
     cursor.execute(sql)
 
+def add_table_region_photos():
+    sql = """
+    CREATE TABLE IF NOT EXISTS region_photos(
+    id VARCHAR(50) NOT NULL,
+    filter VARCHAR(100),
+    tags TEXT,
+    comments TEXT,
+    likes_count INT(10),
+    link VARCHAR(500),
+    username VARCHAR(100),
+    profile_picture VARCHAR(500),
+    standard_resolution VARCHAR(200),
+    created_time DATETIME,
+    mid_lat DOUBLE,
+    mid_lng DOUBLE,
+    PRIMARY KEY(id)
+    ) ENGINE InnoDB DEFAULT CHARSET=utf8;
+    """
+    cursor = connect_to_mysql()
+    cursor.execute(sql)
 
 def add_table_venue_stats():
     sql = """
