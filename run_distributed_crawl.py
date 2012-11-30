@@ -1,6 +1,6 @@
 import os
 from rq import Queue, Connection
-
+from instagram.client import InstagramAPI
 from worker_download import download
 from redis import Redis
 import time
@@ -30,7 +30,7 @@ def main():
             client = client_pairs[1]
         paras = (sw_ne[0], sw_ne[1], (pre-5*60, pre), client)
         pre-=5*60
-        q.enqueue(worker_download, paras)
+        q.enqueue(download, paras)
         count+=1
 
 if __name__== '__main__':
