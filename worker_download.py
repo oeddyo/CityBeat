@@ -25,6 +25,7 @@ def download(para):
         print 'Error, continue'
         pass
         #logging.warning(e)
+    return True
 
 
 """

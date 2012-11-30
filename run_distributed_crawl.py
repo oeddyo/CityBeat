@@ -18,20 +18,35 @@ def main():
     
 
     pre = cur_time
-    count = 0
+    job_count = 0
     redis_conn = Redis('bwi')
     q = Queue(connection=redis_conn)
+    res = {}
+
     while pre>cur_time - 10*3600*24:
         os.system('clear')
-        print 'Working on %d-th job'%(count)
-        if count%2 == 0:
+        if job_count%2 == 0:
             client = client_pairs[0]
         else:
             client = client_pairs[1]
         paras = (sw_ne[0], sw_ne[1], (pre-5*60, pre), client)
         pre-=5*60
-        q.enqueue(download, paras)
-        count+=1
+        res[job_count] = q.enqueue(download, paras)
+        job_count+=1
+
+    done = False
+    while not done:
+        os.system('clear')
+        done = True
+        count = 0
+        for x in range(job_count):
+            r = res[x].return_value
+            if r is None:
+                done = False
+            else:
+                count+=1
+        print '%d jobs completed!'
+        time.sleep(0.2)
 
 if __name__== '__main__':
     with Connection():
