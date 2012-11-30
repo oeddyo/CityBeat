@@ -1,8 +1,0 @@
-[30/Nov/2012:11:18:18] ENGINE Listening for SIGHUP.
-[30/Nov/2012:11:18:18] ENGINE Listening for SIGTERM.
-[30/Nov/2012:11:18:18] ENGINE Listening for SIGUSR1.
-[30/Nov/2012:11:18:18] ENGINE Bus STARTING
-[30/Nov/2012:11:18:18] ENGINE Started monitor thread 'Autoreloader'.
-[30/Nov/2012:11:18:18] ENGINE Started monitor thread '_TimeoutMonitor'.
-[30/Nov/2012:11:18:18] ENGINE Serving on 0.0.0.0:7887
-[30/Nov/2012:11:18:18] ENGINE Bus STARTED
