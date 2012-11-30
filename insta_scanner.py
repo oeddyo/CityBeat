@@ -35,22 +35,22 @@ def do_func(para):
         save_region_photos(res, mid_lat, mid_lng)
     except Exception as e:
         print 'Exception!'
-        logging.warning('{par:{%s,%s}, msg:{%s}}'%(str(sw_ne),str(period),e))
+        logging.warning(e)
 
 
 def main():
     add_table_region_photos()
     cur_time = int (time.time() )
-    sw_ne = (40.773012,-73.9863145)
-    
+    #sw_ne = (40.773012,-73.9863145)
+    sw_ne = (40.75953,-73.9863145)
     periods = []
     pre = cur_time
     jobs = []
     client = client = InstagramAPI(client_id = config.instagram_client_id, client_secret = config.instagram_client_secret)
     while pre>=cur_time-10*3600*24:
-        periods.append( (pre-10*60, pre) )
-        jobs.append( (sw_ne[0], sw_ne[1], (pre-10*60,pre), client) ) 
-        pre-=60*10
+        periods.append( (pre-3*60, pre) )
+        jobs.append( (sw_ne[0], sw_ne[1], (pre-3*60,pre), client) ) 
+        pre-=60*3
     do_multithread_job(do_func, jobs, 5, './test_multi_insta_scan.log')
     
 

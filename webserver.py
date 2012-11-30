@@ -55,8 +55,9 @@ class Root:
                 continue
             else:
                 tset.add( (x,y))
-            #res.append( (r['mid_lat'], r['mid_lng'], float (r['herenow'])*1.0 - self.mean_herenow[(x,y)] )  ) 
-            res.append( (r['mid_lat'], r['mid_lng'], float (r['herenow'])*1.0)  ) 
+            res.append( (r['mid_lat'], r['mid_lng'], (float (r['herenow'])*1.0 - self.mean_herenow[(x,y) ])/float (r['herenow']+5) )  ) 
+            #res.append( (r['mid_lat'], r['mid_lng'], float (r['herenow'])*1.0)  ) 
+        print res
         return json.dumps(res)
     get_foursquare_heatmap.exposed = True
 
