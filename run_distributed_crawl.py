@@ -4,12 +4,45 @@ from instagram.client import InstagramAPI
 from worker_download import download
 from redis import Redis
 import time
+from random import randrange
 
 def get_client(client_pair):
     return InstagramAPI(client_id = client_pair[0], client_secret = client_pair[1])
 
+def get_client_list():
+    lines = open('./clients_list.csv','r').readlines()
+    c_list = []
+    for line in lines:
+        t = line.split()
+        c_list.append(get_client((t[0],t[1])))
+    return c_list
+
+def get_freq():
+    lines = open('./number.csv','r').readlines()
+    ll_pairs = []
+    for line in lines:
+        t = line.split(',')
+        num = float(t[2])
+        freq = 60.0/(num/20.0)
+        ll_pairs.append( (t[0],t[1],int( freq*60 )))
+    return ll_pairs
+
 def main():
-    sw_ne = (40.75953,-73.9863145)
+    ll_pairs = get_freq()
+    cur_time =  int (time.time())
+    clients = get_client_list()
+    redis_conn = Redis('bwi')
+    q = Queue(connection=redis_conn)
+    
+    for location in ll_pairs:
+        pre = cur_time
+        while pre>cur_time - 14*3600*24:
+            client = clients[randrange(len(clients))]
+            paras = ( location[0], location[1],(pre-location[2],pre), client)
+            pre -= location[2]
+            q.enqueue_call(func=download,args=(paras,),timeout=360000)
+    
+    """
     periods = []
     cur_time = int (time.time())
 
@@ -19,8 +52,6 @@ def main():
     
     pre = cur_time
     job_count = 0
-    redis_conn = Redis('bwi')
-    q = Queue(connection=redis_conn)
     res = {}
 
     while pre>cur_time - 10*3600*24:
@@ -52,7 +83,7 @@ def main():
             elif r==True:
                 count += 1
         time.sleep(0.2)
-
+"""
 if __name__== '__main__':
     with Connection():
         main()

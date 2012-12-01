@@ -23,6 +23,7 @@ def download(para):
     res = client.media_search(lat = mid_lat, lng = mid_lng, max_timestamp = max_time, min_timestamp = min_time, return_json = True, distance = radius_km*1000, count=100)
         #print len(res)
     save_mogo(res, mid_lat, mid_lng)
+    time.sleep(0.5)
     #except Exception as e:
     #    print 'Error info',e
     #    return False
