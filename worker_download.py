@@ -11,6 +11,7 @@ logging.basicConfig(filename='./instagram.log', level=logging.DEBUG,
         )
 """
 def download(para):
+    print para
     mid_lat = para[0]
     mid_lng = para[1]
     period = para[2] 
@@ -18,12 +19,13 @@ def download(para):
     radius_km = 0.38
     min_time = period[0]
     max_time = period[1]
-    try:
-        res = client.media_search(lat = mid_lat, lng = mid_lng, max_timestamp = max_time, min_timestamp = min_time, return_json = True, distance = radius_km*1000, count=100)
-        save_mogo(res, mid_lat, mid_lng)
-    except Exception as e:
-        print 'Error, continue'
-        pass
+    #try
+    res = client.media_search(lat = mid_lat, lng = mid_lng, max_timestamp = max_time, min_timestamp = min_time, return_json = True, distance = radius_km*1000, count=100)
+        #print len(res)
+    save_mogo(res, mid_lat, mid_lng)
+    #except Exception as e:
+    #    print 'Error info',e
+    #    return False
         #logging.warning(e)
     return True
 
