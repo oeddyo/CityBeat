@@ -1,6 +1,5 @@
 import os
 from rq import Queue, Connection
-from instagram.client import InstagramAPI
 from worker_download import download
 from redis import Redis
 import time
