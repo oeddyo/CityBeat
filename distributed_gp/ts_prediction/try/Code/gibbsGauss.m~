@@ -1,0 +1,22 @@
+function samples = gibbsGauss(mu, Sigma, xinit, Nsamples)
+% Gibbs sampling for a multivariate Gaussian
+% function samples = gibbsGauss(mu, Sigma, xinit, Nsamples)
+% Input:
+% mu(1:D) is the mean
+% Sigma(1:D, 1:D) is the covariance
+% xinit(1:D) is the initial state
+% Nsamples = number of samples to draw
+%
+% Output:
+% samples(t,:)
+
+D = length(mu);
+samples = zeros(Nsamples, D);
+x = xinit;
+for t=1:Nsamples
+  for d=1:D
+    [muAgivenB, sigmaAGivenB] = gaussCondition(mu, Sigma, d, x);
+    x(d) = muAgivenB + randn(1,1)*sigmaAGivenB;
+  end
+  samples(t,:) = x;
+end

@@ -1,0 +1,11 @@
+function taxicab()
+
+as = 0:0.1:5;
+ps = pareto_pdf(as, 1, 2);
+plot(as, ps)
+
+function p = pareto_pdf(a, b, K)
+
+p = K*b^K ./ (a.^(K+1));
+ndx = find(a < b);
+p(ndx) = 0;

@@ -1,0 +1,90 @@
+function bayes_lin_regr_koop()
+% Conjugate bayesian analysis of linear regression
+% from chapter 3 of Gary Koop, "Bayesian econometrics".
+% Based on his code.
+
+load hprice.txt;
+n=size(hprice,1);
+y=hprice(:,1);
+x=hprice(:,2:5);
+x=[ones(n,1) x];
+k=5;
+
+% Hyper-parameters
+b0 = [0, 10, 5000, 10000, 10000];
+V0 = diag([2.4 6e-7 0.15 0.6 0.6]);
+s02 = 1/4e-8; % sigma_0^{-2}
+v0 = 5;
+
+[bN, VN, sN2, vN, bsd, bhpdi95, probpos] = ...
+    computePost(b0, V0, s02, v0, X, y);
+
+for i=1:k
+  fprintf('%d %5.3f +- %5.3f  (in %5.3f - %5.3f wp 0.95)\n', ...
+	  i, bN(i), bsd(i), bhpdi95(i,1), bhpdi95(i,2));
+end
+
+%%%%%%%%%%
+
+function [b1, capv1, s12, v1, bsd, bhpdi95, probpos] = ...
+    computePost(b0, V0, s02, v0, x, y);
+
+% bsd(i) = std dev of P( beta(i) | D)
+% bhpdi(i,1:2) = 95% high prob density interval
+% probpos(i) = P(beta(i) > 0 | D)
+
+% The code can handle the case V0 = zeros(k,k) (non-informative prior)
+
+k = size(X,1);
+capv0  = V0;
+
+%Ordinary least squares quantities
+bols = inv(x'*x)*x'*y;
+s2 = (y-x*bols)'*(y-x*bols)/(n-k);
+bolscov = s2*inv(x'*x);
+bolssd=zeros(k,1);
+for i = 1:k
+  bolssd(i,1)=sqrt(bolscov(i,i));
+end
+v=n-k;
+
+%Posterior hyperparameters for Normal-Gamma
+xsquare=x'*x;
+v1=v0+n;
+capv1inv = capv0inv+ xsquare;
+capv1=inv(capv1inv);
+b1 = capv1*(capv0inv*b0 + xsquare*bols);
+if det(capv0inv)>0
+  v1s12 = v0*s02 + v*s2 + (bols-b0)'*inv(capv0 + inv(xsquare))*(bols-b0);
+else
+  v1s12 = v0*s02 + v*s2;
+end
+s12 = v1s12/v1;
+
+bcov = capv1*v1s12/(v1-2);
+bsd=zeros(k,1);
+for i = 1:k
+  bsd(i,1)=sqrt(bcov(i,i));
+end
+
+%posterior probability that each element of beta is positive
+%as well as 95 and 99 HPDIs for each element of beta
+
+probpos=zeros(k,1);
+bhpdi95=zeros(k,2);
+bhpdi99=zeros(k,2);
+
+%get quantiles of t for calculating HPDIs
+invcdf95=tdis_inv(.975,v1)
+invcdf95=tinv(.975,v1)
+invcdf99=tdis_inv(.995,v1);
+
+for i = 1:k
+  tnorm = -b1(i,1)/sqrt(s12*capv1(i,i));
+  probpos(i,1) = 1 - tdis_cdf(tnorm,v1);
+  bhpdi95(i,1) = b1(i,1)-invcdf95*sqrt(s12*capv1(i,i));
+  bhpdi95(i,2) = b1(i,1)+invcdf95*sqrt(s12*capv1(i,i));
+  bhpdi99(i,1) = b1(i,1)-invcdf99*sqrt(s12*capv1(i,i));
+  bhpdi99(i,2) = b1(i,1)+invcdf99*sqrt(s12*capv1(i,i));
+end
+

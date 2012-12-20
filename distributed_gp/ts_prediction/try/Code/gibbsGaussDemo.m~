@@ -1,0 +1,41 @@
+
+
+figure(fig);clf;fig=fig+1;
+h=draw_ellipse(mu', C);
+set(h, 'linewidth', 3);
+axis equal
+set(gca, 'xlim', [-5 5]);
+set(gca, 'ylim', [-5 5]);
+title(str)
+
+hold on
+%ndx = 1:500;
+%plot(samples(ndx,1), samples(ndx,2), 'k.');
+plot(samples(:,1), samples(:,2), 'k.');
+%ndx = 501:1000;
+%plot(samples(ndx,1), samples(ndx,2), 'ro');
+
+%subplot(3,1,2)
+figure(fig);clf;fig=fig+1;
+Nbins = 50;
+[h, xs] = hist(samples(:,1),Nbins);
+binWidth = xs(2)-xs(1);
+%area = sum(h*binWidth);
+%bar(xs, h/area);
+bar(xs, normalise(h)/binWidth);
+hold on
+ps = normpdf(xs, mu(1), C(1,1));
+plot(xs, ps, '-');
+title(sprintf('%s x1', str))
+
+
+figure(fig);clf;fig=fig+1;
+Nbins = 50;
+[h, xs] = hist(samples(:,2),Nbins);
+binWidth = xs(2)-xs(1);
+area = sum(h*binWidth);
+bar(xs, h/area);
+hold on
+ps = normpdf(xs, mu(2), C(2,2));
+plot(xs, ps, '-');
+title(sprintf('%s x2', str))

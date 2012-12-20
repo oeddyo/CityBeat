@@ -1,0 +1,12 @@
+%!start1
+% bar.m
+S = 10000;
+% normal comment
+xs = unifrnd(0,1,S,1);
+samples = xs.^3;
+%!stop1
+fprintf('%f\n', samples)
+%!start2
+Ihat = mean(samples)
+se = sqrt(var(samples)/S)
+%!stop2

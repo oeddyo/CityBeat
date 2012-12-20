@@ -1,0 +1,20 @@
+camel = @(x,y)(4-2.1*x.^2+x.^4/3).*x.^2+x.*y+4*(y.^2-1).*y.^2;
+loss = @(p)camel(p(1),p(2));
+logpost = @(p) -loss(p);
+proposal = @(x) (x+(randperm(length(x))==length(x))*randn/100);
+	
+temp(1) = 1;
+S = 1000;
+for i=2:S
+  temp(i) = temp(i-1)*0.8;
+end
+
+[xs, ys]=meshgrid(-1:0.01:1, -1:0.01:1);
+Z = feval(camel, xs, ys);
+figure; surf(xs, ys, Z)
+
+%[x f] = anneal(loss,[0 0])
+[x f samples naccept] = SA(@logpost, @proposal,[0 0], S, {}, {}, temp);
+x
+f
+

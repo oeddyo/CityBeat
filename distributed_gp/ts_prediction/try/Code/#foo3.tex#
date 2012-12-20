@@ -1,0 +1,17 @@
+\documentclass[10pt]{article}
+\usepackage{listings}
+
+%\include{c:/kmurphy/defns}
+\include{C:/kmurphy/Latex/lstpatch}
+
+\begin{document}
+
+\lstinputlisting[frame=single,firstline={!start},lastline={rand(4,4)},rangebeginprefix={!start},rangeendprefix={!stop},includerangemarker=false]{C:/kmurphy/PML/Code/foo3.m}
+
+
+\lstinputlisting[firstline={
+bar.m},lastline={!stop},frame=shadowbox,caption=
+{[]Description},label=lst:ex1_1]{flowest.m}
+
+
+\end{document}
