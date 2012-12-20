@@ -16,13 +16,14 @@ def download(para):
     mid_lng = para[1]
     period = para[2] 
     client = para[3] 
+    db_name = para[4]
     radius_m = 380
     min_time = period[0]
     max_time = period[1]
     #try
-    res = client.media_search(lat = mid_lat, lng = mid_lng, max_timestamp = max_time, min_timestamp = min_time, return_json = True, distance = radius_m, count=100)
+    res = client.media_search(lat = mid_lat, lng = mid_lng, max_timestamp = max_time, min_timestamp = min_time, return_json = True, distance = radius_m, count=60)
         #print len(res)
-    save_mogo(res, mid_lat, mid_lng)
+    save_mogo(res, mid_lat, mid_lng, db_name)
     time.sleep(0.35)
     #except Exception as e:
     #    print 'Error info',e
@@ -30,16 +31,3 @@ def download(para):
         #logging.warning(e)
     return True
 
-
-"""
-sw_ne = (40.75953,-73.9863145)
-periods = []
-cur_time = int (time.time())
-pre = cur_time
-jobs = []
-client = client = InstagramAPI(client_id =config.instagram_client_id, client_secret = config.instagram_client_secret)
-while pre>=cur_time-10*3600:
-    do_func( (40,30,(pre-60*3,pre),client))
-    pre = pre-3*60
-    #periods.append( (pre-3*60, pre) )
-"""
