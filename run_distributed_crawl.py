@@ -4,6 +4,8 @@ from worker_download import download
 from random import randrange
 from crawl_config import redis_server
 from redis import Redis
+#import calendar
+from datetime import datetime
 import sys
 import time
 import os
@@ -32,27 +34,35 @@ def get_freq():
 
 def main():
     """parse parameter here"""
-    if len(sys.argv)!=3:
-        sys.stderr.write("Usage: python %s seconds_to_traceback mongo_db_name"%sys.argv[0])
+    if len(sys.argv)!=4:
+        sys.stderr.write("Usage: python %s start_utc_timestamp seconds_to_traceback mongo_db_name"%sys.argv[0])
         raise SystemExit(1)
-    seconds_to_traceback = int(sys.argv[1])
-    mongo_db_name = sys.argv[2]
-
+    start_utc_timestamp = int(sys.argv[1])
+    seconds_to_traceback = int(sys.argv[2])
+    mongo_db_name = sys.argv[3]
+    
     ll_pairs = get_freq()
-    cur_time =  int (time.time())
+    print ll_pairs
+    cur_time =  start_utc_timestamp
     clients = get_client_list()
     redis_conn = Redis(redis_server)
     q = Queue(connection=redis_conn)
     api_assign_count = 0   
     counts = [0]*len(clients) 
-    #api_idx = 0
     for location in ll_pairs:
         pre = cur_time
         print 'assign count ',api_assign_count
-        while pre>cur_time - seconds_to_traceback:
+        while pre > cur_time - seconds_to_traceback:
             client = clients[randrange(len(clients))]
             counts[randrange(len(clients))]+=1
-            time_window = int (((int (location[2])))*1.0/2)
+            time_window = int(location[2])
+            #if int(location[2])<600:
+                #time_window = int (((int (location[2])))*1.0/2)
+            #    time_window = int(time_window/1.5)
+            hour = datetime.fromtimestamp(pre).hour
+            if hour>=1 and hour<=10:
+                time_window = time_window*3
+            
             paras = ( location[0], location[1],(pre-time_window,pre), client, mongo_db_name)
             pre -= time_window
             q.enqueue_call(func=download,args=(paras,),timeout=572000)

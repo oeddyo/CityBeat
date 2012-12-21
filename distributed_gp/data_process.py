@@ -18,7 +18,7 @@ from datetime import datetime
 
 def find_photos_given_region(lat, lng):
     mongo = pymongo.Connection("grande", 27017)
-    mongo_db = mongo['instagram_3']
+    mongo_db = mongo['production']
     mongo_collection = mongo_db.photos
     dates = []
     counts = []
@@ -30,12 +30,11 @@ def find_photos_given_region(lat, lng):
         dates.append(datetime.utcfromtimestamp(float(p['created_time'])))
         counts.append(1)
     ts = Series(counts, index = dates)
-    print "---------------\n"
-    print dates
     ts = ts.resample('h',how='sum')
+    print 'processing data...'
     return ts
 
-find_photos_given_region(40.750542, -73.9657975)
+#find_photos_given_region(40.750542,-73.9863145)
 
 
 "for each mid_lat, mid_lng, read all the photos from there"
