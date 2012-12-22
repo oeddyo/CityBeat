@@ -18,7 +18,7 @@ from datetime import datetime
 
 def find_photos_given_region(lat, lng):
     mongo = pymongo.Connection("grande", 27017)
-    mongo_db = mongo['production']
+    mongo_db = mongo['citybeat']
     mongo_collection = mongo_db.photos
     dates = []
     counts = []

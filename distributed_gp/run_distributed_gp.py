@@ -17,10 +17,10 @@ def read_regions():
     for line in f.readlines():
         t = line.split(',')
         res.append((t[0], t[1]))
-    res.reverse()
-    #return res
-    #return [(40.728072, -73.9931535), (40.75953,-73.9863145), (40.746048, -73.9931535), (40.741554,-73.9931535),  (40.75953, -73.9794755), (40.755036, -73.9794755)]
-    return [(40.728072,-73.9931535)]
+    #res.reverse()
+    #return res[1:3]
+    return [(40.728072, -73.9931535), (40.75953,-73.9863145), (40.746048, -73.9931535), (40.741554,-73.9931535),  (40.75953, -73.9794755), (40.755036, -73.9794755)]
+    #return [(40.728072,-73.9931535)]
 
 def process_ts(ts):
     """return two results; the first is the start datetime, the second is the list of training data"""
@@ -33,6 +33,7 @@ def process_ts(ts):
     return start, res
 
 def get_testing(start, predict_days):
+    
     cur = 1.0/24;
     res = []
     while(cur<predict_days):
@@ -57,7 +58,7 @@ def fix_time(start, result_list):
     return res
 
 def main():
-    predict_days = 3
+    predict_days = 1
     regions = read_regions()
     redis_conn = Redis('tall4')
     q = Queue(connection=redis_conn)

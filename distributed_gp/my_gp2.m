@@ -50,7 +50,9 @@ xx = testing(:,1);
 [mu s2] = gp(hyp, @infExact, [], covfunc, @likGauss, x, y-mean(y), xx);
 
 outputMatrix = [xx mu+mean(y) s2];
-csvwrite(outputFile, outputMatrix);
+%csvwrite(outputFile, outputMatrix);
+dlmwrite(outputFile, outputMatrix, 'delimiter',',','precision',10)
+
 h=figure; 
 plot(x, y, 'b--', 'LineWidth', 2); hold on
 xlabel('Day');
