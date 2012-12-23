@@ -4,7 +4,7 @@ from worker_download import download
 from random import randrange
 from crawl_config import redis_server
 from redis import Redis
-#import calendar
+import calendar
 from datetime import datetime
 import sys
 import time
@@ -34,12 +34,26 @@ def get_freq():
 
 def main():
     """parse parameter here"""
-    if len(sys.argv)!=4:
-        sys.stderr.write("Usage: python %s start_utc_timestamp seconds_to_traceback mongo_db_name"%sys.argv[0])
+    
+    if len(sys.argv)==3:
+        start_utc_timestamp = int(calendar.timegm( datetime.utcnow().utctimetuple() ))
+        seconds_to_traceback = int(sys.argv[1])
+        mongo_db_name = sys.argv[2]
+    elif len(sys.argv)==4:
+        start_utc_timestamp = int(sys.argv[1])
+        seconds_to_traceback = int(sys.argv[2])
+        mongo_db_name = sys.argv[3]
+    else:
+        sys.stderr.write("Usage: python %s (start_utc_timestamp) seconds_to_traceback mongo_db_name"%sys.argv[0])
         raise SystemExit(1)
-    start_utc_timestamp = int(sys.argv[1])
-    seconds_to_traceback = int(sys.argv[2])
-    mongo_db_name = sys.argv[3]
+
+
+    #if len(sys.argv)!=4:
+    #    sys.stderr.write("Usage: python %s start_utc_timestamp seconds_to_traceback mongo_db_name"%sys.argv[0])
+    #    raise SystemExit(1)
+    #start_utc_timestamp = int(sys.argv[1])
+    #seconds_to_traceback = int(sys.argv[2])
+    #mongo_db_name = sys.argv[3]
     
     ll_pairs = get_freq()
     print ll_pairs
@@ -60,9 +74,8 @@ def main():
                 #time_window = int (((int (location[2])))*1.0/2)
             #    time_window = int(time_window/1.5)
             hour = datetime.fromtimestamp(pre).hour
-            if hour>=1 and hour<=10:
-                time_window = time_window*3
-            
+            #if hour>=1 and hour<=10:
+            #    time_window = time_window*3
             paras = ( location[0], location[1],(pre-time_window,pre), client, mongo_db_name)
             pre -= time_window
             q.enqueue_call(func=download,args=(paras,),timeout=572000)

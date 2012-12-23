@@ -40,19 +40,23 @@ def Predict(arg1, arg2, arg3):
     return buffer
 
 def TestPredict():
-    fileName = '/grad/users/kx19/CityBeat/distributed_gp/new_1h.csv'
-    reader = csv.reader(open(fileName), delimiter='\t')
+    fileName = '/grad/users/kx19/CityBeat/distributed_gp/tmp/trainingData56.in'
+    reader = csv.reader(open(fileName), delimiter=',')
     buffer = []
     for t, pop in reader:
         buffer.append([t, pop])
 
     trainingData = buffer
-    testData = []
-    cur = 14
-    for i in range(100):
-        cur+=0.04166666
-        testData.append(cur,)
 
+    
+    testFileName = '/grad/users/kx19/CityBeat/distributed_gp/tmp/testData56.in'
+    reader = csv.reader(open(testFileName),delimiter=',')
+    testData = []
+    for t in reader:
+        testData.append(t)
+
+    print testData
+    return
     Predict(trainingData, testData, -1)
     
     

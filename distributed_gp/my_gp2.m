@@ -30,7 +30,7 @@ nlml = 10000000;
 best_hyp_cov = [];
 
 
-for i = 1:2
+for i = 1:30
     hyp.cov = log(rand(11,1)*20);
     [hyp,fX,i] = minimize(hyp, @gp, -200, @infExact, [], covfunc, @likGauss, x, y-mean(y));
     nlml2 = gp(hyp,@infExact, [], covfunc, @likGauss, x,y-mean(y));
@@ -51,7 +51,7 @@ xx = testing(:,1);
 
 outputMatrix = [xx mu+mean(y) s2];
 %csvwrite(outputFile, outputMatrix);
-dlmwrite(outputFile, outputMatrix, 'delimiter',',','precision',10)
+dlmwrite(outputFile, outputMatrix, 'delimiter',',','precision',15)
 
 h=figure; 
 plot(x, y, 'b--', 'LineWidth', 2); hold on
