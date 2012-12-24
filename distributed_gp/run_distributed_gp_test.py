@@ -102,7 +102,20 @@ def main():
         print 'model_update_time is ',model_update_time
         print 'testing is ',testing
         async_results[cnt] = q.enqueue_call( Predict, args = ( training,testing, cnt,), timeout=1720000, result_ttl=-1 )
+        # Only for temporal test
+        fileName = '/grad/users/kx19/xia/test_tmp/training_time_' + str(cnt) + '.txt'
+        fout = open(fileName, 'w')
+        fout.write('Before Distributed GP:\n')
+        for t in testing:
+            fout.write(str(t))
+            fout.write('\n')
+        fout.close()
+        # end for test
         cnt+=1
+        # Only for temporal test use
+        break
+        # end for test
+    
     done = False
     begin_time = time.time()
     time.sleep(2)
@@ -123,6 +136,15 @@ def main():
                 result = do_align(align, result)
                 save_to_mongo(result, regions[x], model_update_time)
                 saved_flag[x] = 1
+                # Only for temporal test
+                fileName = '/grad/users/kx19/xia/test_tmp/training_time_' +str(x) + '.txt'
+                fout = open(fileName, 'a')
+                fout.write('After Test:\n')
+                for i in xrange(len(result)):
+                    fout.write(str(result[i][0]))
+                    fout.write('\n')
+                fout.close()
+                # end for test
         time.sleep(0.2)
 
-main() 
+main()                                                                                                                                     

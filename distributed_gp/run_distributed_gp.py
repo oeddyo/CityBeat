@@ -1,6 +1,5 @@
 import os
 from rq import Queue, Connection
-#from test import haha
 from do_gp import Predict 
 from redis import Redis
 import time
@@ -42,15 +41,7 @@ def get_testing(model_update_time, start_time, predict_days):
         res.append( secs/(3600.0 * 24) )
         align.append( model_update_time + timedelta(seconds=3600*(i+1)))
     return res,align
-    """
-    cur = 1.0/24;
-    res = []
-    while(cur<predict_days):
-        print cur+start
-        res.append(cur+start)
-        cur+=1.0/24
-    return res
-    """
+
 def save_to_mongo(result, region, model_update_time):
     mongo = pymongo.Connection("grande",27017)
     mongo_db = mongo['predict']
@@ -59,18 +50,6 @@ def save_to_mongo(result, region, model_update_time):
         t = {'time':r[0], 'mu':float(r[1]), 'var':float(r[2]), 'mid_lat':str(region[0]), 'mid_lng':str(region[1]), 'model_update_time':model_update_time}
         mongo_collection.insert(t)
 
-"""
-def fix_time(model_update_time, result_list):
-    res = []
-    for i in range(24*predict_days):
-        res.append( (((cur_utc + timedelta(seconds=3600*(i+1))) - model_update_time).seconds)*1.0/(3600*24)  )
-"""
-def fix_time(start, result_list):
-    """re-align the time"""
-    res = []
-    for r in result_list:
-        res.append( (start + timedelta(days = float(r[0])), float(r[1]), float(r[2])) )
-    return res
 def do_align(align, result):
     res = []
     for a,r in zip(align,result):
@@ -90,7 +69,8 @@ def main():
     for region in regions:
         par = cnt
         try:
-            ts = find_photos_given_region(region[0], region[1])
+            #ts = find_photos_given_region(region[0], region[1])
+            ts, photos = find_photos_given_region(region[0], region[1], '1h','citybeat',True)
         except Exception as e:
             print e
             continue
