@@ -55,11 +55,12 @@ def save_to_mongo(to_save):
 def main():
     regions = read_regions()
     
+
     for region in regions:
         to_save = {'mid_lat':region[0], 'mid_lng':region[1], 'valid':False, 'real_count':-1,'mu':-1, 'std':-1, 'photos':[], 'zscore':-1};
         photos = []
         try:
-            ts, photos = find_photos_given_region(region[0], region[1], '10Min', 'tmp_citybeat', True)
+            ts, photos = find_photos_given_region(region[0], region[1], '15Min', 'tmp_citybeat', True)
         except Exception as e:
             save_to_mongo(to_save)
             continue
@@ -74,7 +75,7 @@ def main():
         else:
             save_to_mongo(to_save)
             continue
-        if total_seconds(datetime.utcnow() - cur_time)>600:
+        if total_seconds(datetime.utcnow() - cur_time)>900:
             # there's no latest photo at this region
             save_to_mongo(to_save)
             continue
@@ -94,31 +95,31 @@ def main():
             save_to_mongo(to_save)
             continue
         
-        mu = float(predict['mu'])/6.0
-        var = sqrt(float(predict['var']))/6.0
+        mu = float(predict['mu'])/4.0
+        var = sqrt(float(predict['var']))/4.0
         zscore = (cur_value - mu)/var
 
-        within_range = float(predict['mu'])/6.0+3*sqrt(float(predict['var']))/6.0
+        within_range = float(predict['mu'])/4.0+3*sqrt(float(predict['var']))/4.0
         
         photos_to_save = []
         for photo in photos:
             delta = total_seconds( cur_time - datetime.utcfromtimestamp( float(photo['created_time'])) )
-            if delta>=0 and delta<=600:
+            if delta>=0 and delta<=900:
                 photos_to_save.append(photo)
 
         to_save['photos'] = photos_to_save
         to_save['real_count'] = cur_value
         to_save['valid'] = True
-        to_save['std'] = sqrt(float(predict['mu']))/6.0
-        to_save['mu'] = float(predict['mu'])/6.0
+        to_save['std'] = sqrt(float(predict['mu']))/4.0
+        to_save['mu'] = float(predict['mu'])/4.0
         to_save['zscore'] = zscore
         save_to_mongo(to_save) 
         
 
-        if zscore>=3 and cur_value>=5:
+        if zscore>=3 and cur_value>=6:
             print datetime.now()
             print region[0],",",region[1]
-            print float(predict['mu'])/6.0, sqrt(float(predict['var']))/6.0, 'range ',within_range,'real-> ',cur_value
+            print float(predict['mu'])/4.0, sqrt(float(predict['var']))/4.0, 'range ',within_range,'real-> ',cur_value
             for photo in photos_to_save:
                 print 'printing photos: ', photo['link'], photo['created_time'], photo['id'], datetime.utcfromtimestamp(float(photo['created_time']))
             print '\n'
