@@ -1,3 +1,7 @@
+#Edited by: Chaolun Xia, 2013-Jan-09#
+
+from MongoDB import MongoDBInterface
+
 import pymongo
 import ntplib,datetime
 from pandas import Series
@@ -53,6 +57,12 @@ def save_to_mongo(to_save):
     """
 
 def main():
+	
+	  # inintialize the database for storing the alarms
+    myDB = MongoDBInterface('grande', 27017)
+    myDB.SetDB('alarm_filter')
+    myDB.SetCollection('photos')
+    
     regions = read_regions()
     
 
@@ -96,8 +106,8 @@ def main():
             continue
         
         mu = float(predict['mu'])/4.0
-        var = sqrt(float(predict['var']))/4.0
-        zscore = (cur_value - mu)/var
+        std = sqrt(float(predict['var']))/4.0
+        zscore = (cur_value - mu)/std
 
         within_range = float(predict['mu'])/4.0+3*sqrt(float(predict['var']))/4.0
         
@@ -110,19 +120,26 @@ def main():
         to_save['photos'] = photos_to_save
         to_save['real_count'] = cur_value
         to_save['valid'] = True
-        to_save['std'] = sqrt(float(predict['mu']))/4.0
+        to_save['std'] = sqrt(float(predict['var']))/4.0
         to_save['mu'] = float(predict['mu'])/4.0
         to_save['zscore'] = zscore
         save_to_mongo(to_save) 
         
 
-        if zscore>=3 and cur_value>=6:
-            print datetime.now()
+        if zscore>=3 and cur_value>=8:
+            print datetime.utcnow()
             print region[0],",",region[1]
             print float(predict['mu'])/4.0, sqrt(float(predict['var']))/4.0, 'range ',within_range,'real-> ',cur_value
             for photo in photos_to_save:
                 print 'printing photos: ', photo['link'], photo['created_time'], photo['id'], datetime.utcfromtimestamp(float(photo['created_time']))
             print '\n'
+            
+            #group photos into an unlabeled event and save it to the db  
+            predicted_mu = float(predict['mu'])/4.0
+            predicted_std = sqrt(float(predict['var']))/4.0
+            event = {'discovered_time':datetime.utcnow(), 'lat':region[0], 'lng':region[1], 'predicted_mu':predicted_mu, 'predicted_std':predicted_std, 'actual_value':cur_value, 'zscore':zscore, 'photos':photos_to_save, 'label':'unlabeled'}
+            myDB.SaveItem(event)
+
 main()
 
 
