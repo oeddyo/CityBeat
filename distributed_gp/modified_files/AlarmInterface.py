@@ -6,7 +6,7 @@
 #Edited by: (Please write your name here)#
 
 from MongoDB import MongoDBInterface
-from instagram.client import InstagramAPI
+#from instagram.client import InstagramAPI
 from datetime import datetime
 
 import config
@@ -18,10 +18,10 @@ dbAddress = 'grande'
 
 class AlarmDataInterface:
 	
-	def __init__(self, address = dbAddress, port = 27017):
+	def __init__(self, address = dbAddress, port = 27017, db = 'alarm_filter', collection = 'photos'):
 		self.db = MongoDBInterface(address, port)
-		self.db.SetDB('alarm_filter')
-		self.db.SetCollection('photos')
+		self.db.SetDB(db)
+		self.db.SetCollection(collection)
 		
 	def GetUnlabeledEvent(self):
 		# Get unlabeled "event" from the alarm filter
@@ -88,45 +88,45 @@ class AlarmDataInterface:
 		pass 
 
 		
-	
-def getPhotoFromInstagram(cnt):
-	# only for test
-	cur_time = datetime.utcnow()
-	#sw_ne = (40.773012,-73.9863145)
-	sw_ne = (40.75953, -73.9863145)
-	lat = sw_ne[0]
-	lon = sw_ne[1]
-	client = InstagramAPI(client_id = config.instagram_client_id, client_secret = config.instagram_client_secret)
-	try:
-		res = client.media_search(lat = lat, lng = lon, return_json = True, distance = 1*1000, count=cnt)
-		return res
-	except Exception as e:
-		print 'Exception!'
-		logging.warning(e)
-	return None
 
-
-def TestWithFakeItems():
-	myDB = MongoDBInterface(dbAddress, 27017)
-	myDB.SetDB('alarm_filter')
-	myDB.SetCollection('photos')
-	for i in xrange(2):
-		photos = getPhotoFromInstagram(2)
-		myDB.SaveItem({'label':'unlabeled', 'photo':photos, 'test':'test'})
-	testDB = AlarmDataInterface(dbAddress, 27017)
-	i = 0
-	while True:
-		event = testDB.GetUnlabeledEvent()
-		if event is None:
-			break
-		testDB.LabelEvent(event, 'fake')
-		i = i + 1
-		print i
-	
-	
-def main():
-	# main() function is only for test
-	TestWithFakeItems()
-
-if __name__ == "__main__":
-	main()
+#def getPhotoFromInstagram(cnt):
+#	# only for test
+#	cur_time = datetime.utcnow()
+#	#sw_ne = (40.773012,-73.9863145)
+#	sw_ne = (40.75953, -73.9863145)
+#	lat = sw_ne[0]
+#	lon = sw_ne[1]
+#	client = InstagramAPI(client_id = config.instagram_client_id, client_secret = config.instagram_client_secret)
+#	try:
+#		res = client.media_search(lat = lat, lng = lon, return_json = True, distance = 1*1000, count=cnt)
+#		return res
+#	except Exception as e:
+#		print 'Exception!'
+#		logging.warning(e)
+#	return None
+#
+#
+#def TestWithFakeItems():
+#	myDB = MongoDBInterface(dbAddress, 27017)
+#	myDB.SetDB('alarm_filter')
+#	myDB.SetCollection('photos')
+#	for i in xrange(2):
+#		photos = getPhotoFromInstagram(2)
+#		myDB.SaveItem({'label':'unlabeled', 'photo':photos, 'test':'test'})
+#	testDB = AlarmDataInterface(dbAddress, 27017)
+#	i = 0
+#	while True:
+#		event = testDB.GetUnlabeledEvent()
+#		if event is None:
+#			break
+#		testDB.LabelEvent(event, 'fake')
+#		i = i + 1
+#		print i
+#	
+#	
+#def main():
+#	# main() function is only for test
+#	TestWithFakeItems()
+#
+#if __name__ == "__main__":
+#	main()

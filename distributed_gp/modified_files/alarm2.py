@@ -118,7 +118,8 @@ def main():
         for photo in photos:
             delta = total_seconds( cur_time - datetime.utcfromtimestamp( float(photo['created_time'])) )
             if delta>=0 and delta<=900:
-                photos_to_save.append(photo)
+            	photo['label'] = 'unlabeled'
+            	photos_to_save.append(photo)
 
         to_save['photos'] = photos_to_save
         to_save['real_count'] = cur_value
@@ -129,7 +130,7 @@ def main():
         save_to_mongo(to_save) 
         
 
-        if zscore>=0.5 and cur_value>=3:
+        if zscore>=2 and cur_value>=3:
             print datetime.utcnow()
             print region[0],",",region[1]
             print float(predict['mu'])/4.0, sqrt(float(predict['var']))/4.0, 'range ',within_range,'real-> ',cur_value
@@ -139,7 +140,7 @@ def main():
             #group photos into an unlabeled event and save it to the db  
             predicted_mu = float(predict['mu'])/4.0
             predicted_std = sqrt(float(predict['var']))/4.0
-            newEvent = {'discovered_time':datetime.utcnow(), 'lat':region[0], 'lng':region[1], 'predicted_mu':predicted_mu, 'predicted_std':predicted_std, 'actual_value':cur_value, 'zscore':zscore, 'photos':photos_to_save, 'label':'unlabeled'}
+            newEvent = {'created_time':datetime.utcnow(), 'mid_lat':region[0], 'mid_lng':region[1], 'predicted_mu':predicted_mu, 'predicted_std':predicted_std, 'actual_value':cur_value, 'zscore':zscore, 'photos':photos_to_save, 'label':'unlabeled'}
             	
             if not adi.MergeEvent(newEvent):
             	print 'created an event'

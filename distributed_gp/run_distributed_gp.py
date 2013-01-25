@@ -5,6 +5,7 @@ from redis import Redis
 import time
 from random import randrange
 from data_process import find_photos_given_region
+from twitter_data_process import find_tweets_given_region
 from datetime import timedelta
 from datetime import datetime
 import pymongo
@@ -19,8 +20,6 @@ def read_regions():
     res.reverse()
     return res
     #return res[1:3]
-    #return [(40.728072, -73.9931535), (40.75953,-73.9863145), (40.746048, -73.9931535), (40.741554,-73.9931535),  (40.75953, -73.9794755), (40.755036, -73.9794755)]
-    #return [(40.728072,-73.9931535)]
 
 def process_ts(ts):
     """return two results; the first is the start datetime, the second is the list of training data"""
@@ -42,8 +41,12 @@ def get_testing(model_update_time, start_time, predict_days):
         align.append( model_update_time + timedelta(seconds=3600*(i+1)))
     return res,align
 
-def save_to_mongo(result, region, model_update_time):
+def save_to_mongo(result, region, model_update_time, data_source):
     mongo = pymongo.Connection("grande",27017)
+    if data_source=='twitter':
+        db_name = 'twitter_predict'
+    else:
+        db_name = 'predict'
     mongo_db = mongo['predict']
     mongo_collection = mongo_db.prediction
     for r in result:
@@ -57,26 +60,32 @@ def do_align(align, result):
     return res
 
 def main():
+    data_source = 'instagram'
+    #data_source = 'twitter'
     predict_days = 1
     regions = read_regions()
     redis_conn = Redis('tall4')
     q = Queue(connection=redis_conn)
     cnt = 0
     async_results = {}
-    start_time = []
     model_update_time = datetime.utcnow()
     
     for region in regions:
         par = cnt
-        try:
-            #ts = find_photos_given_region(region[0], region[1])
-            ts, photos = find_photos_given_region(region[0], region[1], '1h','citybeat',True)
-        except Exception as e:
-            print e
-            continue
+        if data_source=='twitter':
+            try:
+                print region
+                ts, tweets = find_tweets_given_region(region[0], region[1], '1h','tweets',True)
+            except Exception as e:
+                print e
+                continue
+        elif data_source =='instagram':
+            try:
+                ts, photos = find_photos_given_region(region[0], region[1], '1h','citybeat',True)
+            except Exception as e:
+                print e
+                continue
         start, training = process_ts(ts)
-        start_time.append(start)
-        #testing = get_testing(model_update_time, ( ts.index[len(ts)-1] - start).days, predict_days)
         testing, align= get_testing(model_update_time, start, predict_days)
         print 'start is ',start
         print 'model_update_time is ',model_update_time
@@ -91,17 +100,16 @@ def main():
         print "Time elapsed : ",time.time()-begin_time
         done = True
         for x in range(cnt):
-            #print 'checking ',x
             result = async_results[x].return_value
-            #print 'check done'
-            #print 'res is ',result
             if result is None:
                 done = False
                 continue
             if saved_flag[x] == 0:
-                #result = fix_time(start_time[x], result) 
                 result = do_align(align, result)
-                save_to_mongo(result, regions[x], model_update_time)
+                if data_process=='twitter':
+                    save_to_mongo(result, regions[x], model_update_time)
+                elif data_process=='instagram':
+                    save_to_mongo(result, regions[x], model_update_time)
                 saved_flag[x] = 1
         time.sleep(0.2)
 
