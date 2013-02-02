@@ -1,0 +1,79 @@
+##########
+# Author: Chaolun Xia, 2013-Jan-09#
+#
+#
+##########
+#Edited by: (Please write your name here)#
+
+from MongoDB import MongoDBInterface
+from instagram.client import InstagramAPI
+
+import config
+import time
+import logging
+
+class AlarmDataInterface:
+	
+	def __init__(self, address = 'grande', port = 27017):
+		self.db = MongoDBInterface(address, port)
+		self.db.SetDB('alarm_filter')
+		self.db.SetCollection('photos')
+		
+	def GetUnlabeledEvent(self):
+		# Get unlabeled "event" from the alarm filter
+		return self.db.GetItem({'label':'unlabeled'})
+	
+	def LabelEvent(self, event, label):
+		# Label an "event" as a true event or non-event
+		event['label'] = label
+		self.db.UpdateItem(event)
+	
+	def GetUnlabelEvents(self, condition = None):
+		pass 
+	
+def getPhotoFromInstagram():
+	# only for test
+	cur_time = int(time.time())
+	#sw_ne = (40.773012,-73.9863145)
+	sw_ne = (40.75953, -73.9863145)
+	lat = sw_ne[0]
+	lon = sw_ne[1]
+	client = InstagramAPI(client_id = config.instagram_client_id, client_secret = config.instagram_client_secret)
+	try:
+		res = client.media_search(lat = lat, lng = lon, return_json = True, distance = 1*1000, count=5)
+		return res
+	except Exception as e:
+		print 'Exception!'
+		logging.warning(e)
+	return None
+	
+	
+def main():
+	# main() function is only for test
+	myDB = MongoDBInterface('localhost', 27017)
+	myDB.SetDB('alarm_filter')
+	myDB.SetCollection('photos')
+	myDB.ClearItems()
+	photos = getPhotoFromInstagram()
+	for photo in photos:
+		myDB.SaveItem({'label':'unlabeled','photo':photo})
+		
+	testDB = AlarmDataInterface('localhost', 27017)
+	i = 0
+	while True:
+		event = testDB.GetUnlabeledEvent()
+		if event is None:
+			break
+		print event
+		print
+		print
+		if i % 2 == 0:
+			label = 1
+		else:
+			label = 0
+		testDB.LabelEvent(event, label)
+		i = i + 1
+		print i
+
+if __name__ == "__main__":
+	main()

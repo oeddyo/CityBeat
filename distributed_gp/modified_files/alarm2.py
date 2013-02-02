@@ -37,6 +37,7 @@ def read_regions():
     for l in open('number.csv','r').readlines():
         t = l.split(',')
         res.append( (t[0],t[1]) )
+    res.reverse()
     return res
 
 def save_to_mongo(to_save):
@@ -130,7 +131,7 @@ def main():
         save_to_mongo(to_save) 
         
 
-        if zscore>=2 and cur_value>=3:
+        if zscore>=2.0 and cur_value>=3:
             print datetime.utcnow()
             print region[0],",",region[1]
             print float(predict['mu'])/4.0, sqrt(float(predict['var']))/4.0, 'range ',within_range,'real-> ',cur_value

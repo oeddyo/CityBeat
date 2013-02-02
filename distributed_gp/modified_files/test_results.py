@@ -26,3 +26,13 @@ def main():
 if __name__ == '__main__':
 	main()
 	
+	
+	
+# http://www.nba.com/games/20130107/BOSNYK/gameinfo.html   basketball event
+# even we can know when start
+# 2013-01-07 19:31:33.087495
+# 40.750542 , -73.9931535
+
+# the basketball on Jan 10th was not detected
+
+# the basketball on Jan 11th was detected but with wrong date

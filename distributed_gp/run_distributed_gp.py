@@ -35,7 +35,7 @@ def get_testing(model_update_time, start_time, predict_days):
     res = []
     align = []
     for i in range(24*predict_days):
-        delta = model_update_time + timedelta(seconds=3600*(i+1)) -start_time
+        delta = model_update_time + timedelta(seconds=3600*(i+1)) - start_time
         secs = delta.seconds+delta.days*86400
         res.append( secs/(3600.0 * 24) )
         align.append( model_update_time + timedelta(seconds=3600*(i+1)))
@@ -43,6 +43,7 @@ def get_testing(model_update_time, start_time, predict_days):
 
 def save_to_mongo(result, region, model_update_time, data_source):
     mongo = pymongo.Connection("grande",27017)
+    print 'in save'
     if data_source=='twitter':
         db_name = 'twitter_predict'
     else:
@@ -73,6 +74,7 @@ def main():
     for region in regions:
         par = cnt
         if data_source=='twitter':
+            pass
             try:
                 print region
                 ts, tweets = find_tweets_given_region(region[0], region[1], '1h','tweets',True)
@@ -106,11 +108,12 @@ def main():
                 continue
             if saved_flag[x] == 0:
                 result = do_align(align, result)
-                if data_process=='twitter':
-                    save_to_mongo(result, regions[x], model_update_time)
-                elif data_process=='instagram':
-                    save_to_mongo(result, regions[x], model_update_time)
+                if data_source=='twitter':
+                    save_to_mongo(result, regions[x], model_update_time, "twitter")
+                elif data_source=='instagram':
+                    print 'work here'
+                    save_to_mongo(result, regions[x], model_update_time, "instagram")
                 saved_flag[x] = 1
-        time.sleep(0.2)
+        time.sleep(20)
 
 main() 

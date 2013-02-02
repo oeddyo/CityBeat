@@ -33,7 +33,7 @@ class AlarmDataInterface:
 		self.db.UpdateItem(event)
 		
 	def _GetAllEventsAtLocation(self, lat, lon):
-		return self.db.GetAllItems({'lat':lat, 'lng':lon})
+		return self.db.GetAllItems({'mid_lat':lat, 'mid_lng':lon})
 			
 	def _MergeTwoEvents(self, oldEvent, newEvent):
 		# merge the photos from the new event to the old event
@@ -61,7 +61,7 @@ class AlarmDataInterface:
 		# merge the event with older events in DB
 		
 		# get all events in the same location
-		allEvents = self._GetAllEventsAtLocation(event['lat'], event['lng'])
+		allEvents = self._GetAllEventsAtLocation(event['mid_lat'], event['mid_lng'])
 		if allEvents is None:
 			return False
 		for oldEvent in allEvents:

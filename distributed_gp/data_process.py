@@ -52,7 +52,9 @@ def find_photos_given_region(lat, lng, resample_freq, db_name, count_people = Tr
     ts = Series(counts, index = dates)
 
     ts = ts.resample(resample_freq,how='sum', label='right')
-    #print ts
+    if db_name == 'citybeat': 
+        #limit to recent 1000 hours of data
+        ts = ts[-1000:]
     return ts, photos_return
 
 find_photos_given_region(40.750542,-73.9863145, '10Min', 'tmp_citybeat', True)
