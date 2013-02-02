@@ -82,11 +82,11 @@ class InstagramTimeSeries(TimeSeries):
             pass
         return self.series
 
+
+
 from region import Region
 from config import InstagramConfig
 import photo_interface
-
-
 def test():
     coordinates = [InstagramConfig.photo_min_lat,
             InstagramConfig.photo_min_lng,
@@ -94,14 +94,14 @@ def test():
             InstagramConfig.photo_max_lng
             ]
     huge_region = Region(coordinates)
-    regions = huge_region.divideRegions(4, 4)
-    for i in range(16):
-        if i<14:
-            continue
+    regions = huge_region.divideRegions(5,5)  #Warning: DO NOT SET THIS BELOW 5 OR MEMORY OVERFLOW
+    
+    for i in range(25):
         test_region = regions[i]
         test_region.display()
-        ts = InstagramTimeSeries(test_region, 1355765315-30*24*3600, 1355765315)
+        ts = InstagramTimeSeries(test_region, 1355765315, 1355765315+30*24*3600)
         print ts.buildTimeSeries()
 
-test()
 
+if __name__ == "__main__":
+    test()

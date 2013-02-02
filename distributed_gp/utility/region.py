@@ -1,5 +1,8 @@
+import operator
+
 from config import InstagramConfig
 from photo_interface import PhotoInterface
+from mongodb_interface import MongoDBInterface
 
 class Region:
 	
@@ -10,7 +13,7 @@ class Region:
 		self.max_lat = coordinates[2]
 		self.max_lng = coordinates[3]
 			
-	def _insideRegion(self, coordinate):
+	def insideRegion(self, coordinate):
 		# coordinates must be formatted as [lat, lng]
 		lat = coordinate[0]
 		lng = coordinate[1]
@@ -22,6 +25,9 @@ class Region:
 		
 	def display(self):
 		print [self.min_lat, self.min_lng, self.max_lat, self.max_lng]
+		
+	def getMidCoordinates(self):
+		return [(self.min_lat + self.max_lat)/2, (self.min_lng + self.max_lng)/2]
 		
 	def divideRegions(self, n, m):
 		# this method only works when the "region" is the whole region
@@ -41,19 +47,43 @@ class Region:
 		return region_list
 	
 	def filterRegion(self, region_list):
-		pi = PhotoInterface()
 		
-		cnt = {}
-		s = 0
-		for region in region_list:
-			cnt[region] = 0
-			photos = pi.rangeQuery(region)
-			tmp_cnt = photos.count()
-			cnt[region] = tmp_cnt
-			region.display()
-			print tmp_cnt
-			s += tmp_cnt
-		print s
+		end_time = 1359704845 - 7*3600*24
+		begin_time = end_time - 14*3600*24
+		pi = PhotoInterface()
+		photos = pi.rangeQuery(period=[str(begin_time), str(end_time)])
+		region_number = len(region_list)
+		number_photo_in_region = [0]*region_number
+		p = 0
+		for photo in photos:
+			p += 1
+			if p % 10000 == 0:
+				print p
+			lat = float(photo['location']['latitude'])
+			lng = float(photo['location']['longitude'])
+			flag = 0
+			for i in xrange(region_number):
+				if region_list[i].insideRegion([lat, lng]):
+					number_photo_in_region[i] += 1
+					flag = 1
+					break
+			if flag == 0:
+				print 'bad photo:',photo
+		
+		region_tuples = []
+		for i in xrange(0, region_number):
+			region_tuples.append([region_list[i], number_photo_in_region[i]])
+		
+		region_tuples.sort(key=operator.itemgetter(1), reverse=True)
+		
+		print region_tuples
+		
+		valid_region_number = int(0.5 + 1.0 * region_number * InstagramConfig.region_percentage)
+		valid_regions = []
+		for i in xrange(0, valid_region_number):
+			valid_regions.append(region_tuples[i])
+		
+		print region_tuples
 		
 
 if __name__=="__main__":
