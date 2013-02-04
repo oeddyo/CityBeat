@@ -2,12 +2,11 @@ import config
 import time
 import logging
 import string
+import types
 
 from datetime import datetime
 from mongodb_interface import MongoDBInterface
 from config import InstagramConfig
-
-
 
 class PhotoInterface(MongoDBInterface):
 	
@@ -22,15 +21,17 @@ class PhotoInterface(MongoDBInterface):
 		#period should be specified as: [begin_time end_time]
 		#specify begin_time and end_time as the utctimestamp, string!!
 		
-		#region should be specified as the class defined in region.py
 		
 		region_conditions = {}
 		period_conditions = {}
 		if not region is None:
-			region_conditions = {'location.latitude':{'$gte':region.min_lat, '$lte':region.max_lat},
-				                   'location.longitude':{'$gte':region.min_lng, '$lte':region.max_lng}
+		#region should be specified as the class defined in region.py
+			if not type(region) is types.DictType:
+				region = region.toJSON() 
+			region_conditions = {'location.latitude':{'$gte':region['min_lat'], '$lte':region['max_lat']},
+				                   'location.longitude':{'$gte':region['min_lng'], '$lte':region['max_lng']}
 				                   	}
-			
+				                   	
 		if not period is None:
 			period_conditions = {'created_time':{'$gte':period[0], '$lte':period[1]}}
 

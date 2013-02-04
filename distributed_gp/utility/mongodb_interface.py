@@ -10,6 +10,7 @@ from config import InstagramConfig
 
 import pymongo
 import config
+import types
 
 class MongoDBInterface(object):
 	#A basic interface#
@@ -25,7 +26,10 @@ class MongoDBInterface(object):
 		self._collection = self._db[name]
 	
 	def saveDocument(self, document):
-		self._collection.insert(document)
+		# document must be a json or a class from {event, photo, prediction}
+		if not type(document) is types.DictType:
+			document = document.toJSON()
+		self._collection.save(document)
 	
 	def getDocument(self, condition=None):
 		if not condition is None:
@@ -40,5 +44,14 @@ class MongoDBInterface(object):
 			return self._collection.find()
 	
 	def updateDocument(self, document):
+		if not type(document) is types.DictType:
+			document = document.toJSON()
 		self._collection.update({'_id':document['_id']}, document, True)
 
+
+if __name__=='__main__':
+	mi = MongoDBInterface()
+	mi.setDB('test')
+	mi.setCollection('test_collection')
+	mi.saveDocument({'name':'test_fuck'})
+	mi.saveDocument([1,2,3])

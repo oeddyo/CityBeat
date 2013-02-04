@@ -6,7 +6,8 @@
 #Edited by: (Please write your name here)#
 
 from mongodb_interface import MongoDBInterface
-from confin import InstagramConfig
+from event import Event
+from config import InstagramConfig
 from datetime import datetime
 
 import config
@@ -14,69 +15,45 @@ import time
 import logging
 import string
 
-_address = 'grande'
-_port = 27017
+def unicodeToInt(self, unic):
+	return string.atoi(unic.encode("utf-8"))
 
 class EventInterface(MongoDBInterface):
-	
 	def __init__(self, db=InstagramConfig.event_db,  
 	             collection=InstagramConfig.event_collection):
-		# initialize an interface for accessing event from mongodb
-		super(EventInterface, self).__init__()
-		self.setDB(db)
-		self.setCollection(collection)
-			
-	def _mergeTwoEvents(self, odd_event, new_event):
-		# merge the photos from the new event to the old event
-		# it will remove the duplicate photos
-		old_photos = odd_event['photos']
-		new_photos = new_event['photos']
-		old_photo = old_photos[-1]
-		merged = 0
-		for i in xrange(0,len(new_photos)):
-			if self._unicodeToInt(new_photos[i]['created_time']) > self._unicodeToInt(old_photo['created_time']):
-				old_photos = old_photos + new_photos[i:]
-				print '%d out of %d photos have been increased' %(len(new_photos[i:]), len(new_photos))
-				merged = 1
-				break
-			
-		if not merged:
-			print 'No photo has been increased'
-		
-		odd_event['photos'] = old_photos
-		return odd_event
+	  # initialize an interface for accessing event from mongodb
+	  super(EventInterface, self).__init__()
+	  self.setDB(db)
+	  self.setCollection(collection)
 	
-	def _unicodeToInt(self, unic):
-		return string.atoi(unic.encode("utf-8"))
-		
-	def mergeEvent(self, event):
-		# merge the event with an elder in DB
-		
-		# get all events in the same location
-		all_events = self._getAllEventsAtLocation(event['mid_lat'], event['mid_lng'])
-		if all_events is None:
-			return False
-		for odd_event in all_events:
-			# find a proper old event to combine (we assume there is only one "proper" old event)
-			last_photo = odd_event['photos'][-1]
-			t1 = self._unicodeToInt(event['photos'][-1]['created_time'])
-			t2 = self._unicodeToInt(last_photo['created_time'])
+	def addEvent(self, raw_event):
+		# please do not call the method saveDocument, instead, call this method
+		# add an event to the db. raw_event can either be a json or an instance of Event 
+		if not type(raw_event) is types.DictType:
+			new_event = raw_event.toJSON()
+		else:
+			new_event = raw_event
+		# before adding, find if any event can be merged
+		condition = {'region':new_event['region']}
+		old_events = self.getAllDocuments(condition).sort('created_time', 1)
+		for old_event in old_events:
+			old_time = unicodeToInt(old_event['created_time'])
+			new_time = unicodeToInt(new_event['created_time'])
+			if new_time < old_time:
+				raise Exception('wrong event when merge')
+			if old_time + InstagramConfig.merge_time_interval >=  new_time:
+				# if can merge
+				old_event = Event(old_event)
+				new_event = Event(new_event)
+				merged = old_event.mergeWith(new_event)
+				print '%d out of %d photos are merged into an old event' % (merged, len(new_event['photos']))
+				self.updateDocument(old_event)
+			else:
+				# cannot merge
+				print 'create a new event'
+				self.saveDocument(new_event)
+			return
 			
-			if t1 == t2:
-				# no further photos for this event
-				return True
-			
-			# maximal allowed time interval is 15 mins
-			if t1 > t2 and t1 <= t2 + InstagramConfig.merge_time_interval:
-				#within 15 minutes
-				merged_event = self._mergeTwoEvents(odd_event, event)
-				self.updateDocument(merged_event)
-				return True
-		return False
-				
-
-		
-
 #def getPhotoFromInstagram(cnt):
 #	# only for test
 #	cur_time = datetime.utcnow()

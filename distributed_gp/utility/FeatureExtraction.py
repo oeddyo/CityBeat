@@ -32,6 +32,7 @@ class Event:
 		return (float(self._event['actual_value']) - float(self._event['predicted_mu'])) / float(self._event['predicted_std'])
 	
 	def _GetClosenessOfPhotosByGeolocation(self):
+		# actually we get the distance between photos, instead of closeness
 		
 		def DisBetweenPhotos(photo1, photo2):
 			# is there any precision issue?

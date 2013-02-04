@@ -11,6 +11,8 @@ class InstagramConfig:
 	photo_collection = 'photos_no_duplicate'
 	event_db = 'citybeat'
 	event_collection = 'candidate_event'
+	prediction_db = 'citybeat'
+	prediction_collection = 'prediction_test'
 	# in seconds
 	merge_time_interval = 900
 	
@@ -26,7 +28,8 @@ class InstagramConfig:
 	photo_max_lng = -73.857994
 	
 	# cut the region into region_N * region_M subregions
-	region_N = 25
-	region_M = 25
+	# try 10*10, 15*15, 20*20, 25*25
+#	region_N = 25
+#	region_M = 25
 	
-	region_percentage = 0.6
+	region_percentage = 0.3
