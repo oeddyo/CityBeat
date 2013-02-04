@@ -12,7 +12,7 @@ class InstagramConfig:
 	event_db = 'citybeat'
 	event_collection = 'candidate_event'
 	prediction_db = 'citybeat'
-	prediction_collection = 'prediction_test'
+	prediction_collection = 'prediction_25by25'
 	# in seconds
 	merge_time_interval = 900
 	

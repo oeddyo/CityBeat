@@ -57,7 +57,7 @@ def run():
                  ]
     huge_region = Region(coordinates)
     
-    regions = huge_region.divideRegions(15,15)
+    regions = huge_region.divideRegions(25,25)
     filtered_regions = huge_region.filterRegions( regions )
     regions = filtered_regions
 
@@ -68,63 +68,30 @@ def run():
     days_passed = 0
     _results =  {} 
     _saved = {}
-    test_cnt = 0
     while clock<end_of_time:
         print 'working on day ',days_passed
-        clock+=3600
         days_passed+=1
         # use 14 days of data as training
         fourteen_days_ago = clock - 14*24*3600
 
         for i in range(len(regions)):
             test_region = regions[i]
-            gp = GaussianProcessJob( test_region, str(fourteen_days_ago), str(clock) )
+            try:
+                gp = GaussianProcessJob( test_region, str(fourteen_days_ago), str(clock) )
+            except Exception as e:
+                print 'Initialization of gp error. continue'
+                continue
             res, pred_time = gp.submit()
             _results[gp.getID()] = (test_region, res, pred_time)
             _saved[ gp.getID() ] = False
-            test_cnt +=1
-            if test_cnt>2:
-                break
-        if test_cnt>2:
-            break
         save_to_mongo(_results, _saved, cur_utc_timestamp) 
+        clock+=3600*24
     
     done = False
     while not done:
         done = save_to_mongo(_results, _saved, cur_utc_timestamp)
         time.sleep(10)
-    print 'finish work' 
-    """ 
-    done = False
-    
-    
-    while not done:
-        time.sleep(3)
-        done = True
-        for key in _results.keys():
-            result_pair = _results[key]
-            print result_pair
-            print result_pair[1].return_value
-            if result_pair[1].return_value is None:
-                done = False
-                continue
-            else:
-                if _saved[key] == False:
-                    _saved[key] = True
-                    to_save = (result_pair[0], result_pair[1].return_value, result_pair[2]) 
-                    region = to_save[0]
-                    print to_save
-                    for single_hour_prediction in zip(to_save[1], to_save[2]):
-                        p = Prediction()
-                        p.setRegion(region)
-                        p.setModelUpdateTime(cur_utc_timestamp)
-                        p.setPredictedValues( float(single_hour_prediction[0][1]), math.sqrt(float(single_hour_prediction[0][2])))
-                        p.setTime( str(single_hour_prediction[1]) )
-                        p_json = p.toJSON()
-                        print p_json
-                        save_interface = PredictionInterface()
-                        save_interface.saveDocument( p_json )
 
-        """
+    print 'finish work' 
 if __name__ == "__main__":
     run()                            

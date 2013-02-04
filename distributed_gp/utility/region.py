@@ -60,7 +60,19 @@ class Region:
 				region_list.append(r)
 		return region_list
 	
-	def filterRegions(self, region_list, percentage=InstagramConfig.region_percentage):
+	def filterRegions(self, region_list, percentage=InstagramConfig.region_percentage,test=False):
+		if test:
+			#this is only for test
+			regionList = []
+			fid = open('regions_test.txt')
+			for line in fid:
+				region = line.split()
+				region = Region(region)
+				regionList.append(region)
+			return regionList
+			
+			
+			
 		# this method should not be a member of this class
 		# TODO: change the period to one week
 		print 'Begin to filter sparse regions with less photos than the threshold'
@@ -112,5 +124,8 @@ if __name__=="__main__":
 	nyc = Region(coordinates)
 	pi = PhotoInterface()
 	pi.rangeQuery(nyc)
-	region_list = nyc.divideRegions(InstagramConfig.region_N, InstagramConfig.region_M)
-	region_list = nyc.filterRegions(region_list)
+	region_list = nyc.divideRegions(10,10)
+	region_list = nyc.filterRegions(region_list, test=True)
+	for region in region_list:
+		region = region.toJSON()
+		print region['min_lat'], region['min_lng'], region['max_lat'], region['max_lng']

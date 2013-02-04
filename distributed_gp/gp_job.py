@@ -34,13 +34,9 @@ class GaussianProcessJob():
         self.days_to_predict = days_to_predict
         self.data_source = data_source
         self._id = unicode(uuid4())
-        #try:
-        print 'connecting to ',queue_server
+        
         redis_conn = Redis(queue_server)
         self.q = Queue(connection = redis_conn)
-        #except Exception as e:
-        #    print 'Connecting to ',queue_server,'error'
-        #    sys.exit(1)
         self.ts = self._getTimeSeries()
 
         if len(self.ts.index)>10:
