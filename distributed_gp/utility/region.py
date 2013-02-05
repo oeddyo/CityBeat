@@ -60,22 +60,26 @@ class Region:
 				region_list.append(r)
 		return region_list
 	
-	def filterRegions(self, region_list, percentage=InstagramConfig.region_percentage,test=False):
+	def filterRegions(self, region_list, percentage=InstagramConfig.region_percentage,test=False, n=10, m=10):
 		if test:
 			#this is only for test
-			regionList = []
-			fid = open('regions_test.txt')
+			new_region_list = []
+			folder = '/grad/users/kx19/CityBeat/distributed_gp/utility/region_cache/'
+			file_name = str(n)+'_'+str(m)+'.txt'
+			fid = open(folder + file_name)
 			for line in fid:
 				region = line.split()
+				for i in xrange(0,4):
+					region[i] = float(region[i])
 				region = Region(region)
-				regionList.append(region)
-			return regionList
+				new_region_list.append(region)
+			return new_region_list
 			
 			
 			
 		# this method should not be a member of this class
 		# TODO: change the period to one week
-		print 'Begin to filter sparse regions with less photos than the threshold'
+#		print 'Begin to filter sparse regions with less photos than the threshold'
 		end_time = 1359704845 - 7*3600*24
 		begin_time = end_time - 14*3600*24
 		pi = PhotoInterface()
@@ -114,8 +118,6 @@ class Region:
 		for i in xrange(0, valid_region_number):
 			valid_regions.append(region_tuples[i][0])
 		
-		print 'region filtering is finished'
-		
 		return valid_regions
 
 if __name__=="__main__":
@@ -124,8 +126,8 @@ if __name__=="__main__":
 	nyc = Region(coordinates)
 	pi = PhotoInterface()
 	pi.rangeQuery(nyc)
-	region_list = nyc.divideRegions(10,10)
-	region_list = nyc.filterRegions(region_list, test=True)
+	region_list = nyc.divideRegions(20, 20)
+	region_list = nyc.filterRegions(region_list, test=True, n=10, m=10)
 	for region in region_list:
 		region = region.toJSON()
 		print region['min_lat'], region['min_lng'], region['max_lat'], region['max_lng']

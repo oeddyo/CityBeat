@@ -28,8 +28,23 @@ class Photo:
 		return self._photo
 	
 	def equalWith(self, photo):
+		return self.compare(photo) == 0
+	
+	def compare(self, photo):
 		if not type(photo) is types.DictType:
 			photo = photo.toJSON()
-		if self._photo['id'] == photo['id']:
-			return True
-		return False
+		t1 = int(self._photo['created_time'])
+		t2 = int(photo['created_time'])
+		id1 = str(self._photo['id'])
+		id2 = str(photo['id'])
+		
+		if t1 > t2:
+			return 1
+		if t1 < t2:
+			return -1
+		if id1 > id2:
+			return 1
+		if id1 < id2:
+			return -1
+		return 0
+		

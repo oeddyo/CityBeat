@@ -36,7 +36,10 @@ class PhotoInterface(MongoDBInterface):
 			period_conditions = {'created_time':{'$gte':period[0], '$lte':period[1]}}
 
 		conditions = dict(region_conditions, **period_conditions)
-		return self.getAllDocuments(conditions)
+		
+		#returns a cursor
+		#sort the photo in chronologically decreasing order
+		return self.getAllDocuments(conditions).sort('created_time', -1)
 	
 	def _computeBoundaryOfPhotos(self):
 		cnt = 0

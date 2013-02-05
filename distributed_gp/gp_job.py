@@ -11,8 +11,8 @@ from uuid import uuid4
 from utility.instagram_time_series import InstagramTimeSeries
 from utility.region import Region
 from utility.config import InstagramConfig
-from rq import Queue, Connection
-from redis import Redis
+#from rq import Queue, Connection
+#from redis import Redis
 
 from do_gp import Predict
 
@@ -20,7 +20,7 @@ from do_gp import Predict
 
 class GaussianProcessJob():
 
-    def __init__(self, region, data_backward, current_time ,queue_server = 'tall4', days_to_predict = 1, data_source = 'instagram'):
+    def __init__(self, region, data_backward, current_time , redis_queue, days_to_predict = 1, data_source = 'instagram'):
         """For a single gp job, specify its
         region - data structure that'specified by a box of lat, lng in region.py
         data_backward - timestamp for how long the time-series goes back
@@ -35,8 +35,9 @@ class GaussianProcessJob():
         self.data_source = data_source
         self._id = unicode(uuid4())
         
-        redis_conn = Redis(queue_server)
-        self.q = Queue(connection = redis_conn)
+        #redis_conn = Redis(queue_server)
+        #self.q = Queue(connection = redis_conn)
+        self.q = redis_queue
         self.ts = self._getTimeSeries()
 
         if len(self.ts.index)>10:
@@ -166,7 +167,6 @@ def test():
                     to_save = save_results[result_idx]
                     region = to_save[0]
                     print 'to_save'
-                    print to_save
                     for single_hour_prediction in zip(to_save[1], to_save[2]):
                         p = Prediction()
                         p.setRegion(region)
@@ -174,7 +174,6 @@ def test():
                         p.setPredictedValues( single_hour_prediction[0][0],single_hour_prediction[0][1])
                         p.setTime( str(single_hour_prediction[1]) )
                         p_json = p.toJSON()
-                        print p_json
                         save_interface = PredictionInterface()
                         save_interface.saveDocument( p_json )
                             

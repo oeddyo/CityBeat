@@ -26,8 +26,6 @@ def save_to_mongo(_results, _saved, model_update_time):
     done = True
     for key in _results.keys():
         result_pair = _results[key]
-        print result_pair
-        print result_pair[1].return_value
         if result_pair[1].return_value is None:
             done = False
             continue
@@ -36,7 +34,6 @@ def save_to_mongo(_results, _saved, model_update_time):
                 _saved[key] = True
                 to_save = (result_pair[0], result_pair[1].return_value, result_pair[2]) 
                 region = to_save[0]
-                print to_save
                 for single_hour_prediction in zip(to_save[1], to_save[2]):
                     p = Prediction()
                     p.setRegion(region)
@@ -44,7 +41,6 @@ def save_to_mongo(_results, _saved, model_update_time):
                     p.setPredictedValues( float(single_hour_prediction[0][1]), math.sqrt(float(single_hour_prediction[0][2])))
                     p.setTime( str(single_hour_prediction[1]) )
                     p_json = p.toJSON()
-                    print p_json
                     save_interface = PredictionInterface()
                     save_interface.saveDocument( p_json )
     return done
@@ -68,6 +64,10 @@ def run():
     days_passed = 0
     _results =  {} 
     _saved = {}
+
+    redis_conn = Redis("tall4")
+    redis_queue = Queue(connection = redis_conn)
+
     while clock<end_of_time:
         print 'working on day ',days_passed
         days_passed+=1
@@ -77,7 +77,7 @@ def run():
         for i in range(len(regions)):
             test_region = regions[i]
             try:
-                gp = GaussianProcessJob( test_region, str(fourteen_days_ago), str(clock) )
+                gp = GaussianProcessJob( test_region, str(fourteen_days_ago), str(clock) , redis_queue)
             except Exception as e:
                 print 'Initialization of gp error. continue'
                 continue
@@ -86,7 +86,6 @@ def run():
             _saved[ gp.getID() ] = False
         save_to_mongo(_results, _saved, cur_utc_timestamp) 
         clock+=3600*24
-    
     done = False
     while not done:
         done = save_to_mongo(_results, _saved, cur_utc_timestamp)

@@ -6,10 +6,6 @@ import operator
 import string
 import types
 
-
-def unicodeToInt(self, unic):
-	return string.atoi(unic.encode("utf-8"))
-
 class Event(object):
 	
 	def __init__(self, event=None):
@@ -42,51 +38,95 @@ class Event(object):
 		if 'zscore' in self._event.keys():
 			return self._event['zscore']
 		else:
-			return (self._event['predicted_mu'] - self._event['actual_value']) / self._event['predicted_std']
+			return (float(self._event['predicted_mu']) - float(self._event['actual_value'])) / float(self._event['predicted_std'])
+	
+	def sortPhotos(self):
+		# this sorting can prevent bugs when merging
+		photo_list = []
+		for photo in self._event['photos']:
+			photo_list.append([photo, int(photo['created_time']), str(photo['id'])])
+		photo_list.sort(key=operator.itemgetter(1, 2), reverse=True)
+		self._event['photos'] = [row[0] for row in photo_list]
 	
 	def mergeWith(self, event):
-		if not type(event) is types.DictType:
-			event = event.toJSON()
-		last_photo = self._event['photos'][-1]
-		last_photo_time = unicodeToInt(last_photo['created_time'])
-		
-		new_photos = event['photos']
+		if type(event) is types.DictType:
+			event = Event(event)
+		event = event.toJSON()
+		photo_list1 = self._event['photos'] 
+		photo_list2 = event['photos']
+		new_photo_list = []
+		l1 = 0
+		l2 = 0
 		merged = 0
-		for photo in new_photos:
-			created_time = unicodeToInt(photo['created_time'])
-			# the if clause has a potential and little bug, but too rare too happen
-			if created_time > last_photo_time:
-				self.addPhoto(photo)
+		while l1 < len(photo_list1) and l2 < len(photo_list2):
+			p1 = Photo(photo_list1[l1])
+			p2 = Photo(photo_list2[l2])
+			compare = p1.compare(p2)
+			if compare == 1:
+				new_photo_list.append(photo_list1[l1])
+				l1 += 1
+				continue
+			
+			if compare == -1:
+				new_photo_list.append(photo_list2[l2])
+				l2 += 1
 				merged += 1
+				continue
+			
+			# compare == 0
+			new_photo_list.append(photo_list1[l1])
+			l1 += 1
+			l2 += 1
+		
+		while l1 < len(photo_list1):
+			new_photo_list.append(photo_list1[l1])
+			l1 += 1
+		
+		while l2 < len(photo_list2):
+			new_photo_list.append(photo_list2[l2])
+			l2 += 1
+			merged += 1
+			
 		return merged
 				
 	def setRegion(self, region):
 		if not type(region) is types.DictType:
 			region = region.toJSON()
-		self._event['region'] = r.toJSON()
+		self._event['region'] = region
 	
 	def setPhotos(self, photos):
 		# a set of json objects
 		self._event['photos'] = photos
 		
 	def setCreatedTime(self, utc_time):
-		self._event['created_time'] = utc_time
+		self._event['created_time'] = str(utc_time)
 		
 	def setPredictedValues(self, mu, std):
-		self._event['predicted_mu'] = mu
-		self._event['predicted_std'] = std
+		self._event['predicted_mu'] = float(mu)
+		self._event['predicted_std'] = float(std)
 		
 	def setZscore(self, zscore):
-		self._event['zscore'] = zscore
+		self._event['zscore'] = float(zscore)
 		
 	def setActualValue(self, actual_value):
-		self._event['actual_value'] = actual_value
+		self._event['actual_value'] = int(actual_value)
 	
 	def setLabel(self, label='unlabeled'):
 		self._event['label'] = label
 	
 	def toJSON(self):
 		return self._event
+		
+	def _test_print(self):
+		print self._event['created_time'], 'photos:'
+		for photo in self._event['photos']:
+			print photo['created_time']
+			
+	def getLastPhotoTime(self):
+		return int(self._event['photos'][-1]['created_time'])
+	
+	def getFirstPhotoTime(self):
+		return int(self._event['photos'][0]['created_time'])
 		
 def main():
 	pass

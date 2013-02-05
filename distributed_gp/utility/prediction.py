@@ -11,6 +11,12 @@ class Prediction:
 			else:
 				self._prediction = prediction.toJSON()
 	
+	def getFileName(self):
+		return self._prediction['file_name']
+	
+	def setFileName(self, file_name):
+		self._prediction['file_name'] = file_name
+	
 	def setRegion(self, region):
 		# region must be a json, see region.py
 		# or an instance of class defined in prediction.py

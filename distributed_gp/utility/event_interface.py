@@ -14,9 +14,7 @@ import config
 import time
 import logging
 import string
-
-def unicodeToInt(self, unic):
-	return string.atoi(unic.encode("utf-8"))
+import types
 
 class EventInterface(MongoDBInterface):
 	def __init__(self, db=InstagramConfig.event_db,  
@@ -26,8 +24,12 @@ class EventInterface(MongoDBInterface):
 	  self.setDB(db)
 	  self.setCollection(collection)
 	
+	def saveDocument(self, raw_event):
+		#rewrite the method
+		self.addEvent(raw_event)
+	
 	def addEvent(self, raw_event):
-		# please do not call the method saveDocument, instead, call this method
+		# do not call the method saveDocument, instead, call this method
 		# add an event to the db. raw_event can either be a json or an instance of Event 
 		if not type(raw_event) is types.DictType:
 			new_event = raw_event.toJSON()
@@ -35,24 +37,43 @@ class EventInterface(MongoDBInterface):
 			new_event = raw_event
 		# before adding, find if any event can be merged
 		condition = {'region':new_event['region']}
-		old_events = self.getAllDocuments(condition).sort('created_time', 1)
+#		condition = {'lat':new_event['lat'], 'lng':new_event['lng']}
+		old_events = self.getAllDocuments(condition).sort('created_time', -1)
 		for old_event in old_events:
-			old_time = unicodeToInt(old_event['created_time'])
-			new_time = unicodeToInt(new_event['created_time'])
-			if new_time < old_time:
-				raise Exception('wrong event when merge')
-			if old_time + InstagramConfig.merge_time_interval >=  new_time:
+			end_time1 = int(new_event['photos'][0]['created_time'])
+			begin_time1 = int(new_event['photos'][-1]['created_time'])
+			end_time2 = int(old_event['photos'][0]['created_time'])
+			begin_time2 = int(old_event['photos'][-1]['created_time'])
+			time_interval = InstagramConfig.merge_time_interval
+			if end_time1 <= begin_time2 + time_interval and end_time2 <= begin_time1 + time_interval:
 				# if can merge
-				old_event = Event(old_event)
-				new_event = Event(new_event)
-				merged = old_event.mergeWith(new_event)
-				print '%d out of %d photos are merged into an old event' % (merged, len(new_event['photos']))
-				self.updateDocument(old_event)
-			else:
-				# cannot merge
-				print 'create a new event'
-				self.saveDocument(new_event)
-			return
+				merged_event = Event(old_event)
+				merged = merged_event.mergeWith(new_event)
+				if merged >= 0:
+					print '%d out of %d photos are merged into an old event' % (merged, len(new_event['photos']))
+#					print old_event['_id'], new_event['_id']
+				if merged > 0:
+					self.updateDocument(merged_event)
+				return
+		# cannot merge
+		print 'create a new event'
+		super(EventInterface, self).saveDocument(new_event)
+		
+			
+if __name__=='__main__':
+	ei = EventInterface()
+	ei.setDB('test')
+	ei.setCollection('test_event')
+	
+	ei2 = EventInterface()
+	ei2.setDB('historic_alarm')
+	ei2.setCollection('labeled_event')
+	
+	events = ei2.getAllDocuments().sort('created_time', -1)
+	for event in events:
+		del event['_id']
+		ei.addEvent(event)
+	
 			
 #def getPhotoFromInstagram(cnt):
 #	# only for test
