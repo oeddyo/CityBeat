@@ -7,6 +7,7 @@ from caption_parser import CaptionParser
 import operator
 import string
 import types
+import random
 import math
 import nltk
 
@@ -39,33 +40,35 @@ class EventFeature(Event):
 				caption_parser.insertCaption(caption)
 		return caption_parser.getTopWords(k)
 	
-	def extractFeatures(self):
+	def extractFeatures(self, entropy_para):
 		avg_cap_len = self.getAvgCaptionLen()
 		avg_photo_dis = self.getAvgPhotoDis()
 		cap_num = self.getCaptionNumber()
 		photo_num = self.getPhotoNumber()
 		stop_word_per = self.getPercentageOfStopwordsFromTopWords()
 		std = self.getPredictedStd()
-		mu = self.getPredictedMu()
+#		mu = self.getPredictedMu()
 		top_word_pop = self.getTopWordPopularity()
 		zscore = self.getZscore()
-		entropy = self.getEntropy(5,5)
+		entropy = self.getEntropy(entropy_para)
 		
 		label = self.getLabel()
 		
 		return [avg_cap_len, avg_photo_dis, cap_num, photo_num, stop_word_per,
-		        std, mu, top_word_pop, zscore, entropy, label]
-	
-	def GenerateArffFileHeader(self):
+		        std, top_word_pop, zscore, entropy, label]
+		        
+	@staticmethod
+	def GenerateArffFileHeader():
 		print '@relation CityBeatEvents'
-		print '@attribute zscore real'
-		print '@attribute std real'
-		print '@attribute numberOfPhotos real'
-		print '@attribute closenessOfGeolocation real'
-		print '@attribute avgLenOfAllCaptions real'
-		print '@attribute numberOfPhotosWithCaption real'
-		print '@attribute TopWordsPopularity real'
-		print '@attribute percentageOfStopWords real'
+		print '@attribute AvgCaptionLen real'
+		print '@attribute AvgPhotoDis real'
+		print '@attribute CaptionNumber real'
+		print '@attribute PhotoNumber real'
+		print '@attribute PercentageOfStopwordsFromTopWords real'
+		print '@attribute PredictedStd real'
+		print '@attribute TopWordPopularity real'
+		print '@attribute Zscore real'
+		print '@attribute Entropy real'
 		print '@attribute label {1,-1}'
 		print '@data'
 		
@@ -140,17 +143,17 @@ class EventFeature(Event):
 		return 1.0 * cnt / min(k, top_words)
 	
 	def getPredictedStd(self):
-		return self._event['predicted_std']
+		return float(self._event['predicted_std'])
 		
 	def getPredictedMu(self):
-		return self._event['predicted_mu']
+		return float(self._event['predicted_mu'])
 		
-	def getEntropy(self, n, m):
+	def getEntropy(self, n):
 		# devide the region into n*m grids to compute the entropy
 		# p(i) = # of photos in that grid, to the total number of grids
 		photo_number = self.getPhotoNumber()
 		region = Region(self._event['region'])
-		subregions = region.divideRegion(n,m)
+		subregions = region.divideRegions(n, n)
 		
 		cnt = {}
 		for subregion in subregions:
@@ -167,6 +170,16 @@ class EventFeature(Event):
 					if flag == True:
 						raise Exception('bad data')
 					flag = True
+		# h(x) = sum(p(x)*log(p(x))
+		h = 0
+		for region, num in cnt.items():
+			if num == 0:
+				continue
+			p = 1.0 * num / photo_number
+			h += - math.log(p)/math.log(2)*p
+		return h
+			
+			
 # lat = 0.004494
 # lng = 0.006839
 
@@ -178,22 +191,57 @@ class EventFeature(Event):
 #   40.795482,-73.9931535,14
 
 
-40.782,-73.9794755,52
-40.782,-73.9726365
-40.782,-73.9657975
-40.782,-73.9521195
-40.782,-73.9452805,51
+#40.782,-73.9794755,52
+#40.782,-73.9726365
+#40.782,-73.9657975
+#40.782,-73.9521195
+#40.782,-73.9452805,51
 
 #		40.799976,-73.9931535,14
 #   40.80447,-73.9931535,14
 					
 		
 if __name__=='__main__':
-	ei = EventInterface()
-	ei.setDB('alarm_filter')
-	ei.setCollection('photos')
 	
-	candidate_events = ei.getAllDocuments()
-	for ce in candidate_events:
-		event = EventFeature(ce)
-		print event.extractFeatures()
+	ei = EventInterface()
+	ei.setDB('historic_alarm')
+	ei.setCollection('labeled_event')
+	events = ei.getAllDocuments()
+	
+	EventFeature.GenerateArffFileHeader()
+	true_events = []
+	false_events = []
+	for event in events:
+		event = EventFeature(event)
+		feature_vector = event.extractFeatures(4)
+		if feature_vector[-1] == 1:
+			feature_vector.append(feature_vector)
+		else:
+			false_events.append(feature_vector)
+	
+	random.shuffle(false_events)
+			
+	for fv in true_events:
+		for i in xrange(0, len(fv) - 1):
+			print fv[i],',',
+		print fv[-1]
+		
+	j = 0
+	for fv in false_events:
+		for i in xrange(0, len(fv) - 1):
+			print fv[i],',',
+		print fv[-1]
+		j += 1
+		if j == len(true_events):
+			break
+	
+#	d_lat = 0.00341734
+#	d_lng = 0.00341212
+#	events = ei.getAllDocuments()
+#	
+#	for event in events:
+#		lat = float(event['lat'])
+#		lng = float(event['lng'])
+#		region = Region([lat-d_lat, lng-d_lng, lat+d_lat, lng+d_lng])
+#		event['region'] = region.toJSON()
+#		ei.updateDocument(event)

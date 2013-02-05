@@ -75,7 +75,7 @@ class Alarm():
         zscore = (self.current_value - mu)*1.0/std
 
 
-        if zscore > 3:
+        if zscore > 2:
             e = Event()
             e.setPredictedValues(mu, std)
             e.setZscore(zscore)
@@ -89,9 +89,12 @@ class Alarm():
         
             ei = EventInterface( )
             ei.setCollection('candidate_event_10by10')
-            print e.getFirstPhotoTime(),e.getLastPhotoTime()
+            print e.getEarliestPhotoTime(),e.getLatestPhotoTime()
             #print e.toJSON()['region']
             ei.addEvent(e)
+            # modified by xia
+            return 1
+        return 0
 
 
 def run():
@@ -114,9 +117,10 @@ def run():
         alarm = Alarm(region, start_of_time, end_of_time)
         cnt = 0
         region.display()
+        xia_cnt = 0
         while alarm.nextTimeStep(300):
-            alarm.fireAlarm()
             cnt += 1
+            alarm.fireAlarm()
             if cnt%100==0:
                 print 'cur = ', time.gmtime(float(alarm.cur_time) )
                 print 'alarm = ',cnt

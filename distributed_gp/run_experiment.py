@@ -78,10 +78,10 @@ def run():
             test_region = regions[i]
             try:
                 gp = GaussianProcessJob( test_region, str(fourteen_days_ago), str(clock) , redis_queue)
+                res, pred_time = gp.submit()
             except Exception as e:
                 print 'Initialization of gp error. continue'
                 continue
-            res, pred_time = gp.submit()
             _results[gp.getID()] = (test_region, res, pred_time)
             _saved[ gp.getID() ] = False
         save_to_mongo(_results, _saved, cur_utc_timestamp) 

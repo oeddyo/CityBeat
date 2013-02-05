@@ -86,8 +86,7 @@ class Event(object):
 			new_photo_list.append(photo_list2[l2])
 			l2 += 1
 			merged += 1
-		
-		self._event['photos'] = new_photo_list
+			
 		return merged
 				
 	def setRegion(self, region):
