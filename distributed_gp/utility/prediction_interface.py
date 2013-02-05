@@ -15,6 +15,7 @@ class PredictionInterface(MongoDBInterface):
 		self.setCollection(collection)
 		
 	def getMostRecentPrediction(self, region):
+		# THIS METHOD MUST BE UPDATED WHEN PUT INTO PRACTICE
 		# TODO: within one hour
 		# region should an instance of the class Region defined in region.py
 		if not type(region) is types.DictType:
@@ -30,12 +31,20 @@ class PredictionInterface(MongoDBInterface):
 		if not type(region) is types.DictType:
 			region = region.toJSON()
 		utc_time = str(utc_time)
-		predictions = self.getAllDocuments({'region':region, 'time':{'$gte':utc_time}}).sort('time', 1)
+		condition = ({'region.min_lat':region['min_lat'],
+			            'region.min_lng':region['min_lng'],
+			            'region.max_lat':region['max_lat'],
+			            'region.max_lng':region['max_lng']})
+		condition['time'] = {'$gte':str(utc_time)}
+		predictions = self.getAllDocuments(condition).sort('time', 1)
 		for prediction in predictions:
 			# only need to judge the first one
-			if int(prediction['time']) - 3600 <= int(utc_time):
+			prediction_end_time = int(prediction['time'])
+			prediction_begin_time = prediction_end_time - 3600
+			cur_time = int(utc_time)
+			if cur_time <=  prediction_end_time and prediction_begin_time <= cur_time:
 				return prediction
-			return None
+#			return None
 		return None
 
 if __name__=="__main__":

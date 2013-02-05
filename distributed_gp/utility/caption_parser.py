@@ -1,3 +1,5 @@
+import operator
+
 class CaptionParser:
 	
 	def __init__(self):

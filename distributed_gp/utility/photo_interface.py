@@ -39,7 +39,7 @@ class PhotoInterface(MongoDBInterface):
 		
 		#returns a cursor
 		#sort the photo in chronologically decreasing order
-		return self.getAllDocuments(conditions).sort('created_time', 1)
+		return self.getAllDocuments(conditions).sort('created_time', -1)
 	
 	def _computeBoundaryOfPhotos(self):
 		cnt = 0

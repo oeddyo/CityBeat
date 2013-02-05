@@ -34,8 +34,8 @@ class Prediction:
 	
 	def setPredictedValues(self, mu, std):
 		# std must be the standard deviation, instead of variance
-		self._prediction['mu'] = mu
-		self._prediction['std'] = std
+		self._prediction['mu'] = float(mu)
+		self._prediction['std'] = float(std)
 		
 	def toJSON(self):
 		return self._prediction

@@ -28,6 +28,9 @@ class EventInterface(MongoDBInterface):
 		#rewrite the method
 		self.addEvent(raw_event)
 	
+	def addEventWithoutMerge(self, raw_event):
+		super(EventInterface, self).saveDocument(raw_event)
+	
 	def addEvent(self, raw_event):
 		# do not call the method saveDocument, instead, call this method
 		# add an event to the db. raw_event can either be a json or an instance of Event 
@@ -41,9 +44,10 @@ class EventInterface(MongoDBInterface):
 		# before adding, find if any event can be merged
 		region = new_event['region']
 		condition = ({'region.min_lat':region['min_lat'],
-		              'region.min_lng':region['min_lng'],
-		              'region.max_lat':region['max_lat'],
-		              'region.max_lng':region['max_lng']})	
+			            'region.min_lng':region['min_lng'],
+			            'region.max_lat':region['max_lat'],
+			            'region.max_lng':region['max_lng']})
+#		condition = {'region.' + k:v for k,v in region.items()}
 		old_events = self.getAllDocuments(condition).sort('created_time', -1)
 #		print 'condition1:', condition
 #		print 'results1:', 

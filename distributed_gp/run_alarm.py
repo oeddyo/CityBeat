@@ -67,7 +67,13 @@ class Alarm():
     
     def fireAlarm(self):
         prediction = self.getNearestPrediction()
+        
         self._getFiftenMiniutesPhotos()
+        if prediction is None:
+            print 'None data for this region: details as follow'
+            self.region.display()
+            print 'time:' ,self.cur_time
+            return 
         mu = float(prediction['mu'])/4.0
         std = float(prediction['std'])/4.0
         time_stamp = prediction['time']
@@ -75,7 +81,7 @@ class Alarm():
         zscore = (self.current_value - mu)*1.0/std
 
 
-        if zscore > 2:
+        if zscore > 3:
             e = Event()
             e.setPredictedValues(mu, std)
             e.setZscore(zscore)
@@ -91,10 +97,9 @@ class Alarm():
             ei.setCollection('candidate_event_10by10')
             print e.getEarliestPhotoTime(),e.getLatestPhotoTime()
             #print e.toJSON()['region']
-            ei.addEvent(e)
+            #ei.addEvent(e)
+            ei.addEventWithoutMerge(e)
             # modified by xia
-            return 1
-        return 0
 
 
 def run():
@@ -111,6 +116,7 @@ def run():
 
     regions = filtered_regions
     test_cnt = 0
+    print 'all regions',len(regions)
     for region in regions:
         start_of_time =  1354320000
         end_of_time = 1354320000 + 30*24*3600
