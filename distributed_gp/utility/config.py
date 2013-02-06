@@ -10,9 +10,9 @@ class InstagramConfig:
 	photo_db = 'citybeat'
 	photo_collection = 'photos_no_duplicate'
 	event_db = 'citybeat'
-	event_collection = 'candidate_event'
+	event_collection = 'candidate_event_10by10'
 	prediction_db = 'citybeat'
-	prediction_collection = 'prediction_25by25'
+	prediction_collection = 'prediction_10by10'
 	# in seconds
 	merge_time_interval = 900
 	

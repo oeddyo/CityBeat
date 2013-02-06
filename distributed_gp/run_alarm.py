@@ -111,7 +111,9 @@ def run():
     huge_region = Region(coordinates)
     
     regions = huge_region.divideRegions(10,10)
-    filtered_regions = huge_region.filterRegions( regions, test = True , n=10, m=10)
+    #filtered_regions = huge_region.filterRegions( regions, test = True , n=10, m=10)
+    filtered_regions = huge_region.filterRegions( regions )
+    
     # get the same regions as in db. Here it's 10 by 10
 
     regions = filtered_regions
@@ -119,7 +121,7 @@ def run():
     print 'all regions',len(regions)
     for region in regions:
         start_of_time =  1354320000
-        end_of_time = 1354320000 + 30*24*3600
+        end_of_time = 1354320000 + 7*24*3600
         alarm = Alarm(region, start_of_time, end_of_time)
         cnt = 0
         region.display()

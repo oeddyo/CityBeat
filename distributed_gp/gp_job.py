@@ -63,7 +63,7 @@ class GaussianProcessJob():
         ts = self.ts
         index = ts.index
         if(len(index) < 3 ):
-            raise Exception("Too few data points")
+            raise Exception("Only %d data points"%(len(index)))
         start_date = ts.index[0]
         #notice here start_time is datetime object
 
@@ -89,6 +89,7 @@ class GaussianProcessJob():
             converted_align.append( calendar.timegm(next_date.utctimetuple()) ) 
 
         return training, testing, align, converted_align
+    
     def getID(self):
         return self._id
 
@@ -100,81 +101,10 @@ class GaussianProcessJob():
         training, testing, align, converted = self._dataPrepare()
 
         result = self.q.enqueue_call( Predict,args = ( training,testing, self._id,), timeout=86400, result_ttl=-1)
-        #print 'training'
-        #print training
-        #print 'testing'
-        #print zip(testing, align, converted)
-        #for tup in zip(result, converted):
-        #    return_value.append( tup[0], str(tup[1]) )
+        print 'training '
+        print self.ts.index
+        print align
+        print converted
 
         return result, converted
 
-
-
-
-from utility.prediction_interface import PredictionInterface
-from utility.prediction import Prediction
-from utility.tool import getCurrentStampUTC
-
-def test():
-    coordinates = [InstagramConfig.photo_min_lat,
-            InstagramConfig.photo_min_lng,
-            InstagramConfig.photo_max_lat,
-            InstagramConfig.photo_max_lng
-                 ]
-    huge_region = Region(coordinates)
-    
-    regions = huge_region.divideRegions(25,25)
-    filtered_regions = huge_region.filterRegions( regions )
-
-    regions = filtered_regions
-    print 'after filter ',len(regions)
-
-    
-    cur_utc_timestamp = getCurrentStampUTC()
-    results = []
-
-    for i in range(10):
-        test_region = regions[i]
-        gp = GaussianProcessJob(test_region, "1358273815",  "1359483415" )
-        
-        
-        #try:
-        res, pred_time = gp.submit( )
-        results.append( (test_region, res, pred_time) )
-        #except Exception as e:
-        #    print 'Too few data, continue'
-        #    continue
-    
-    save_results = [None]*len(results)
-    gp_timeout = 1800
-    done = False
-    while not done:
-        time.sleep(3)
-        done = True
-        time_dif = getCurrentStampUTC() - cur_utc_timestamp
-        if time_dif > gp_timeout:
-            print 'Timeout'
-            break
-        for result_pair in results:
-            if result_pair[1].return_value is None:
-                done = False
-            else:
-                result_idx = results.index(result_pair)
-                if save_results[result_idx] == None:
-                    save_results[ result_idx ] = (result_pair[0], result_pair[1].return_value, result_pair[2])
-                    #save to mongo
-                    to_save = save_results[result_idx]
-                    region = to_save[0]
-                    print 'to_save'
-                    for single_hour_prediction in zip(to_save[1], to_save[2]):
-                        p = Prediction()
-                        p.setRegion(region)
-                        p.setModelUpdateTime(cur_utc_timestamp)
-                        p.setPredictedValues( single_hour_prediction[0][0],single_hour_prediction[0][1])
-                        p.setTime( str(single_hour_prediction[1]) )
-                        p_json = p.toJSON()
-                        save_interface = PredictionInterface()
-                        save_interface.saveDocument( p_json )
-                            
-#test()

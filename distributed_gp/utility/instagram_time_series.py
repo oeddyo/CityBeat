@@ -30,7 +30,8 @@ class InstagramTimeSeries(TimeSeries):
     def __init__(self, region, start_timestamp, end_timestamp, freq = '1h'):
         super(InstagramTimeSeries, self).__init__(region,
                 start_timestamp, end_timestamp, freq)
-
+        self.start_timestamp = start_timestamp
+        self.end_timestamp = end_timestamp
     def buildTimeSeries(self, count_people = True, avoid_flooding = True):
         """Return a pandas Series object
         
@@ -52,11 +53,15 @@ class InstagramTimeSeries(TimeSeries):
             photo_cnt += 1
             if photo_cnt%10000==0:
                 print photo_cnt
-        data= sorted(data, key = lambda x:x['created_time'])
+        data = sorted(data, key = lambda x:x['created_time'])
         
         user_last_upload = {}   #for a single user, when is his last upload
         counts = []
         dates = []
+
+        counts.append(1)    # VERY IMPORTANT. FIX THE SIZE OF TIMESERIES IN PANDAS
+        dates.append( datetime.utcfromtimestamp(float(self.start_timestamp)) )  
+
         for photo_json in data:
             user = photo_json['user']['username']
             utc_date = datetime.utcfromtimestamp(float(photo_json['created_time']))
@@ -74,7 +79,9 @@ class InstagramTimeSeries(TimeSeries):
                 dates.append(utc_date)
                 counts.append(1)
         
-        
+        counts.append(1)        # VERY IMPORTANT, FIX THE SIZE OF TIMESERIES IN PANDAS
+        dates.append( datetime.utcfromtimestamp(float(self.end_timestamp) - 1) )
+
         self.series = Series(counts, index = dates)
         try:
             self.series = self.series.resample(self.freq, how='sum', label='right')

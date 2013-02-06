@@ -45,6 +45,7 @@ def save_to_mongo(_results, _saved, model_update_time):
                     save_interface.saveDocument( p_json )
     return done
 
+
 def run():
     coordinates = [InstagramConfig.photo_min_lat,
             InstagramConfig.photo_min_lng,
@@ -53,9 +54,13 @@ def run():
                  ]
     huge_region = Region(coordinates)
     
-    regions = huge_region.divideRegions(25,25)
+    regions = huge_region.divideRegions(10,10)
     filtered_regions = huge_region.filterRegions( regions )
     regions = filtered_regions
+
+    for r in regions:
+        r.display()
+    return 
 
     cur_utc_timestamp = getCurrentStampUTC() 
     #experiment start time - Dec 1 00:00
@@ -75,12 +80,13 @@ def run():
         fourteen_days_ago = clock - 14*24*3600
 
         for i in range(len(regions)):
+        #for i in range(1):
             test_region = regions[i]
             try:
                 gp = GaussianProcessJob( test_region, str(fourteen_days_ago), str(clock) , redis_queue)
                 res, pred_time = gp.submit()
             except Exception as e:
-                print 'Initialization of gp error. continue'
+                print 'Initialization of gp error. continue, error message %s'%(e)
                 continue
             _results[gp.getID()] = (test_region, res, pred_time)
             _saved[ gp.getID() ] = False
