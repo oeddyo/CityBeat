@@ -47,4 +47,23 @@ class PredictionInterface(MongoDBInterface):
 		return None
 
 if __name__=="__main__":
-	pass
+	pi = PredictionInterface()
+	pi.setCollection('prediction_25by25')
+	
+	region = {
+		"min_lat" : 40.72766796,
+		"max_lng" : -73.99410076,
+		"min_lng" : -74.00210704,
+		"max_lat" : 40.73297324
+	}
+	
+	condition = ({'region.min_lat':region['min_lat'],
+		          'region.min_lng':region['min_lng'],
+		          'region.max_lat':region['max_lat'],
+		          'region.max_lng':region['max_lng']})
+
+predictions = pi.getAllDocuments(condition).sort('time', 1)
+for prediction in predictions:
+	t = int(prediction['time'])
+	print getDate(t)
+	

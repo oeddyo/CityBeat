@@ -180,10 +180,6 @@ class EventFeature(Event):
 			p = 1.0 * num / photo_number
 			h += - math.log(p)/math.log(2)*p
 		return h
-	
-	def getTopKeywords(self, k=3, stopword_removal=True):
-		# this method will return topwords without stopwords
-		return self._getTopWords(k, stopword_removal)
 			
 			
 # lat = 0.004494
@@ -252,3 +248,5 @@ if __name__=='__main__':
 #		region = Region([lat-d_lat, lng-d_lng, lat+d_lat, lng+d_lng])
 #		event['region'] = region.toJSON()
 #		ei.updateDocument(event)
+
+# top 10
