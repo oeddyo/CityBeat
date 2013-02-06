@@ -3,7 +3,7 @@
 
 import cherrypy
 import foursquare
-import config
+#import config
 import json
 import time
 
