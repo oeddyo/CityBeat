@@ -2,17 +2,23 @@ import time
 import csv
 import sys
 
-from utility.prediction_interface import PredictionInterface
-from utility.region import Region
+import pymongo
+from pymongo import Connection
+from pymongo.database import Database
 
-pi = PredictionInterface(    )
-pi.setDB('citybeat')
-pi.setCollection('prediction_10by10')
 
-region = Region([
-    40.7303206,-73.9981039,40.743583799999996,-73.9780882
-    ]
-    )
-print pi.getNearestPrediction(region, "1355313600")
+connection = Connection( 'grande')
+db = Database(connection, "citybeat")
+
+
+id = set()
+for photo in db.photos.find():
+    if int(photo['created_time']) > 1354320000:
+        continue
+    if photo['id'] in id:
+        continue
+    id.add(photo['id'])
+    print "%s,%s,%s,%s,%s,%s,%s"%(photo['location']['latitude'],photo['location']['longitude'],photo['user']['username'],photo['user']['id'],photo['filter'],photo['link'],photo['images']['standard_resolution']['url'])
+
 
 

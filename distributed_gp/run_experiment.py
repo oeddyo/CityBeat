@@ -54,7 +54,7 @@ def run():
                  ]
     huge_region = Region(coordinates)
     
-    regions = huge_region.divideRegions(25,25)
+    regions = huge_region.divideRegions(20,20)
     filtered_regions = huge_region.filterRegions( regions )
     regions = filtered_regions
 

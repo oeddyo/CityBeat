@@ -4,7 +4,8 @@ import sys
 import os
 from subprocess import call
 
-path = '/grad/users/kx19/CityBeat/distributed_gp/tmp/'
+#path = '/grad/users/kx19/CityBeat/distributed_gp/tmp/'
+path = '/grad/users/kx19/gaussian_process_tmp/'
 
 def LoadFromCSV(fileName):
     reader = csv.reader(open(fileName))
