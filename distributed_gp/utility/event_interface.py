@@ -9,6 +9,7 @@ from mongodb_interface import MongoDBInterface
 from event import Event
 from config import InstagramConfig
 from datetime import datetime
+from bson.objectid import ObjectId
 
 import config
 import time
@@ -27,6 +28,10 @@ class EventInterface(MongoDBInterface):
 	def saveDocument(self, raw_event):
 		#rewrite the method
 		self.addEvent(raw_event)
+		
+	def getEventByID(self, ID):
+		return self.getDocument({'_id':ObjectId(str(ID))})
+		
 	
 	def addEventWithoutMerge(self, raw_event):
 		super(EventInterface, self).saveDocument(raw_event)
@@ -85,18 +90,11 @@ class EventInterface(MongoDBInterface):
 		
 			
 if __name__=='__main__':
+	
 	ei = EventInterface()
-	ei.setDB('test')
-	ei.setCollection('test_event')
-	
-	ei2 = EventInterface()
-	ei2.setDB('historic_alarm')
-	ei2.setCollection('labeled_event')
-	
-	events = ei2.getAllDocuments().sort('created_time', -1)
-	for event in events:
-		del event['_id']
-		ei.addEvent(event)
+	ei.setDB('historic_alarm')
+	ei.setCollection('labeled_event')
+	print ei.getEventByID('5100c1fec2a3754648f03b60')['created_time']
 	
 			
 #def getPhotoFromInstagram(cnt):

@@ -54,13 +54,12 @@ def run():
                  ]
     huge_region = Region(coordinates)
     
-    regions = huge_region.divideRegions(10,10)
+    regions = huge_region.divideRegions(15,15)
     filtered_regions = huge_region.filterRegions( regions )
     regions = filtered_regions
 
     for r in regions:
         r.display()
-    return 
 
     cur_utc_timestamp = getCurrentStampUTC() 
     #experiment start time - Dec 1 00:00
