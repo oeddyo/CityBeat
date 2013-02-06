@@ -15,25 +15,49 @@ from utility.event import Event
 
 class Root:
     def __init__(self):
-        self.ei = EventInterface('candidate_event_10by10_merged')
+        self.ei = EventInterface()
+        self.ei.setCollection('candidate_event_10by10_merged')
         pass
-    
     def getAllEvents(self):
-        events = ei.getAllDocuments()
-        return events
+        event_cursor = self.ei.getAllDocuments()
+        events = []
+        limit = 30
+        for e in event_cursor:
+            limit -=1
+            if e['label'] == 'unlabeled':
+                e['label'] = 0
+            e['_id'] = str(e['_id'])
+            events.append( e )
+            if limit==0:
+                break
+        return json.dumps(events)
     getAllEvents.exposed = True 
     
+    def getEventByID(self, event_id):
+        event_cursor = self.ei.getAllDocuments()
+        events = []
+        for e in event_cursor:
+            if e['label'] == 'unlabeled':
+                e['label'] = 0
+            e['_id'] = str(e['_id'])
+            events.append( e )
+            return json.dumps(e)
+        #event = self.ei.getEventByID(event_id)
+        #return json.dumps(event)
+        #print event
+    getEventByID.exposed = True
     def getTopKeywords(self, event_id):
-        event = ei.getEventByID(event_id)
+        event = self.ei.getEventByID(event_id)
         # call compute keywords component here
-        return [('nyc',1),('ahahah',2)]
+        return json.dumps([('nyc',1),('ahahah',2)])
     getTopKeywords.exposed = True
 
     def setLabel(self, event_id, label):
         label = str(label)
-        event = ei.getEventByID(event_id)
+        event = self.ei.getEventByID(event_id)
         event.setLabel(int(label))
-        ei.updateDocument(event)
+        self.ei.updateDocument(event)
+    setLabel.exposed = True
 
 global_conf = {
         'global':{'server.environment': 'production',
