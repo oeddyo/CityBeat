@@ -31,8 +31,8 @@ class EventFeature(Event):
 			n += 1		
 		return lat/n, lng/n
 		
-	def _getTopWords(self, k=1):
-		caption_parser = CaptionParser()
+	def _getTopWords(self, k=1, stopword_removal=False):
+		caption_parser = CaptionParser(stopword_removal=stopword_removal)
 		for photo in self._event['photos']:
 			p = Photo(photo)
 			caption = p.getCaption()
@@ -181,8 +181,9 @@ class EventFeature(Event):
 			h += - math.log(p)/math.log(2)*p
 		return h
 	
-	def getTopKeywords(self, k=3):
-		return self._getTopWords(k)
+	def getTopKeywords(self, k=3, stopword_removal=True):
+		# this method will return topwords without stopwords
+		return self._getTopWords(k, stopword_removal)
 			
 			
 # lat = 0.004494

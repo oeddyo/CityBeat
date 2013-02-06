@@ -1,19 +1,26 @@
+from stopwords import Stopwords
+
 import operator
+
 
 class CaptionParser:
 	
-	def __init__(self):
+	def __init__(self, stopword_removal):
 		self._word_dict = {}
 		self._document_number = 0  # number of documents accumulated
+		self._stopword_removal = stopword_removal
 	
 	def getTopWords(self, k):
 		if len(self._word_dict) == 0:
 			return []
+		new_top_words = []
 		top_words = sorted(self._word_dict.iteritems(), key=operator.itemgetter(1), reverse=True)
 		for i in xrange(0, len(top_words)):
 			tmp_tuple = (top_words[i][0], 1.0*top_words[i][1] / self._document_number)
-			top_words[i] = tmp_tuple
-		return top_words[0:min(k, len(top_words))]
+			if self._stopword_removal and top_words[i][0] in Stopwords.stopwords():
+				continue
+			new_top_words.append(tmp_tuple)
+		return new_top_words[0:min(k, len(new_top_words))]
 	
 	def insertCaption(self, cap):
 		if cap is None or len(cap) == 0:
