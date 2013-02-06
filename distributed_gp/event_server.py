@@ -15,15 +15,20 @@ from utility.event import Event
 
 class Root:
     def __init__(self):
-        self.ei = EventInterface('candidate_event_10by10')
+        self.ei = EventInterface('candidate_event_10by10_merged')
         pass
     
     def getAllEvents(self):
         events = ei.getAllDocuments()
         print events[0]
+    getAllEvents.exposed = True 
+    
+    def setLabel(self, id, label):
+        label = str(label)
+        event = ei.getEventByID(id)
+        event.setLabel(int(label))
+        ei.updateDocument(event)
 
-
-    get_foursquare_heatmap.exposed = True
 
 global_conf = {
         'global':{'server.environment': 'production',
