@@ -72,8 +72,8 @@ class EventInterface(MongoDBInterface):
 			end_time2 = int(old_event['photos'][0]['created_time'])
 			begin_time2 = int(old_event['photos'][-1]['created_time'])
 			time_interval = InstagramConfig.merge_time_interval
-			print 'new: ',end_time1,begin_time1
-			print 'old: ',end_time2,begin_time2
+#			print 'new: ',end_time1,begin_time1
+#			print 'old: ',end_time2,begin_time2
 			if end_time1 + time_interval >= begin_time2 and end_time2 + time_interval >= begin_time1:
 				# if can merge
 				merged_event = Event(old_event)

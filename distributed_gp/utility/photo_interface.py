@@ -66,5 +66,7 @@ class PhotoInterface(MongoDBInterface):
 
 
 if __name__=="__main__":
+	pi = PhotoInterface()
+	pi.rangeQuery()
 	pass
 	  

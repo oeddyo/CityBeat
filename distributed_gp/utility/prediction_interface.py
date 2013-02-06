@@ -38,7 +38,6 @@ class PredictionInterface(MongoDBInterface):
 		condition['time'] = {'$gte':str(utc_time)}
 		predictions = self.getAllDocuments(condition).sort('time', 1)
 		for prediction in predictions:
-			# only need to judge the first one
 			prediction_end_time = int(prediction['time'])
 			prediction_begin_time = prediction_end_time - 3600
 			cur_time = int(utc_time)

@@ -52,8 +52,10 @@ class Event(object):
 		if type(event) is types.DictType:
 			event = Event(event)
 		event = event.toJSON()
+		
 		photo_list1 = self._event['photos'] 
 		photo_list2 = event['photos']
+		
 		new_photo_list = []
 		l1 = 0
 		l2 = 0
@@ -88,6 +90,21 @@ class Event(object):
 			merged += 1
 		
 		self._event['photos'] = new_photo_list
+		
+		# do not change the order of the following code
+		num_photos1 = len(photo_list1)
+		num_photos2 = len(photo_list2)
+		zscore1 = float(self._event['zscore'])
+		zscore2 = float(event['zscore'])
+		std1 = float(self._event['predicted_std'])
+		std2 = float(event['predicted_std'])
+		new_std = (std1 * num_photos1 + std2 * num_photos2) / (num_photos1 + num_photos2)
+		new_zscore = (zscore1 * num_photos1 + zscore2 * num_photos2) / (num_photos1 + num_photos2)
+		self.setZscore(new_zscore)
+		self.setActualValue(len(new_photo_list))
+		new_mu = self._event['actual_value'] - new_zscore * new_std
+		self.setPredictedValues(new_mu, new_std)
+		
 		return merged
 				
 	def setRegion(self, region):

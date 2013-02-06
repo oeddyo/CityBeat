@@ -14,7 +14,7 @@ class InstagramConfig:
 	prediction_db = 'citybeat'
 	prediction_collection = 'prediction_15by15'
 	# in seconds
-	merge_time_interval = 900
+	merge_time_interval = 1
 	
 	zscore = 3
 	min_phots = 8
