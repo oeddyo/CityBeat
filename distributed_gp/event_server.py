@@ -20,15 +20,20 @@ class Root:
     
     def getAllEvents(self):
         events = ei.getAllDocuments()
-        print events[0]
+        return events
     getAllEvents.exposed = True 
     
-    def setLabel(self, id, label):
+    def getTopKeywords(self, event_id):
+        event = ei.getEventByID(event_id)
+        # call compute keywords component here
+        return [('nyc',1),('ahahah',2)]
+    getTopKeywords.exposed = True
+
+    def setLabel(self, event_id, label):
         label = str(label)
-        event = ei.getEventByID(id)
+        event = ei.getEventByID(event_id)
         event.setLabel(int(label))
         ei.updateDocument(event)
-
 
 global_conf = {
         'global':{'server.environment': 'production',
