@@ -47,11 +47,19 @@ class MongoDBInterface(object):
 		if not type(document) is types.DictType:
 			document = document.toJSON()
 		self._collection.update({'_id':document['_id']}, document, True)
+			
+	def getAllDocumentIDs(self):
+		# 333
+		IDs = []
+		query_res = self._collection.find({},{'_id':1})
+		for ID in query_res:
+			IDs.append(ID['_id'])
+		return IDs
 
 
 if __name__=='__main__':
 	mi = MongoDBInterface()
-	mi.setDB('test')
-	mi.setCollection('test_collection')
-	mi.saveDocument({'name':'test_fuck'})
-	mi.saveDocument([1,2,3])
+	mi.setDB('historic_alarm')
+	mi.setCollection('labeled_event')
+	print mi.getAllDocumentIDs()
+	
