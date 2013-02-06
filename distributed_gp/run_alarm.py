@@ -40,7 +40,7 @@ class Alarm():
     def getNearestPrediction(self):
         pi = PredictionInterface()
         pi.setDB('citybeat')
-        pi.setCollection('prediction_10by10')
+        pi.setCollection('prediction_15by15')
         return pi.getNearestPrediction(self.region, str(self.cur_time))
 
     def _getFiftenMiniutesPhotos(self):
@@ -94,7 +94,7 @@ class Alarm():
             #print 'current value ',4.0*self.current_value, ' predict = ',mu*4.0,' std = ',std*4.0
         
             ei = EventInterface( )
-            ei.setCollection('candidate_event_10by10')
+            ei.setCollection('candidate_event_15by15')
             print e.getEarliestPhotoTime(),e.getLatestPhotoTime()
             #print e.toJSON()['region']
             #ei.addEvent(e)
@@ -110,9 +110,10 @@ def run():
                  ]
     huge_region = Region(coordinates)
     
-    regions = huge_region.divideRegions(10,10)
+    regions = huge_region.divideRegions(15,15)
+    filtered_regions = huge_region.filterRegions( regions)
     #filtered_regions = huge_region.filterRegions( regions, test = True , n=10, m=10)
-    filtered_regions = huge_region.filterRegions( regions )
+    #filtered_regions = huge_region.filterRegions( regions , test = True, n = 15, m = 15)
     
     # get the same regions as in db. Here it's 10 by 10
 

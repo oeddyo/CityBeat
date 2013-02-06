@@ -3,13 +3,13 @@ from photo import Photo
 from region import Region
 from event import Event
 from caption_parser import CaptionParser
+from stopwords import Stopwords
 
 import operator
 import string
 import types
 import random
 import math
-import nltk
 
 class EventFeature(Event):
 	# this class is the extension of class Event, especially for feature extraction
@@ -52,10 +52,11 @@ class EventFeature(Event):
 		zscore = self.getZscore()
 		entropy = self.getEntropy(entropy_para)
 		
-		label = self.getLabel()
+		label = int(self.getLabel())
+		event_id = str(self._event['_id'])
 		
 		return [avg_cap_len, avg_photo_dis, cap_num, photo_num, stop_word_per,
-		        std, top_word_pop, zscore, entropy, label]
+		        std, top_word_pop, zscore, entropy, event_id, label]
 		        
 	@staticmethod
 	def GenerateArffFileHeader():
@@ -69,6 +70,7 @@ class EventFeature(Event):
 		print '@attribute TopWordPopularity real'
 		print '@attribute Zscore real'
 		print '@attribute Entropy real'
+		print '@attribute event_id string'
 		print '@attribute label {1,-1}'
 		print '@data'
 		
@@ -132,7 +134,7 @@ class EventFeature(Event):
 	def getPercentageOfStopwordsFromTopWords(self, k=10):
 		# compute the percentage of stopwords in all k-top words
 		top_words = self._getTopWords(k)
-		stopwords = nltk.corpus.stopwords.words('english') 
+		stopwords = Stopwords.stopwords() 
 		cnt = 0
 		for top_word in top_words:
 			if top_word[0] in stopwords:
@@ -178,6 +180,9 @@ class EventFeature(Event):
 			p = 1.0 * num / photo_number
 			h += - math.log(p)/math.log(2)*p
 		return h
+	
+	def getTopKeywords(self, k=3):
+		return self._getTopWords(k)
 			
 			
 # lat = 0.004494
@@ -213,11 +218,12 @@ if __name__=='__main__':
 	false_events = []
 	for event in events:
 		event = EventFeature(event)
-		feature_vector = event.extractFeatures(4)
+		feature_vector = event.extractFeatures(3)
 		if feature_vector[-1] == 1:
-			feature_vector.append(feature_vector)
+			true_events.append(feature_vector)
 		else:
 			false_events.append(feature_vector)
+
 	
 	random.shuffle(false_events)
 			
