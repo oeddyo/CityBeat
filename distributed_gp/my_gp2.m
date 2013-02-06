@@ -32,7 +32,7 @@ best_hyp_cov = [];
 
 for i = 1:20
     hyp.cov = log(rand(11,1)*20);
-    [hyp,fX,i] = minimize(hyp, @gp, -150, @infExact, [], covfunc, @likGauss, x, y-mean(y));
+    [hyp,fX,i] = minimize(hyp, @gp, -350, @infExact, [], covfunc, @likGauss, x, y-mean(y));
     nlml2 = gp(hyp,@infExact, [], covfunc, @likGauss, x,y-mean(y));
     if nlml2<nlml
         nlml = nlml2;
