@@ -8,9 +8,10 @@ import operator
 
 class Corpus(object):
 	
-	def __init__(self):
+	def __init__(self, leastDF=5):
 		self._corpus_df = {}
 		self._corpus_n = 0
+		self._leastDF = leastDF
 		
 	def _addDocument(self, word_list):
 		for word, value in word_list:
@@ -39,13 +40,15 @@ class Corpus(object):
 			
 	def chooseTopWordWithHighestTDIDF(self, word_list, k=10):
 		# word_list is a list of (word, freq)
+		new_word_list = []
 		for i in xrange(0, len(word_list)):
 			word = word_list[i][0]
 			tf = word_list[i][1]
-			tfidf = tf * math.log(self._corpus_n * 1.0 / self._corpus_df[word])
-			word_list[i]= (word, tfidf)
-		word_list.sort(key=operator.itemgetter(1), reverse=True)
-		return word_list[0:min(k, len(word_list))]
+			if self._corpus_df[word] >= self._leastDF:
+				tfidf = tf * math.log(self._corpus_n * 1.0 / self._corpus_df[word])
+				new_word_list.append((word, tfidf))
+		new_word_list.sort(key=operator.itemgetter(1), reverse=True)
+		return new_word_list[0:min(k, len(new_word_list))]
 			
 	
 if __name__ == '__main__':
