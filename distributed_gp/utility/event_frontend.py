@@ -5,6 +5,7 @@ from region import Region
 from event import Event
 from caption_parser import CaptionParser
 from stopwords import Stopwords
+from corpus import Corpus
 
 import operator
 import string
@@ -15,8 +16,9 @@ import math
 class EventFrontend(EventFeature):
 	# this class is only for providing data to jerry's front end
 	
-	def __init__(self, event):
+	def __init__(self, event, corpus):
 		super(EventFrontend, self).__init__(event)
+		self._corpus = corpus
 				
 	def _getTopKeywordsWithoutStopwords(self, k):
 		# this method will return topwords without stopwords
@@ -36,12 +38,23 @@ class EventFrontend(EventFeature):
 	def getTopKeywordsAndPhotos(self, num_keywords, num_photos):
 		keywords = self._getTopKeywordsWithoutStopwords(num_keywords)
 		return self._getRandomPhotosAssociatedWithKeywords(keywords, num_photos)
+	
+	def getTopKeywordsAndPhotosByTFIDF(self, num_keywords, num_photos):
+		keywords = self._getTopKeywordsWithoutStopwords(100000)
+		keywords = self._corpus.chooseTopWordWithHighestTDIDF(keywords, num_keywords)
+		return self._getRandomPhotosAssociatedWithKeywords(keywords, num_photos)
 			
 if __name__=='__main__':
 	
+	collection = 'candidate_event_10by10_merged'
+	
+	c = Corpus()
+	c.buildCorpusOnDB('citybeat', collection)
+	
 	ei = EventInterface()
-	ei.setDB('historic_alarm')
-	ei.setCollection('labeled_event')
-	event = ei.getDocument()
-	event = EventFrontend(event)
-	print event.getTopKeywordsAndPhotos(3,3)
+	ei.setDB('citybeat')
+	ei.setCollection(collection)
+	events = ei.getAllDocuments()
+	for event in events:
+		event = EventFrontend(event, c)
+		print event.getTopKeywordsAndPhotosByTFIDF(10,0)

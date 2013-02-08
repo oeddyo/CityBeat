@@ -10,13 +10,18 @@ class CaptionParser:
 		self._document_number = 0  # number of documents accumulated
 		self._stopword_removal = stopword_removal
 	
-	def getTopWords(self, k):
+	def getTopWords(self, k, percentage=True):
+		# if not percentage, it returns the number of photos containing that word.
 		if len(self._word_dict) == 0:
 			return []
 		new_top_words = []
 		top_words = sorted(self._word_dict.iteritems(), key=operator.itemgetter(1), reverse=True)
 		for i in xrange(0, len(top_words)):
-			tmp_tuple = (top_words[i][0], 1.0*top_words[i][1] / self._document_number)
+			if percentage:
+				value = 1.0*top_words[i][1] / self._document_number
+			else:
+				value = top_words[i][1]
+			tmp_tuple = (top_words[i][0], value)
 			new_top_words.append(tmp_tuple)
 		return new_top_words[0:min(k, len(new_top_words))]
 	
