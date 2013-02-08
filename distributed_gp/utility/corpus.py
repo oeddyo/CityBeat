@@ -10,6 +10,7 @@ class Corpus(object):
 	
 	def __init__(self):
 		self._corpus_df = {}
+		self._corpus_n = 0
 		
 	def _addDocument(self, word_list):
 		for word, value in word_list:
@@ -17,6 +18,7 @@ class Corpus(object):
 				self._corpus_df[word] += 1
 			else:
 				self._corpus_df[word] = 1
+		self._corpus_n += 1
 	
 	def getWordList(self, event):
 		# word_list is a list of (word, freq)
@@ -40,7 +42,7 @@ class Corpus(object):
 		for i in xrange(0, len(word_list)):
 			word = word_list[i][0]
 			tf = word_list[i][1]
-			tfidf = - tf * math.log(self._corpus_df[word] + 1)
+			tfidf = tf * math.log(self._corpus_n * 1.0 / self._corpus_df[word])
 			word_list[i]= (word, tfidf)
 		word_list.sort(key=operator.itemgetter(1), reverse=True)
 		return word_list[0:min(k, len(word_list))]
