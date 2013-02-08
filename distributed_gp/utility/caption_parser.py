@@ -17,8 +17,6 @@ class CaptionParser:
 		top_words = sorted(self._word_dict.iteritems(), key=operator.itemgetter(1), reverse=True)
 		for i in xrange(0, len(top_words)):
 			tmp_tuple = (top_words[i][0], 1.0*top_words[i][1] / self._document_number)
-			if self._stopword_removal and top_words[i][0] in Stopwords.stopwords():
-				continue
 			new_top_words.append(tmp_tuple)
 		return new_top_words[0:min(k, len(new_top_words))]
 	
@@ -34,21 +32,38 @@ class CaptionParser:
 				self._word_dict[word] = 1
 	
 	def _preprocessCaption(self, cap):
-		tmp_dict = {}
-		words = cap.lower().split(' ')
-		for word in words:
-			new_word = self._extractWord(word)
-			if len(new_word) == 0:
+		new_cap = ''
+		pre_is_cap = False
+		for c in cap:
+			if c.isupper():
+				if not pre_is_cap:
+					new_cap += ' '
+				new_cap += c.lower()
+				pre_is_cap = True
 				continue
-			if new_word in tmp_dict.keys():
-				tmp_dict[new_word] = tmp_dict[new_word] + 1
+
+			if c.islower():
+				new_cap += c
 			else:
-				tmp_dict[new_word] = 1
+				new_cap += ' '
+			pre_is_cap = False
+			 
+		words = new_cap.split()
+		stopword_list = Stopwords.stopwords()
+		tmp_dict = {} 
+		
+		for word in words:
+			word = word.strip()
+			if self._stopword_removal and word in stopword_list:
+				continue
+			if word in tmp_dict.keys():
+				tmp_dict[word] = tmp_dict[word] + 1
+			else:
+				tmp_dict[word] = 1
 		return tmp_dict
-	
-	def _extractWord(self, word):
-		new_word = ''
-		for c in word:
-			if c>='a' and c<='z':
-				new_word = new_word + c
-		return new_word
+		
+if __name__ == '__main__':
+	cp = CaptionParser(True)
+	cap1 = '@ToutFuckYou  ###noGood   GOD love  bad  guys. ! I hate you.'
+	cap2 = '@ToutFuckYou  ###badminton   GOD love  bad  guys. ! I hate you.'
+	print cp._preprocessCaption(cap2)

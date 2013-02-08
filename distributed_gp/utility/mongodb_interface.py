@@ -49,7 +49,7 @@ class MongoDBInterface(object):
 		self._collection.update({'_id':document['_id']}, document, True)
 			
 	def getAllDocumentIDs(self):
-		# 333
+		# return a list of _id which is ObjectId
 		IDs = []
 		query_res = self._collection.find({},{'_id':1})
 		for ID in query_res:

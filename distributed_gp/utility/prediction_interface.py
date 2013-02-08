@@ -61,9 +61,8 @@ if __name__=="__main__":
 		          'region.min_lng':region['min_lng'],
 		          'region.max_lat':region['max_lat'],
 		          'region.max_lng':region['max_lng']})
-
-predictions = pi.getAllDocuments(condition).sort('time', 1)
-for prediction in predictions:
-	t = int(prediction['time'])
-	print getDate(t)
+	predictions = pi.getAllDocuments(condition).sort('time', 1)
+	for prediction in predictions:
+		t = int(prediction['time'])
+		print getDate(t)
 	

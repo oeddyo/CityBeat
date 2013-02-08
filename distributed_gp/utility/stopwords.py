@@ -1,7 +1,8 @@
 class Stopwords:
 	@staticmethod
 	def stopwords():
-		return ['i', 'me', 'my', 'myself', 'we', 'our', 'ours',
+		self_defined = ['nyc', 'ny', 'new', 'york']
+		nltk_list = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours',
 											 'ourselves', 'you', 'your', 'yours', 'yourself',
 								 			 'yourselves', 'he', 'him', 'his', 'himself', 
 								 'she', 'her', 'hers', 'herself', 'it', 'its', 
@@ -22,4 +23,5 @@ class Stopwords:
 								 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 
 								 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', 
 								 'should', 'now']
+		return self_defined + nltk_list
 		

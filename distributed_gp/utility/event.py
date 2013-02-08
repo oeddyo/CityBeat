@@ -30,6 +30,12 @@ class Event(object):
 	
 	def getLabel(self):
 		return self._event['label']
+		
+	def getActualValueByCounting(self):
+		user_ids = set()
+		for photo in self._event['photos']:
+			user_ids.add(int(photo['user']['id']))
+		return len(user_ids)
 	
 	def getRegion(self):
 		return self._event['region']
@@ -102,19 +108,20 @@ class Event(object):
 			merged += 1
 		
 		self._event['photos'] = new_photo_list
+		# update actual value
+		self.setActualValue(self.getActualValueByCounting())
 		
 		# do not change the order of the following code
-		num_photos1 = len(photo_list1)
-		num_photos2 = len(photo_list2)
+		actual_value_1 = self._event['actual_value']
+		actual_value_2  = event['actual_value']
 		zscore1 = float(self._event['zscore'])
 		zscore2 = float(event['zscore'])
 		std1 = float(self._event['predicted_std'])
 		std2 = float(event['predicted_std'])
-		new_std = (std1 * num_photos1 + std2 * num_photos2) / (num_photos1 + num_photos2)
-		new_zscore = (zscore1 * num_photos1 + zscore2 * num_photos2) / (num_photos1 + num_photos2)
+		new_std = (std1 * actual_value_1 + std2 * actual_value_2) / (actual_value_1 + actual_value_2)
+		new_zscore = (zscore1 * actual_value_1 + zscore2 * actual_value_2) / (actual_value_1 + actual_value_2)
 		self.setZscore(new_zscore)
-		self.setActualValue(len(new_photo_list))
-		new_mu = self._event['actual_value'] - new_zscore * new_std
+		new_mu = actual_value_1 - new_zscore * new_std
 		self.setPredictedValues(new_mu, new_std)
 		
 		return merged

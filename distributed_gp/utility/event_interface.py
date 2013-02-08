@@ -31,7 +31,6 @@ class EventInterface(MongoDBInterface):
 		
 	def getEventByID(self, ID):
 		return self.getDocument({'_id':ObjectId(str(ID))})
-		
 	
 	def addEventWithoutMerge(self, raw_event):
 		super(EventInterface, self).saveDocument(raw_event)

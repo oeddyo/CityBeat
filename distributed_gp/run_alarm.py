@@ -31,16 +31,21 @@ from utility.event import Event
 
 
 
+
+
+
 class Alarm():
-    def __init__(self, region, start_time, end_of_time):
+    def __init__(self, region, start_time, end_of_time, prediction_collection, candidate_collection):
         self.cur_time = int(start_time)
         self.end_of_time = int(end_of_time)
         self.region = region
+        self.prediction_collection = prediction_collection
+        self.candidate_collection = candidate_collection
 
     def getNearestPrediction(self):
         pi = PredictionInterface()
         pi.setDB('citybeat')
-        pi.setCollection('prediction_15by15')
+        pi.setCollection(self.prediction_collection)
         return pi.getNearestPrediction(self.region, str(self.cur_time))
 
     def _getFiftenMiniutesPhotos(self):
@@ -94,7 +99,7 @@ class Alarm():
             #print 'current value ',4.0*self.current_value, ' predict = ',mu*4.0,' std = ',std*4.0
         
             ei = EventInterface( )
-            ei.setCollection('candidate_event_15by15')
+            ei.setCollection(self.candidate_collection)
             print e.getEarliestPhotoTime(),e.getLatestPhotoTime()
             #print e.toJSON()['region']
             #ei.addEvent(e)
@@ -110,11 +115,10 @@ def run():
                  ]
     huge_region = Region(coordinates)
     
-    regions = huge_region.divideRegions(15,15)
+    alarm_region_size = 25
+
+    regions = huge_region.divideRegions(alarm_region_size,alarm_region_size)
     filtered_regions = huge_region.filterRegions( regions)
-    #filtered_regions = huge_region.filterRegions( regions, test = True , n=10, m=10)
-    #filtered_regions = huge_region.filterRegions( regions , test = True, n = 15, m = 15)
-    
     # get the same regions as in db. Here it's 10 by 10
 
     regions = filtered_regions
@@ -123,7 +127,7 @@ def run():
     for region in regions:
         start_of_time =  1354320000
         end_of_time = 1354320000 + 7*24*3600
-        alarm = Alarm(region, start_of_time, end_of_time)
+        alarm = Alarm(region, start_of_time, end_of_time, 'prediction_25by25', 'candidate_event_25by25')
         cnt = 0
         region.display()
         xia_cnt = 0

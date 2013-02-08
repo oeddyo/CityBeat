@@ -13,14 +13,14 @@ def getDate(utc_time):
 	return repr(datetime.fromtimestamp(int(utc_time)))
 
 ei = EventInterface()
-ei.setCollection('candidate_event_15by15')
+ei.setCollection('candidate_event_25by25')
 
 ei2 = EventInterface()
-ei2.setCollection('candidate_event_15by15_merged')
+ei2.setCollection('candidate_event_25by25_merged')
 
 events = ei.getAllDocuments().sort('created_time', 1)
 for event in events:
-	if len(event['photos']) >= 10:
+	if event['actual_value']  >= 8 and event['zscore'] >= 3.0:
 		ei2.addEvent(event)
 
 
