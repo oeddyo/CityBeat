@@ -1,4 +1,5 @@
 from event_interface import EventInterface
+from photo_interface import PhotoInterface
 from photo import Photo
 from region import Region
 from event import Event
@@ -43,33 +44,55 @@ class EventFeature(Event):
 	def extractFeatures(self, entropy_para):
 		avg_cap_len = self.getAvgCaptionLen()
 		avg_photo_dis = self.getAvgPhotoDis()
-		cap_num = self.getCaptionNumber()
-		photo_num = self.getPhotoNumber()
+		cap_per = self.getCaptionPercentage()
+		people_num = self.getActualValue()
 		stop_word_per = self.getPercentageOfStopwordsFromTopWords()
 		std = self.getPredictedStd()
-#		mu = self.getPredictedMu()
 		top_word_pop = self.getTopWordPopularity()
 		zscore = self.getZscore()
 		entropy = self.getEntropy(entropy_para)
+		ratio = self.getRatioOfPeopleToPhoto()
 		
 		label = int(self.getLabel())
 		event_id = str(self._event['_id'])
 		
-		return [avg_cap_len, avg_photo_dis, cap_num, photo_num, stop_word_per,
-		        std, top_word_pop, zscore, entropy, event_id, label]
+		
+		historic_features = self.getHistoricFeatures(entropy_para)
+		diff_avg_photo_dis = avg_photo_dis - historic_features[0]
+		diff_top_word_pop = top_word_pop - historic_features[1]
+		diff_entropy = entropy - historic_features[2]
+		diff_avg_cap_len = avg_cap_len - historic_features[3]
+		diff_ratio = ratio - historic_features[4]
+		
+#				return [event.getAvgPhotoDis(), event.getTopWordPopularity(),
+#		        event.getEntropy(entropy_para),
+#		        event.getAvgCaptionLen(), event.getRatioOfPeopleToPhoto()]
+		
+		return [avg_cap_len, avg_photo_dis, cap_per, people_num, stop_word_per,
+		        std, top_word_pop, zscore, entropy, ratio,
+		        diff_avg_photo_dis, diff_top_word_pop, diff_entropy, diff_avg_cap_len,
+		        diff_ratio,
+		        event_id, label]
 		        
 	@staticmethod
 	def GenerateArffFileHeader():
 		print '@relation CityBeatEvents'
 		print '@attribute AvgCaptionLen real'
 		print '@attribute AvgPhotoDis real'
-		print '@attribute CaptionNumber real'
-		print '@attribute PhotoNumber real'
+		print '@attribute CaptionPercentage real'
+		print '@attribute PeopleNumber real'
 		print '@attribute PercentageOfStopwordsFromTopWords real'
 		print '@attribute PredictedStd real'
 		print '@attribute TopWordPopularity real'
 		print '@attribute Zscore real'
 		print '@attribute Entropy real'
+		print '@attribute TheRatioOfPeopleToPhoto real'
+		print '@attribute diff_AvgPhotoDis real'
+		print '@attribute diff_TopWordPopularity real'
+		print '@attribute diff_Entropy real'
+		print '@attribute diff_AvgCaptionLen real'
+		print '@attribute diff_TheRatioOfPeopleToPhoto real'
+												
 		print '@attribute event_id string'
 		print '@attribute label {1,-1}'
 		print '@data'
@@ -113,7 +136,7 @@ class EventFeature(Event):
 		else:
 			return 1.0 * cap_lens / cap_number
 	
-	def getCaptionNumber(self):
+	def getCaptionPercentage(self):
 		cap_number = 0
 		photos = self._event['photos']
 		for photo in photos:
@@ -121,19 +144,19 @@ class EventFeature(Event):
 			cap_len = len(photo.getCaption())
 			if cap_len > 0:
 				cap_number += 1
-		return cap_number
+		return cap_number * 1.0 / len(photos)
 		
-	def getTopWordPopularity(self, k=2):
+	def getTopWordPopularity(self, k=1):
 		# compute the average popularity of k-top words
-		top_words = self._getTopWords(k)
+		top_words = self._getTopWords(k, True)
 		avg_pop = 0
 		for top_word in top_words:
 			avg_pop += top_word[1]
 		return avg_pop / min(k, len(top_words))
 		
-	def getPercentageOfStopwordsFromTopWords(self, k=10):
+	def getPercentageOfStopwordsFromTopWords(self, k=5):
 		# compute the percentage of stopwords in all k-top words
-		top_words = self._getTopWords(k)
+		top_words = self._getTopWords(k, False)
 		stopwords = Stopwords.stopwords() 
 		cnt = 0
 		for top_word in top_words:
@@ -181,30 +204,45 @@ class EventFeature(Event):
 			h += - math.log(p)/math.log(2)*p
 		return h
 			
-			
-# lat = 0.004494
-# lng = 0.006839
-
-#   40.701108,-73.9931535,54
-#   40.705602,-73.9931535,55
-#   40.777506,-73.9931535,55
-#   40.782,-73.9931535,15
-#   40.786494,-73.9931535,15
-#   40.795482,-73.9931535,14
-
-
-#40.782,-73.9794755,52
-#40.782,-73.9726365
-#40.782,-73.9657975
-#40.782,-73.9521195
-#40.782,-73.9452805,51
-
-#		40.799976,-73.9931535,14
-#   40.80447,-73.9931535,14
-					
+	def getRatioOfPeopleToPhoto(self):
+		return 1.0 * self.getActualValue() / len(self._event['photos'])
 		
-if __name__=='__main__':
-	
+	def getHistoricFeatures(self, entropy_para):
+		# this method computes the features that capture the difference between current
+		# event and background knowledge
+		
+		end_time = self.getLatestPhotoTime()
+		begin_time = self.getEarliestPhotoTime()
+		
+		pi = PhotoInterface()
+		pi.setDB('citybeat')
+		pi.setCollection('photos')
+		
+		photos = []
+		for day in xrange(1,15):
+			# here 15 is hard coded because we use 14 days' data as the training
+			et = end_time - day * 24 * 3600
+			bt = begin_time - day * 24 * 3600
+			day_photos = pi.rangeQuery(self._event['region'], [str(bt), str(et)])
+			for photo in day_photos:
+				# since rangeQuery sorts the photos from the most current to the most early
+				# thus all the photos in the List "photos" are sorted by their created time from 
+				# the most current to the most early
+				photos.append(photo)
+		
+		event = Event()
+		event.setPhotos(photos)
+		event.setRegion(self._event['region'])
+		event.setActualValue(event.getActualValueByCounting())
+		event = EventFeature(event)
+		
+		return [event.getAvgPhotoDis(), event.getTopWordPopularity(),
+		        event.getEntropy(entropy_para),
+		        event.getAvgCaptionLen(), event.getRatioOfPeopleToPhoto()]
+		
+		
+
+def generateData(biased=True):
 	ei = EventInterface()
 	ei.setDB('historic_alarm')
 	ei.setCollection('labeled_event')
@@ -235,18 +273,14 @@ if __name__=='__main__':
 			print fv[i],',',
 		print fv[-1]
 		j += 1
-		if j == len(true_events):
+		if not biased and j == len(true_events):
 			break
-	
-#	d_lat = 0.00341734
-#	d_lng = 0.00341212
-#	events = ei.getAllDocuments()
-#	
-#	for event in events:
-#		lat = float(event['lat'])
-#		lng = float(event['lng'])
-#		region = Region([lat-d_lat, lng-d_lng, lat+d_lat, lng+d_lng])
-#		event['region'] = region.toJSON()
-#		ei.updateDocument(event)
 
-# top 10
+if __name__=='__main__':
+	generateData(False)
+#	ei = EventInterface()
+#	ei.setDB('historic_alarm')
+#	ei.setCollection('labeled_event')
+#	event = ei.getDocument()
+#	e = EventFeature(event)
+#	e.getHistoricFeatures()

@@ -44,6 +44,8 @@ class Corpus(object):
 		for i in xrange(0, len(word_list)):
 			word = word_list[i][0]
 			tf = word_list[i][1]
+			# note that the corpus must be consistent with the events
+			# that means, we cannot use the corpus built from 15by15 for 10by10
 			if self._corpus_df[word] >= self._leastDF:
 				tfidf = tf * math.log(self._corpus_n * 1.0 / self._corpus_df[word])
 				new_word_list.append((word, tfidf))

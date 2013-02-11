@@ -16,6 +16,9 @@ class Photo:
 		lat = float(self._photo['location']['latitude'])
 		lon = float(self._photo['location']['longitude'])
 		return [lat, lon]
+	
+	def getUserName(self):
+		return self._photo['user']['username']
 		
 	def getCaption(self):
 		if self._photo['caption'] is None:

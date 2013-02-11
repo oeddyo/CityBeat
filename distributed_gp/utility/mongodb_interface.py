@@ -39,10 +39,10 @@ class MongoDBInterface(object):
 		
 	def getAllDocuments(self, condition=None):
 		if not condition is None:
-			return self._collection.find(condition)
+			return self._collection.find(condition, timeout=False)
 		else:
-			return self._collection.find()
-	
+			return self._collection.find(timeout=False)
+		
 	def updateDocument(self, document):
 		if not type(document) is types.DictType:
 			document = document.toJSON()

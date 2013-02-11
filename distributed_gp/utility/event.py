@@ -31,6 +31,9 @@ class Event(object):
 	def getLabel(self):
 		return self._event['label']
 		
+	def getActualValue(self):
+		return self._event['actual_value']
+	
 	def getActualValueByCounting(self):
 		user_ids = set()
 		for photo in self._event['photos']:
@@ -39,6 +42,32 @@ class Event(object):
 	
 	def getRegion(self):
 		return self._event['region']
+		
+	def removeDuplicatePhotos(self):
+		# this method is not good, just for tempory use
+		# by judging if the caption is duplicate
+		new_photos = []
+		num_duplicate = 0
+		for photo in self._event['photos']:
+			p = Photo(photo)
+			is_duplicate = False
+			cap1 = p.getCaption()
+			user1 = p.getUserName()
+			for new_photo in new_photos:
+				p2 = Photo(new_photo)
+				cap2 = p2.getCaption()
+				user2 = p2.getUserName()
+				if user1 == user2 and (len(cap1)>0 and cap1 == cap2):
+					is_duplicate = True
+					num_duplicate += 1
+					break
+			if not is_duplicate:
+				new_photos.append(photo)
+				
+		if num_duplicate > 0:
+			self._event['photos'] = new_photos
+			
+		return num_duplicate
 		
 	def getPhotosbyKeyword(self, word):
 		# return a list of photos containg the word

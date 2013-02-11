@@ -13,21 +13,16 @@ import types
 import random
 import math
 
-pi = PhotoInterface()
-pi.setDB('citybeat')
-pi.setCollection('photos')
+ei = EventInterface()
+ei.setDB('AmazonMT')
+ei.setCollection('candidate_event_25by25_merged')
 
-photos = pi.getAllDocuments()
+events = ei.getAllDocuments()
 
-n_cap = 0
-cap_len = 0
-
-for photo in photos:
-	p = Photo(photo)
-	l_cap = len(p.getCaption())
-	if l_cap > 0:
-		n_cap += 1
-		cap_len += l_cap
-
-print n_cap
-print cap_len
+duplicates = 0
+for event in events:
+	e = Event(event)
+	flag = e.removeDuplicatePhotos()
+	if flag > 0:
+		print e.getPhotoNumber(), e.getActualValue()
+		ei.updateDocument(e)
