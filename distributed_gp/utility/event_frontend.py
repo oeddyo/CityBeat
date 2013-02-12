@@ -32,6 +32,10 @@ class EventFrontend(EventFeature):
 			photos = self.getPhotosbyKeyword(word)
 			random.shuffle(photos)
 			k = min(len(photos), k)
+			for i in xrange(0, k):
+				p = Photo(photos[i])
+				p.__delUnrelatedFields()
+				photos[i] = p.toJSON()
 			# discard the keywords with only one photo
 #			if k == 1:
 #				break

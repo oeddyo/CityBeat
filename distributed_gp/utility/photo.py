@@ -50,4 +50,19 @@ class Photo:
 		if id1 < id2:
 			return -1
 		return 0
-		
+	
+	def __delUnrelatedFields(self):
+		# this method is only used for frontend
+#		['caption']['from']
+#['comments']
+#['filter']
+#['user']
+#['images']['low_resolution']
+#['images']['standard_resolution']
+		if self._photo['caption'] is not None:
+			del self._photo['caption']['from']
+		del self._photo['filter']
+		del self._photo['user']
+		if self._photo['images'] is not None:
+			del self._photo['images']['low_resolution']
+			del self._photo['images']['standard_resolution']
