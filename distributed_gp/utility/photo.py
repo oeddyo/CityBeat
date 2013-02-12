@@ -51,7 +51,7 @@ class Photo:
 			return -1
 		return 0
 	
-	def __delUnrelatedFields(self):
+	def _delUnrelatedFields(self):
 		# this method is only used for frontend
 #		['caption']['from']
 #['comments']
