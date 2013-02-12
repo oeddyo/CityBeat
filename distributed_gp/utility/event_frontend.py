@@ -34,7 +34,7 @@ class EventFrontend(EventFeature):
 			k = min(len(photos), k)
 			for i in xrange(0, k):
 				p = Photo(photos[i])
-				p.__delUnrelatedFields()
+				p._delUnrelatedFields()
 				photos[i] = p.toJSON()
 			# discard the keywords with only one photo
 #			if k == 1:
