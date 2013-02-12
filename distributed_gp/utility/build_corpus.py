@@ -20,8 +20,9 @@ if __name__ == '__main__':
 		if i % 1000 == 0:
 #			print cp.getTopWords(200)
 			print i
+			print len(cp._)
 		cp.insertCaption(caption['caption'])
-	
+
 	for word, value in cp.getTopWords(300):
 		print '\''+word+'\',',
 	print
