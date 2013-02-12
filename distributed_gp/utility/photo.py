@@ -54,9 +54,25 @@ class Photo:
 	def _delUnrelatedFields(self):
 		try:
 			del self._photo['caption']['from']
+		except Exception as e:
+			pass
+		
+		try:
 			del self._photo['filter']
+		except Exception as e:
+			pass
+		
+		try:
 			del self._photo['user']
+		except Exception as e:
+			pass
+		
+		try:
 			del self._photo['images']['low_resolution']
+		except Exception as e:
+			pass
+		
+		try:
 			del self._photo['images']['standard_resolution']
 		except Exception as e:
 			pass
