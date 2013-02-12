@@ -60,9 +60,14 @@ class Photo:
 #['images']['low_resolution']
 #['images']['standard_resolution']
 		if self._photo['caption'] is not None:
-			del self._photo['caption']['from']
-		del self._photo['filter']
-		del self._photo['user']
+			if self._photo['caption']['from'] is not None:
+				del self._photo['caption']['from']
+		if self._photo['filter'] is not None:
+			del self._photo['filter']
+		if self._photo['user'] is not None:
+			del self._photo['user']
 		if self._photo['images'] is not None:
-			del self._photo['images']['low_resolution']
-			del self._photo['images']['standard_resolution']
+			if self._photo['images']['low_resolution'] is not None:
+				del self._photo['images']['low_resolution']
+			if self._photo['images']['standard_resolution'] is not None:
+				del self._photo['images']['standard_resolution']
