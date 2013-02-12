@@ -33,8 +33,8 @@ class EventFrontend(EventFeature):
 			random.shuffle(photos)
 			k = min(len(photos), k)
 			# discard the keywords with only one photo
-			if k == 1:
-				break
+#			if k == 1:
+#				break
 			res.append([word, fre, photos[0:k]])
 		return res
 	

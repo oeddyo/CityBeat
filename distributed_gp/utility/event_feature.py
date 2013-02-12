@@ -60,7 +60,8 @@ class EventFeature(Event):
 		historic_features = self.getHistoricFeatures(entropy_para)
 		diff_avg_photo_dis = avg_photo_dis - historic_features[0]
 		diff_top_word_pop = top_word_pop - historic_features[1]
-		diff_entropy = entropy - historic_features[2]
+#		diff_entropy = entropy - historic_features[2]
+		diff_entropy = historic_features[2]
 		diff_avg_cap_len = avg_cap_len - historic_features[3]
 		diff_ratio = ratio - historic_features[4]
 		
@@ -70,8 +71,8 @@ class EventFeature(Event):
 		
 		return [avg_cap_len, avg_photo_dis, cap_per, people_num, stop_word_per,
 		        std, top_word_pop, zscore, entropy, ratio,
-		        diff_avg_photo_dis, diff_top_word_pop, diff_entropy, diff_avg_cap_len,
-		        diff_ratio,
+		        diff_avg_photo_dis, diff_top_word_pop, diff_entropy,
+		        diff_avg_cap_len, diff_ratio,
 		        event_id, label]
 		        
 	@staticmethod
@@ -173,31 +174,40 @@ class EventFeature(Event):
 	def getPredictedMu(self):
 		return float(self._event['predicted_mu'])
 		
-	def getEntropy(self, n):
+	def _getEntropy(self, n):
 		# devide the region into n*m grids to compute the entropy
 		# p(i) = # of photos in that grid, to the total number of grids
+		# it returns the list of subregions associated with the number photos falling into that region
 		photo_number = self.getPhotoNumber()
 		region = Region(self._event['region'])
 		subregions = region.divideRegions(n, n)
 		
-		cnt = {}
-		for subregion in subregions:
-			cnt[subregion] = 0
+		cnt = [0]*n*n
 			
 		photos = self._event['photos']
 		for photo in photos:
 			lat = photo['location']['latitude']
 			lng = photo['location']['longitude']
 			flag = False
+			i = 0
 			for subregion in subregions:
 				if subregion.insideRegion([lat, lng]):
-					cnt[subregion] += 1
+					cnt[i] += 1
 					if flag == True:
 						raise Exception('bad data')
 					flag = True
+				i += 1
+		return cnt
+		
+		
+	def getEntropy(self, n):
+		# devide the region into n*m grids to compute the entropy
+		# p(i) = # of photos in that grid, to the total number of grids
+		cnt = self._getEntropy(n)
 		# h(x) = sum(p(x)*log(p(x))
+		photo_number = self.getPhotoNumber()
 		h = 0
-		for region, num in cnt.items():
+		for num in cnt:
 			if num == 0:
 				continue
 			p = 1.0 * num / photo_number
@@ -229,6 +239,8 @@ class EventFeature(Event):
 				# thus all the photos in the List "photos" are sorted by their created time from 
 				# the most current to the most early
 				photos.append(photo)
+				
+		
 		
 		event = Event()
 		event.setPhotos(photos)
@@ -236,8 +248,17 @@ class EventFeature(Event):
 		event.setActualValue(event.getActualValueByCounting())
 		event = EventFeature(event)
 		
+		cnt1 = self._getEntropy(entropy_para)
+		cnt2 = event._getEntropy(entropy_para)
+		enrtopy_delta = 0
+		for i in xrange(entropy_para * entropy_para):
+			dx = 1.0*cnt1[i]/self.getPhotoNumber() - 1.0*cnt2[i]/event.getPhotoNumber()
+			enrtopy_delta += dx * dx
+		enrtopy_delta = math.sqrt(enrtopy_delta)
+		
 		return [event.getAvgPhotoDis(), event.getTopWordPopularity(),
-		        event.getEntropy(entropy_para),
+#		        event.getEntropy(entropy_para),
+		        enrtopy_delta,
 		        event.getAvgCaptionLen(), event.getRatioOfPeopleToPhoto()]
 		
 		
@@ -277,7 +298,7 @@ def generateData(biased=True):
 			break
 
 if __name__=='__main__':
-	generateData(False)
+	generateData()
 #	ei = EventInterface()
 #	ei.setDB('historic_alarm')
 #	ei.setCollection('labeled_event')
