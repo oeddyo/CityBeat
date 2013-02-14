@@ -21,9 +21,6 @@ class EventFeature(Event):
 	def __init__(self, event):
 		super(EventFeature, self).__init__(event)
 				
-	def getDuration(self):
-		return self.getLatestPhotoTime() - self.getEarliestPhotoTime()
-	
 	def _getPhotoAvgLocation(self):
 		photos = self._event['photos']
 		lat = 0
@@ -51,7 +48,6 @@ class EventFeature(Event):
 		avg_photo_dis = self.getAvgPhotoDis()
 		cap_per = self.getCaptionPercentage()
 		people_num = self.getActualValue()
-		duration = self.getDuration()
 #		stop_word_per = self.getPercentageOfStopwordsFromTopWords()
 		std = self.getPredictedStd()
 		top_word_pop = self.getTopWordPopularity(k_topwords)
@@ -74,7 +70,7 @@ class EventFeature(Event):
 #		        event.getEntropy(entropy_para),
 #		        event.getAvgCaptionLen(), event.getRatioOfPeopleToPhoto()]
 		
-		return [avg_cap_len, avg_photo_dis, cap_per, people_num, duration,
+		return [avg_cap_len, avg_photo_dis, cap_per, people_num, #stop_word_per,
 		        std, top_word_pop, zscore, entropy, ratio,
 		        diff_avg_photo_dis, diff_top_word_pop, diff_entropy,
 #		        diff_avg_cap_len, diff_ratio,
@@ -88,7 +84,6 @@ class EventFeature(Event):
 		print '@attribute AvgPhotoDis real'
 		print '@attribute CaptionPercentage real'
 		print '@attribute PeopleNumber real'
-		print '@attribute Duration real'
 #		print '@attribute PercentageOfStopwordsFromTopWords real'
 		print '@attribute PredictedStd real'
 		print '@attribute TopWordPopularity real'
@@ -118,10 +113,6 @@ class EventFeature(Event):
 			
 		photos = self._event['photos']
 		n = len(photos)
-		
-		if n < 2:
-			return 0.02
-			
 		avgDis = 0
 		
 		for i in xrange(0, n):
@@ -196,8 +187,8 @@ class EventFeature(Event):
 		subregions = region.divideRegions(n, n)
 		
 		# Laplacian smoothed
-		pro = [1.0]*n*n
-		s = n*n
+		pro = [1.0/n/n]*n*n
+			
 		photos = self._event['photos']
 		for photo in photos:
 			lat = photo['location']['latitude']
@@ -206,14 +197,11 @@ class EventFeature(Event):
 			i = 0
 			for subregion in subregions:
 				if subregion.insideRegion([lat, lng]):
-					pro[i] += 1.0
-					s += 1
+					pro[i] += 1.0/n/n
 					if flag == True:
 						raise Exception('bad data')
 					flag = True
 				i += 1
-		for i in xrange(0, n*n):
-			pro[i] /= s
 		return pro
 		
 		
@@ -244,7 +232,7 @@ class EventFeature(Event):
 		pi.setCollection('photos')
 		
 		photos = []
-		dt = 0
+		dt = 3600
 		for day in xrange(1,15):
 			# here 15 is hard coded because we use 14 days' data as the training
 			et = end_time - day * 24 * 3600 + dt / 2
@@ -293,7 +281,8 @@ class EventFeature(Event):
 		
 		return [event.getAvgPhotoDis(), topic_divergence,
 #		        event.getEntropy(entropy_para),
-		        entropy_divergence]
+		        entropy_divergence,
+		        event.getAvgCaptionLen(), event.getRatioOfPeopleToPhoto()]
 
 def generateData(biased=True):
 	ei = EventInterface()

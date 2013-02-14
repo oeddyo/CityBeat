@@ -13,10 +13,12 @@ def getDate(utc_time):
 	return repr(datetime.fromtimestamp(int(utc_time)))
 
 ei = EventInterface()
-ei.setCollection('candidate_event_25by25')
+ei.setDB('citybeat')
+ei.setCollection('next_week_candidate_event_25by25')
 
 ei2 = EventInterface()
-ei2.setCollection('candidate_event_25by25_merged')
+ei2.setDB('citybeat')
+ei2.setCollection('next_week_candidate_event_25by25_merged')
 
 events = ei.getAllDocuments().sort('created_time', 1)
 for event in events:

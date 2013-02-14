@@ -18,7 +18,7 @@ for photo in db.photos.find():
     if photo['id'] in id:
         continue
     id.add(photo['id'])
-    print "%s,%s,%s,%s,%s,%s,%s"%(photo['location']['latitude'],photo['location']['longitude'],photo['user']['username'],photo['user']['id'],photo['filter'],photo['link'],photo['images']['standard_resolution']['url'])
+    print "%s,%s,%s,%s,%s,%s,%s,%s"%(photo['location']['latitude'],photo['location']['longitude'],photo['user']['username'],photo['user']['id'],photo['filter'],photo['link'],photo['images']['standard_resolution']['url'], photo['created_time'])
 
 
 

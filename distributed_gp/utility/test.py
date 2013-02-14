@@ -6,6 +6,7 @@ from region import Region
 from event import Event
 from caption_parser import CaptionParser
 from stopwords import Stopwords
+from bson.objectid import ObjectId
 
 import operator
 import string
@@ -13,21 +14,16 @@ import types
 import random
 import math
 
-pi = PhotoInterface()
-pi.setDB('citybeat')
-pi.setCollection('photos')
+ei = EventInterface()
+ei.setDB('citybeat')
+ei.setCollection('candidate_event_25by25_merged')
 
-photos = pi.getAllDocuments()
+#51148f4fc2a3754cfe66a178
 
-n_cap = 0
-cap_len = 0
+event =ei.getDocument({'_id':ObjectId('51148f4fc2a3754cfe66a178')})
 
-for photo in photos:
+cp = CaptionParser(True)
+
+for photo in event['photos']:
 	p = Photo(photo)
-	l_cap = len(p.getCaption())
-	if l_cap > 0:
-		n_cap += 1
-		cap_len += l_cap
-
-print n_cap
-print cap_len
+	print p.getCaption()

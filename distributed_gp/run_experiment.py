@@ -54,7 +54,7 @@ def run():
                  ]
     huge_region = Region(coordinates)
     
-    regions = huge_region.divideRegions(20,20)
+    regions = huge_region.divideRegions(25,25)
     filtered_regions = huge_region.filterRegions( regions )
     regions = filtered_regions
 
@@ -63,8 +63,8 @@ def run():
 
     cur_utc_timestamp = getCurrentStampUTC() 
     #experiment start time - Dec 1 00:00
-    clock = 1354320000
-    end_of_time = 1354320000 + 7*24*3600 
+    clock = 1354320000  + 7*24*3600
+    end_of_time = 1354320000 + 7*24*3600  + 7*24*3600
     days_passed = 0
     _results =  {} 
     _saved = {}

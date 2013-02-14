@@ -85,7 +85,7 @@ class Event(object):
 		if 'zscore' in self._event.keys():
 			return self._event['zscore']
 		else:
-			return (float(self._event['predicted_mu']) - float(self._event['actual_value'])) / float(self._event['predicted_std'])
+			return (float(self._event['actual_value']) - float(self._event['predicted_mu'])) / float(self._event['predicted_std'])
 	
 	def sortPhotos(self):
 		# this sorting can prevent bugs when merging

@@ -125,9 +125,10 @@ def run():
     test_cnt = 0
     print 'all regions',len(regions)
     for region in regions:
-        start_of_time =  1354320000
-        end_of_time = 1354320000 + 7*24*3600
-        alarm = Alarm(region, start_of_time, end_of_time, 'prediction_25by25', 'candidate_event_25by25')
+        #delete the last 7*24*3600 to set it back to Dec 1st
+        start_of_time =  1354320000 + 7*24*3600
+        end_of_time = 1354320000 + 7*24*3600 + 7*24*3600
+        alarm = Alarm(region, start_of_time, end_of_time, 'next_week_prediction_25by25', 'next_week_candidate_event_25by25')
         cnt = 0
         region.display()
         xia_cnt = 0
