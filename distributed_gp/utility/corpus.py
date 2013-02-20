@@ -27,7 +27,7 @@ class Corpus(object):
 		for photo in event['photos']:
 			photo = Photo(photo)
 			cp.insertCaption(photo.getCaption())
-		return cp.getTopWords(100000, False)
+		return cp.getTopWords(-1, False)
 	
 	def buildCorpusOnDB(self, db, collection):
 		ei = EventInterface()

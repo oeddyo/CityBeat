@@ -5,6 +5,8 @@ from region import Region
 from event import Event
 from caption_parser import CaptionParser
 from stopwords import Stopwords
+from corpus import Corpus
+from _kl_divergence import kldiv
 
 import kl_divergence as KLDivergence
 
@@ -18,13 +20,73 @@ class EventFeature(Event):
 	# this class is the extension of class Event, especially for feature extraction
 	# to prevent the class Event from being too long to read
 	
-	def __init__(self, event):
+	def __init__(self, event, corpus=None):
 		super(EventFeature, self).__init__(event)
+		# note that, if you want to use any feature related with tfidf, corpus must be set
+		# the the definition of Corpus class in corpus.py
+		if corpus is not None:
+			self._corpus = corpus
 				
-	def getDuration(self):
-		return self.getLatestPhotoTime() - self.getEarliestPhotoTime()
+#	def getDuration(self):
+#		return self.getLatestPhotoTime() - self.getEarliestPhotoTime()
+	
+	def selectOnePhotoForOneUser(self):
+		pass
+	
+	def countHashtagsFromPhotosContainingTopKeywords(self, k=3):
+		# count the number of hashtags of photos that associated with topwords
+		# k is the number of top keywords
+		# rank top keywords by counting their frequency
+		word_photo_list = self.getTopKeywordsAndPhotos(k, 10000)
+		cnt = [0]*k
+		cnt2 = [0]*k
+		for i in xrange(0, len(word_photo_list)):
+			j = 0
+			for photo in word_photo_list[i][2]:
+				p = Photo(photo)
+				cap = p.getCaption()
+				j += 1
+				cnt[i] += cap.count('#')
+			# return the number of hashtags
+			cnt[i] = cnt[i] * 1.0 / j
+			# reteurn the number of photos
+			cnt2[i] = len(word_photo_list[i][2])
+		return [cnt, cnt2]				
+	
+	def getTopWordByTFIDF(self, k=3):
+		# rank and get the top k words by tfidf
+		word_list = self._getTopWords(-1, True)
+		word_list_tfidf = self._corpus.chooseTopWordWithHighestTDIDF(word_list, k=3)
+		freq = [0]*k
+		for i in xrange(0, len(word_list_tfidf)):
+			freq[i] = word_list_tfidf[i][1]
+		return freq
+	
+	def _getTopKeywordsWithoutStopwords(self, k):
+		# this method will return topwords without stopwords
+		return self._getTopWords(k, stopword_removal=True)
+		
+	def _getRandomPhotosAssociatedWithKeywords(self, top_keywords, k=10):
+		# get photos associated with the top_keywords
+		# k specifies the number of photos to show
+		res = []
+		for (word, fre) in top_keywords:
+			photos = self.getPhotosbyKeyword(word)
+			random.shuffle(photos)
+			k = min(len(photos), k)
+			# discard the keywords with only one photo
+#			if k == 1:
+#				break
+			res.append([word, fre, photos[0:k]])
+		return res
+	
+	def getTopKeywordsAndPhotos(self, num_keywords, num_photos):
+		# get top words and its related photos
+		keywords = self._getTopKeywordsWithoutStopwords(num_keywords)
+		return self._getRandomPhotosAssociatedWithKeywords(keywords, num_photos)
 	
 	def _getPhotoAvgLocation(self):
+		# no use
 		photos = self._event['photos']
 		lat = 0
 		lng = 0
@@ -38,6 +100,7 @@ class EventFeature(Event):
 		return lat/n, lng/n
 		
 	def _getTopWords(self, k, stopword_removal=False):
+		# get top words by counting the frequecy
 		caption_parser = CaptionParser(stopword_removal=stopword_removal)
 		for photo in self._event['photos']:
 			p = Photo(photo)
@@ -47,11 +110,13 @@ class EventFeature(Event):
 		return caption_parser.getTopWords(k)
 	
 	def extractFeatures(self, entropy_para=3, k_topwords=3):
+		# it outputs the feature vector
 		avg_cap_len = self.getAvgCaptionLen()
 		avg_photo_dis = self.getAvgPhotoDis()
+		avg_photo_dis_cap = self.getAvgPhotoDisByCaption()
 		cap_per = self.getCaptionPercentage()
 		people_num = self.getActualValue()
-		duration = self.getDuration()
+#		duration = self.getDuration()
 #		stop_word_per = self.getPercentageOfStopwordsFromTopWords()
 		std = self.getPredictedStd()
 		top_word_pop = self.getTopWordPopularity(k_topwords)
@@ -62,7 +127,14 @@ class EventFeature(Event):
 		label = int(self.getLabel())
 		event_id = str(self._event['_id'])
 		
+		tfidf_top3 = self.getTopWordByTFIDF(3)
+		res = self.countHashtagsFromPhotosContainingTopKeywords(3)
+		hashtage_cnt3 = res[0]
+		number_photos_associated_with_keywords3 = res[1]
 		
+		
+		
+#		historic_features = [0]*3  # for test only
 		historic_features = self.getHistoricFeatures(entropy_para)
 		diff_avg_photo_dis = avg_photo_dis - historic_features[0]
 		diff_top_word_pop = historic_features[1]
@@ -74,10 +146,13 @@ class EventFeature(Event):
 #		        event.getEntropy(entropy_para),
 #		        event.getAvgCaptionLen(), event.getRatioOfPeopleToPhoto()]
 		
-		return [avg_cap_len, avg_photo_dis, cap_per, people_num, duration,
+		return [avg_cap_len, avg_photo_dis, avg_photo_dis_cap, cap_per, people_num, #duration,
 		        std, top_word_pop, zscore, entropy, ratio,
 		        diff_avg_photo_dis, diff_top_word_pop, diff_entropy,
 #		        diff_avg_cap_len, diff_ratio,
+		        tfidf_top3[0], tfidf_top3[1], tfidf_top3[2], 
+		        hashtage_cnt3[0], hashtage_cnt3[1], hashtage_cnt3[2],
+		        number_photos_associated_with_keywords3[0], number_photos_associated_with_keywords3[1], number_photos_associated_with_keywords3[2],
 		        event_id,
 		        label]
 		        
@@ -86,9 +161,10 @@ class EventFeature(Event):
 		print '@relation CityBeatEvents'
 		print '@attribute AvgCaptionLen real'
 		print '@attribute AvgPhotoDis real'
+		print '@attribute AvgPhotoDisbyCap real'
 		print '@attribute CaptionPercentage real'
 		print '@attribute PeopleNumber real'
-		print '@attribute Duration real'
+#		print '@attribute Duration real'
 #		print '@attribute PercentageOfStopwordsFromTopWords real'
 		print '@attribute PredictedStd real'
 		print '@attribute TopWordPopularity real'
@@ -100,16 +176,70 @@ class EventFeature(Event):
 		print '@attribute diff_Entropy real'
 #		print '@attribute diff_AvgCaptionLen real'
 #		print '@attribute diff_TheRatioOfPeopleToPhoto real'
-												
+
+		print '@attribute tfidf1 real'	
+		print '@attribute tfidf2 real'	
+		print '@attribute tfidf3 real'
+		
+		print '@attribute NumberOfHashtages1 real'	
+		print '@attribute NumberOfHashtages2 real'	
+		print '@attribute NumberOfHashtages3 real'	
+		
+		print '@attribute NumberOfPhotsoContaingTopWord1 real'
+		print '@attribute NumberOfPhotsoContaingTopWord2 real'
+		print '@attribute NumberOfPhotsoContaingTopWord3 real'
+								
 		print '@attribute ID string'
 		print '@attribute label {1,-1}'
 		print '@data'
 		
+	def getAvgPhotoDisByCaption(self):
+		# one feauture, compute the average photo-to-photo textual distance (similarity, KL divergence) 
+		
+		def PhotoDistanceByCaption(photo1, photo2):
+			
+			p1 = Photo(photo1)
+			p2 = Photo(photo2)
+			cap1 = p1.getCaption()
+			cap2 = p2.getCaption()
+			cp1 = CaptionParser(True)
+			cp1.insertCaption(cap1)
+			cp2 = CaptionParser(True)
+			cp2.insertCaption(cap2)
+			word_list1 = cp1.getTopWords(-1)
+			word_list2 = cp2.getTopWords(-1)
+			if len(word_list1) == 0 or len(word_list2) == 0:
+				# unable to compare
+				return None
+			word_dict1 = {}
+			for word, freq in word_list1:
+				word_dict1[word] = freq
+			word_dict2 ={}
+			for word, freq in word_list2:
+				word_dict2[word] = freq
+			return kldiv(word_dict1, word_dict2)
+			
+		photos = self._event['photos']
+		n = 0
+		avgDis = 0
+		for i in xrange(0, len(photos)):
+			for j in xrange(0, len(photos)):
+				if i == j:
+					continue
+				val = PhotoDistanceByCaption(photos[i], photos[j])
+				if val is None:
+					continue
+				n += 1
+				avgDis += val
+		if n == 0:
+			return 999.999
+		return avgDis
+	
 	def getAvgPhotoDis(self):
-		# actually we get the distance between photos, instead of closeness
+		#average photo-to-photo geolocation distance
 		
 		def photoDistance(photo1, photo2):
-			# is there any precision issue?
+			# inside method, do not call
 			lat1 = float(photo1['location']['latitude'])
 			lon1 = float(photo1['location']['longitude'])
 			lat2 = float(photo2['location']['latitude'])
@@ -134,6 +264,7 @@ class EventFeature(Event):
 		return avgDis / n
 	
 	def getAvgCaptionLen(self):
+		# not a good feature
 		cap_number = 0
 		cap_lens = 0
 		photos = self._event['photos']
@@ -149,6 +280,7 @@ class EventFeature(Event):
 			return 1.0 * cap_lens / cap_number
 	
 	def getCaptionPercentage(self):
+		# not a good feature
 		cap_number = 0
 		photos = self._event['photos']
 		for photo in photos:
@@ -167,19 +299,6 @@ class EventFeature(Event):
 		for top_word in top_words:
 			avg_pop += top_word[1]
 		return avg_pop / min(k, len(top_words))
-		
-#	def getPercentageOfStopwordsFromTopWords(self, k=5):
-#		# compute the percentage of stopwords in all k-top words
-#		top_words = self._getTopWords(k, False)
-#		stopwords = Stopwords.stopwords() 
-#		cnt = 0
-#		for top_word in top_words:
-#			if top_word[0] in stopwords:
-#				cnt += 1
-#		# if no caption, output as all stopwords
-#		if len(top_words) == 0:
-#			return 1
-#		return 1.0 * cnt / min(k, top_words)
 	
 	def getPredictedStd(self):
 		return float(self._event['predicted_std'])
@@ -230,6 +349,7 @@ class EventFeature(Event):
 		return h
 			
 	def getRatioOfPeopleToPhoto(self):
+		# not a good feature
 		return 1.0 * self.getActualValue() / len(self._event['photos'])
 		
 	def getHistoricFeatures(self, entropy_para):

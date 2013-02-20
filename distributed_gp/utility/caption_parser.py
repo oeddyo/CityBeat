@@ -23,6 +23,8 @@ class CaptionParser:
 				value = top_words[i][1]
 			tmp_tuple = (top_words[i][0], value)
 			new_top_words.append(tmp_tuple)
+		if k == -1:
+			return new_top_words
 		return new_top_words[0:min(k, len(new_top_words))]
 	
 	def insertCaption(self, cap):
@@ -81,6 +83,8 @@ class CaptionParser:
 		for word in words:
 			word = word.strip()
 			if self._stopword_removal and word in stopword_list:
+				continue
+			if len(word) < 3:
 				continue
 			if word in tmp_dict.keys():
 				tmp_dict[word] = tmp_dict[word] + 1

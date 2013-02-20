@@ -1,0 +1,52 @@
+[?1049h[?1h=[1;50r[?12;25h[?12l[?25h[27m[m[H[2J[?25l[50;1H"becker_quality_control.py" 118L, 3554C[1;1H[38;5;130m  1 [m[35mfrom[m utility.event_interface [35mimport[m EventInterface
+[38;5;130m  2 [m[35mfrom[m sklearn.feature_extraction.text [35mimport[m TfidfTransformer
+[38;5;130m  3 [m[35mfrom[m sklearn.feature_extraction.text [35mimport[m TfidfVectorizer
+[38;5;130m  4 [m[35mfrom[m math [35mimport[m sqrt
+[38;5;130m  5 [m[35mfrom[m numpy [35mimport[m dot
+[38;5;130m  6 [m[35mfrom[m scipy.sparse [35mimport[m *
+[38;5;130m  7 
+  8 [m[91m#from sklearn.metrics.pairwise import euclidean_distances[m
+[38;5;130m  9 
+ 10 
+ 11 class[m [36mRepresentor[m():
+[38;5;130m 12 [m    [38;5;130mdef[m [36m__init__[m(self):
+[38;5;130m 13 [m[7C self.ei = EventInterface()
+[38;5;130m 14 [m[7C self.ei.setDB('[31mcitybeat[m')
+[38;5;130m 15 [m[7C self.ei.setCollection('[31mcandidate_event_25by25_merged[m')
+[38;5;130m 16 [m[7C self.events = [e [38;5;130mfor[m e [38;5;130min[m self.ei.getAllDocuments()]
+[38;5;130m 17 
+ 18 [m[7C self._getAllCaptions()
+[38;5;130m 19 [m[7C [38;5;130mprint[m '[31mall docs [m',len(self.docs)
+[38;5;130m 20 
+ 21 [m[7C self.vectorizer = TfidfVectorizer(norm=[103mNone[m,sublinear_tf=True, max_df=50, min_df = 2, strip_accents='[31mascii[m', smooth_idf=True)
+[38;5;130m 22 [m[7C tfidf = self.vectorizer.fit_transform(self.docs)
+[38;5;130m 23 [m[7C [38;5;130mprint[m tfidf[0]
+[38;5;130m 24 
+ 25 [m    [38;5;130mdef[m [36m_filterText[m(self, text):
+[38;5;130m 26 [m[7C [38;5;130mreturn[m text
+[38;5;130m 27 
+ 28 [m    [38;5;130mdef[m [36m_getCaptionsWithLinks[m(self, event):
+[38;5;130m 29 [m[7C caps = []
+[38;5;130m 30 [m[7C links = []
+[38;5;130m 31 
+ 32 [m[7C [38;5;130mfor[m p [38;5;130min[m event['[31mphotos[m']:
+[38;5;130m 33 [m[11C [38;5;130mtry[m:
+[38;5;130m 34 [m[15C caps.append( p['[31mcaption[m']['[31mtext[m'])
+[38;5;130m 35 [m[15C links.append(p['[31mlink[m'])
+[38;5;130m 36 [m[11C [38;5;130mexcept[m:
+[38;5;130m 37 [m[15C [38;5;130mcontinue
+ 38 [m[7C [38;5;130mreturn[m caps,links
+[38;5;130m 39 
+ 40 [m    [38;5;130mdef[m [36m_getAllCaptions[m(self):
+[38;5;130m 41 [m[7C self.docs = []
+[38;5;130m 42 [m[7C cnt = 0
+[38;5;130m 43 [m[7C [38;5;130mfor[m e [38;5;130min[m self.events:
+[38;5;130m 44 [m[11C [91m#if cnt==10:break[m
+[38;5;130m 45 [m[11C caption = ""
+[38;5;130m 46 [m[11C [38;5;130mfor[m p [38;5;130min[m e['[31mphotos[m']:
+[38;5;130m 47 [m[15C [38;5;130mtry[m:
+[38;5;130m 48 [m[19C text = self._filterText(p['[31mcaption[m']['[31mtext[m'])
+[38;5;130m 49 [m[19C self.docs.append( text )[50;173H23,9[10CTop[23;13H[?12l[?25h[?25l[50;174H4,0-1[24;5H[?12l[?25h[?25l[50;1HType  :quit<Enter>  to exit Vim[50;32H[K[50;173H24,0-1[8CTop[24;5H[?12l[?25h[?25l[50;173H[K[50;173H24,0-1[8CTop[24;5H[?12l[?25h[?25l[50;173H[K[50;173H24,0-1[8CTop[24;5H[?12l[?25h[?25l[50;173H[K[50;173H24,0-1[8CTop[24;5H[?12l[?25h[?25l[50;173H[K[50;173H24,0-1[8CTop[24;5H[?12l[?25h[?25l[50;173H[K[50;173H24,0-1[8CTop[24;5H[?12l[?25h[?25l[50;173H[K[50;173H24,0-1[8CTop[24;5H[?12l[?25h[?25l[50;173H[K[50;173H24,0-1[8CTop[24;5H[?12l[?25h[?25l[50;173H[K[50;173H24,0-1[8CTop[24;5H[?12l[?25h[?25l[50;173H[K[50;173H24,0-1[8CTop[24;5H[?12l[?25h[?25l[50;173H[K[50;173H24,0-1[8CTop[24;5H[?12l[?25h[?25l[50;173H[K[50;173H24,0-1[8CTop[24;5H[?12l[?25h[?25l[50;173H[K[50;173H24,0-1[8CTop[24;5H[?12l[?25h[?25l[50;173H[K[50;173H24,0-1[8CTop[24;5H[?12l[?25h[?25l[50;173H[K[50;173H24,0-1[8CTop[24;5H[?12l[?25h[?25l[50;173H[K[50;173H24,0-1[8CTop[24;5H[?12l[?25h[?25l[50;173H[K[50;173H24,0-1[8CTop[24;5H[?12l[?25h[?25l[50;173H[K[50;173H24,0-1[8CTop[24;5H[?12l[?25h[?25l[50;1H[1m-- INSERT --[m[50;13H[K[50;173H24,1[10CTop[24;5H[?12l[?25h[?25l[38;5;130m [mj[50;176H2[24;6H[?12l[?25h[?25ljl[50;176H3[24;7H[?12l[?25h[?25lld[50;176H4[24;8H[?12l[?25h[?25ldk[50;176H5[24;9H[?12l[?25h[?25lkf[50;176H6[24;10H[?12l[?25h[?25lfs[50;176H7[24;11H[?12l[?25h[?25lsd[50;176H8[24;12H[?12l[?25h[?25ldl[50;176H9[24;13H[?12l[?25h[?25llk[50;176H10[24;14H[?12l[?25h[?25lkj[50;177H1[24;15H[?12l[?25h[?25ljf[50;177H2[24;16H[?12l[?25h[50;1H[?1l>[?1049lVim: Error reading input, exiting...
+Vim: preserving files...
+Vim: Finished.
+[50;1H[J

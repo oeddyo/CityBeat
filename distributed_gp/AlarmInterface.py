@@ -9,7 +9,7 @@ from MongoDB import MongoDBInterface
 #from instagram.client import InstagramAPI
 from datetime import datetime
 
-import config
+#import config
 import time
 import logging
 import string

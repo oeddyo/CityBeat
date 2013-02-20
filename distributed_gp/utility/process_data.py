@@ -7,6 +7,7 @@ from event import Event
 from caption_parser import CaptionParser
 from stopwords import Stopwords
 from bson.objectid import ObjectId
+from corpus import Corpus
 
 import operator
 import string
@@ -57,10 +58,13 @@ def readCrowdFlowerData2():
 		if event['label'] == 0:
 			continue
 		
+		if event['actual_value'] < 8:
+			continue
+		
 		if event['label'] == 1:
 			 true_events.append(event)
 		else:
-			if confidence == 1 and event['actual_value'] >= 8:
+			if confidence == 1:
 				false_events.append(event)
 			
 	fid.close()
@@ -107,7 +111,7 @@ def readFromArff():
 	ei = EventInterface()
 	ei.setDB('citybeat')
 	ei.setCollection('candidate_event_25by25_merged')
-	fid1 = open('labeled_data_cf/balanced_result_229.arff', 'r')
+	fid1 = open('labeled_data_cf/balanced_data_Res.arff', 'r')
 	fid2 = open('labeled_data_cf/modified_event_labels.txt', 'r')
 	true_events = []
 	false_events = []
@@ -119,8 +123,8 @@ def readFromArff():
 	
 	for line in fid1:
 		t = line.split(',')
-		ID = str(t[9])
-		label = int(t[11])
+		ID = str(t[13])
+		label = int(t[15])
 		event = ei.getDocument({'_id':ObjectId(ID)})
 		event['label'] = label
 		if modified_events.has_key(ID):
@@ -137,25 +141,26 @@ def readFromArff():
 	return true_events, false_events
 
 def generateData(use_all_event=True):
+	
+	corpus = Corpus()
+	corpus.buildCorpusOnDB('citybeat', 'candidate_event_25by25_merged')
+	
 #	true_event_list, false_event_list = readCrowdFlowerData()
 #	true_event_list, false_event_list = readFromArff()
 	true_event_list, false_event_list = readCrowdFlowerData2()
 	EventFeature.GenerateArffFileHeader()
 	true_events = []
 	for event in true_event_list:
-		event = EventFeature(event)
+		event = EventFeature(event, corpus)
 		feature_vector = event.extractFeatures(3)
 		true_events.append(feature_vector)
 		
 	
 	false_events = []
 	for event in false_event_list:
-		event = EventFeature(event)
-		try:
-			feature_vector = event.extractFeatures(3)
-			false_events.append(feature_vector)
-		except Exception as e:
-			print 'bad event id:' + event.toJSON()['_id']
+		event = EventFeature(event, corpus)
+		feature_vector = event.extractFeatures(3)
+		false_events.append(feature_vector)
 
 	random.shuffle(false_events)
 			

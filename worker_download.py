@@ -17,7 +17,7 @@ def download(para):
     period = para[2] 
     client = para[3] 
     db_name = para[4]
-    radius_m = 380
+    radius_m = 400
     min_time = period[0]
     max_time = period[1]
     #try
