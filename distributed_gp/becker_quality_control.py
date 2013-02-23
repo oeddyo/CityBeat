@@ -4,7 +4,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from math import sqrt
 from numpy import dot
 from scipy.sparse import *
-from sklearn.naive_bayes import MultinomialNB
 
 
 #from sklearn.metrics.pairwise import euclidean_distances
@@ -25,6 +24,9 @@ class Representor():
         
         self.tmp_count = 0
         self.full_fill_count = 0
+
+        self.ratio_count = 0
+        self.ratio_count_all = 0
 
         print tfidf[0]
         return 
@@ -81,9 +83,9 @@ class Representor():
             return 0.0
         return above*1.0/(below*below2)
 
-    def getRepresentivePhotos(self, event_id):
+    def getRepresentivePhotos(self, event):
         
-        event = self.ei.getEventByID(event_id)
+        #event = self.ei.getEventByID(event_id)
 
         # now for each event
         # get the photos, and get the tf-idf score. get centroid
@@ -92,7 +94,8 @@ class Representor():
 
         docs,links, locs, times = self._getCaptionsWithLinks(event)
         degrees = [0]*len(docs)
-        
+        print event['_id']
+
         if len(docs)<5:
             print 'negative directly jump'
             return 
@@ -106,18 +109,36 @@ class Representor():
                 res.append( (self._cosine(y, centroid), link, loc, time) ) 
 
             sorted_res = sorted(res, key=lambda tup: tup[0] )
+            print 'length is ',len(sorted_res)
             sorted_res.reverse()
-            if sorted_res[0][0]<0.4:
-                return 
+            #if sorted_res[0][0]<0.4:
+            #    return 
             print '---- top tf-idf -----' 
             print sorted_res[:10]
             if sorted_res[0][2] == sorted_res[1][2]:
                 #and sorted_res[1][2] == sorted_res[2][2] :
                 #and sorted_res[2][2] == sorted_res[3][2]:
                 self.full_fill_count += 1
+            
 
-            print '-----top degrees ----'
+            places_dic = {}
+            for place in sorted_res[:10]:
+                if place[2] not in places_dic:
+                    places_dic[place[2]] = 1
+                else:
+                    places_dic[place[2]] += 1
 
+            #print '-----top degrees ----'
+            
+            common_place_cnt = max( places_dic.values())
+            ratio = common_place_cnt*1.0/len(sorted_res)
+            
+            self.ratio_count_all+=1
+            if ratio>=0.2:
+                self.ratio_count+=1
+            print 'new ratio ', self.ratio_count*1.0/self.ratio_count_all
+            
+            """
             for a in docs:
                 for b in docs:
                     if a<b:
@@ -131,7 +152,7 @@ class Representor():
             print mylinks
 
             print 'current ratio %d / %d = %f'%(self.full_fill_count, self.tmp_count, self.full_fill_count*1.0/self.tmp_count)
-
+            """
         return  
         """
         print type(X_train)
@@ -156,8 +177,10 @@ def main():
         elif t[1]=='-1':
             negative.append(t[0])
     rep = Representor()
+    
 
-    for id in positive:
-        print id
-        rep.getRepresentivePhotos( id )
+    for id in negative:
+        for e in rep.events:
+            if id == str(e['_id']):
+                rep.getRepresentivePhotos( e )
 main()
