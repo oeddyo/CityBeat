@@ -14,16 +14,30 @@ import types
 import random
 import math
 
+
+unique_id = set()
+photo_n = 0
+event_n = 0
+
+
 ei = EventInterface()
 ei.setDB('citybeat')
-ei.setCollection('candidate_event_25by25_merged')
+ei.setCollection('candidate_event_25by25')
 
-#51148f4fc2a3754cfe66a178
+events = ei.getAllDocuments()
+for event in events:
+	e = Event(event)
+	if event['actual_value'] < 10:
+		continue
+	photos = event['photos']
+	photo_n += len(photos)
+	event_n += 1
+	for photo in photos:
+		unique_id.add(photo['id'])
 
-event =ei.getDocument({'_id':ObjectId('51148f4fc2a3754cfe66a178')})
+print photo_n
+print event_n
+print photo_n*1.0/event_n
+print len(unique_id)
 
-cp = CaptionParser(True)
 
-for photo in event['photos']:
-	p = Photo(photo)
-	print p.getCaption()
