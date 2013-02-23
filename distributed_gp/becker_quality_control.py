@@ -13,7 +13,7 @@ class Representor():
     def __init__(self):
         self.ei = EventInterface()
         self.ei.setDB('citybeat')
-        self.ei.setCollection('candidate_event_25by25')
+        self.ei.setCollection('candidate_event_25by25_merged')
         self.events = [e for e in self.ei.getAllDocuments()]
         
         self._getAllCaptions()
@@ -167,7 +167,7 @@ def main():
 
 
     #read labels and ids
-    lines = open('labels.txt').readlines()
+    lines = open('label_data_csv2.txt').readlines()
     positive = []
     negative = []
     for line in lines:
@@ -177,13 +177,16 @@ def main():
         elif t[1]=='-1':
             negative.append(t[0])
     rep = Representor()
-     
+       
+
+
+    """
     for event in rep.events:
         rep.getRepresentivePhotos( event )
     
     return 
-
-    for id in negative:
+    """
+    for id in positive:
         for e in rep.events:
             if id == str(e['_id']):
                 rep.getRepresentivePhotos( e )

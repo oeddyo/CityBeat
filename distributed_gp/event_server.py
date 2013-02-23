@@ -42,7 +42,7 @@ class Root:
     def getAllEvents(self):
         event_cursor = self.ei.getAllDocuments()
         events = []
-        limit = 100
+        limit = 10
         for e in event_cursor:
             if limit==0:
                 break
