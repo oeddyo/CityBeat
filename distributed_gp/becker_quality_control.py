@@ -13,7 +13,7 @@ class Representor():
     def __init__(self):
         self.ei = EventInterface()
         self.ei.setDB('citybeat')
-        self.ei.setCollection('candidate_event_25by25_merged')
+        self.ei.setCollection('candidate_event_25by25')
         self.events = [e for e in self.ei.getAllDocuments()]
         
         self._getAllCaptions()
@@ -177,7 +177,11 @@ def main():
         elif t[1]=='-1':
             negative.append(t[0])
     rep = Representor()
+     
+    for event in rep.events:
+        rep.getRepresentivePhotos( event )
     
+    return 
 
     for id in negative:
         for e in rep.events:
