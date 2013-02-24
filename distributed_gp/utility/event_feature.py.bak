@@ -135,7 +135,7 @@ class EventFeature(Event):
 		avg_photo_dis = self.getAvgPhotoDis()
 		avg_photo_dis_cap = self.getAvgPhotoDisByCaption()
 		cap_per = self.getCaptionPercentage()
-		people_num = self.getActualValueByCounting()
+		people_num = self.getActualValue()
 #		duration = self.getDuration()
 #		stop_word_per = self.getPercentageOfStopwordsFromTopWords()
 		std = self.getPredictedStd()
