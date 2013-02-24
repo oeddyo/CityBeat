@@ -9,7 +9,7 @@
 import pymongo
 
 
-class MongoDBInterface(object):
+class MongoDBInterface:
 	
 	def __init__(self, address, port):
 		self.connection = pymongo.Connection(address, port)
@@ -47,6 +47,7 @@ class MongoDBInterface(object):
 		for photo in photos:
 			photo['label'] = 'unlabeled'
 			self.collection.update(  {'id':photo['id']}, photo, True )
+	
 	def TestGroupAndSave(self, records):
 		event = {'lat':2, 'lng':1, 'photos':records, 'label':'unlabeled'}
 		self.collection.insert(event)
