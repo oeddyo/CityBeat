@@ -28,7 +28,6 @@ class Representor():
         self.ratio_count = 0
         self.ratio_count_all = 0
 
-        print tfidf[0]
         return 
     def _filterText(self, text):
         return text
@@ -59,17 +58,13 @@ class Representor():
 
     def _getAllCaptions(self):
         self.docs = []
-        cnt = 0
         for e in self.events:
-            #if cnt==10:break
             caption = ""
             for p in e['photos']:
                 try:
                     text = self._filterText(p['caption']['text'])
                     self.docs.append( text )
-                    self.mapping_dic[ text  ] = cnt 
-                    cnt += 1
-                except :
+                except:
                     continue
     
     def _cosine(self,y, centroid):
@@ -177,8 +172,6 @@ def main():
         elif t[1]=='-1':
             negative.append(t[0])
     rep = Representor()
-    print rep.events[0]   
-    return 
 
     """
     for event in rep.events:
