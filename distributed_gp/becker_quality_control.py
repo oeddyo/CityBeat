@@ -23,7 +23,7 @@ class Representor():
         self.ei.setDB('citybeat')
         self.ei.setCollection('candidate_event_25by25_merged')
 
-        self.events = [e for e in self.ei.getAllDocuments(limit = 10)]
+        self.events = [e for e in self.ei.getAllDocuments()]
         self._captions = self._getAllCaptions()
         
         print '# of all captions ',len(self._captions)
@@ -90,8 +90,10 @@ class Representor():
         cosine_similarities = linear_kernel(centroid, event_tfidf).flatten()
         most_related_pics = cosine_similarities.argsort()[:-10:-1]
         for idx in most_related_pics:
-            print event_captions[idx]
-        return  
+            print event['photos'][idx]['link']
+        return 
+
+
         res = [ ] 
         print 'large trans'
         for doc,link,loc,time in zip(docs, links, locs, times):
