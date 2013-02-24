@@ -14,9 +14,10 @@ class Representor():
         self.ei = EventInterface()
         self.ei.setDB('citybeat')
         self.ei.setCollection('candidate_event_25by25_merged')
+
         self.events = [e for e in self.ei.getAllDocuments()]
         
-        self._getAllCaptions()
+        self._captions = self._getAllCaptions()
         print 'all docs ',len(self.docs)
 
         self.vectorizer = TfidfVectorizer( max_df=0.5, min_df = 2, strip_accents='ascii', smooth_idf=True, stop_words='english')
@@ -57,7 +58,9 @@ class Representor():
         return caps,links,locs, times
 
     def _getAllCaptions(self):
-        self.docs = []
+        _captions = [ p['caption']['text'] if 'caption' in p and 'text' in p['caption'] for e in self.events for p in e['photos']]
+        return _captions
+        """
         for e in self.events:
             caption = ""
             for p in e['photos']:
@@ -66,7 +69,7 @@ class Representor():
                     self.docs.append( text )
                 except:
                     continue
-    
+        """
     def _cosine(self,y, centroid):
         above = y*centroid.T
         above = above[0,0]
