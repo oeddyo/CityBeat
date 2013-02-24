@@ -94,7 +94,8 @@ class Representor():
         most_related_pics = cosine_similarities.argsort()[:-15:-1]
         for idx in most_related_pics:
             try:
-                print event['photos'][idx]['location']['name'], event['photos'][idx]['link']
+                print event['photos'][idx]['location'],event['photos'][idx]['link']
+		#print event['photos'][idx]['location']['name'], event['photos'][idx]['link']
             except:
                 continue
         return 
@@ -114,10 +115,10 @@ def main():
             negative.append(t[0])
     rep = Representor()
 
-    for event in rep.events:
-        rep.getRepresentivePhotos( event )
+    #for event in rep.events:
+    #    rep.getRepresentivePhotos( event )
     
-    return 
+    #return 
     for id in positive:
         for e in rep.events:
             if id == str(e['_id']):
