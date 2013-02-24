@@ -55,18 +55,7 @@ class Representor():
                 except:
                     continue
         return _captions
-
-    def _cosine(self,y, centroid):
-        above = y*centroid.T
-        above = above[0,0]
-        below = (y*y.T) 
-        below = sqrt(below[0,0])
-        below2 = centroid*centroid.T
-        below2 = sqrt( below2[0,0] )
-        if below==0 or below2 == 0:
-            return 0.0
-        return above*1.0/(below*below2)
-
+    
     def _getEventCaptions(self, event):
         """For a given event, return the captions as a list. Note for photo without caption,
         use a None to hold the place"""
@@ -88,18 +77,20 @@ class Representor():
         centroid = event_tfidf.mean(axis=0)
         cosine_similarities = linear_kernel(centroid, event_tfidf).flatten()
 
-        most_related_pics = cosine_similarities.argsort()[:-500:-1]
+        most_related_pics = cosine_similarities.argsort()[:-1000:-1]
+        most_related_pics.reverse()
         photos_to_return = []
 
         for idx in most_related_pics:
             photos_to_return.append( event['photos'][idx] )
-            #try:
-            #    print event['photos'][idx]['location'],event['photos'][idx]['link']
-		#print event['photos'][idx]['location']['name'], event['photos'][idx]['link']
-            #except:
-            #    continue
+            print event['photos'][idx]['link']
         
         return photos_to_return 
+
+
+def feature_extractor(event):
+    return
+
 
 def main():
     #read labels and ids
