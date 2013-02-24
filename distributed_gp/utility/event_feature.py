@@ -31,7 +31,15 @@ class EventFeature(Event):
 #		return self.getLatestPhotoTime() - self.getEarliestPhotoTime()
 	
 	def selectOnePhotoForOneUser(self):
-		pass
+		user_ids = set()
+		photos = self._event['photos']
+		new_photos = []
+		for photo in photos:
+			user_id = photo['user']['id']
+			if user_id in user_ids:
+				continue
+			new_photos.append(photo)
+		self._event['photos'] = new_photos
 	
 	def countHashtagsFromPhotosContainingTopKeywords(self, k=3):
 		# count the number of hashtags of photos that associated with topwords
@@ -111,6 +119,7 @@ class EventFeature(Event):
 	
 	def extractFeatures(self, entropy_para=3, k_topwords=3):
 		# it outputs the feature vector
+		self.selectOnePhotoForOneUser()
 		avg_cap_len = self.getAvgCaptionLen()
 		avg_photo_dis = self.getAvgPhotoDis()
 		avg_photo_dis_cap = self.getAvgPhotoDisByCaption()

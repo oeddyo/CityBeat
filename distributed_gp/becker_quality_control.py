@@ -177,8 +177,8 @@ def main():
         elif t[1]=='-1':
             negative.append(t[0])
     rep = Representor()
-       
-
+    print rep.events[0]   
+    return 
 
     """
     for event in rep.events:

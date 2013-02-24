@@ -37,11 +37,8 @@ class MongoDBInterface(object):
 		else:
 			return self._collection.find_one()
 		
-	def getAllDocuments(self, condition=None):
-		if not condition is None:
-			return self._collection.find(condition, timeout=False)
-		else:
-			return self._collection.find(timeout=False)
+	def getAllDocuments(self, condition={}, limit=0):
+		return self._collection.find(condition, timeout=False, limit=limit)
 		
 	def updateDocument(self, document):
 		if not type(document) is types.DictType:
@@ -61,5 +58,9 @@ if __name__=='__main__':
 	mi = MongoDBInterface()
 	mi.setDB('historic_alarm')
 	mi.setCollection('labeled_event')
-	print mi.getAllDocumentIDs()
+	events = mi.getAllDocuments(limit=0)
+	i = 0
+	for event in events:
+		i += 1
+		print i
 	
