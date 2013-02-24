@@ -82,10 +82,11 @@ class Representor():
 
         for idx in most_related_pics:
             photos_to_return.append( event['photos'][idx] )
-            print event['photos'][idx]['link']
 
         photos_to_return.reverse() 
-        
+
+        for p in photos_to_return:
+            print p['link']
         return photos_to_return 
 
 
