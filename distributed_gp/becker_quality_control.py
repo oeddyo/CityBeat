@@ -26,13 +26,13 @@ class Representor():
         self.events = [e for e in self.ei.getAllDocuments()]
         self._captions = self._getAllCaptions()
         
-        print '# of all captions ',len(self.docs)
+        print '# of all captions ',len(self._captions)
         print 'begin fitting tf-idf...'
         if TfidfVectorizer is None:
             self.vectorizer = TfidfVectorizer( max_df=0.5, min_df = 2, strip_accents='ascii', smooth_idf=True, stop_words='english')
         else:
             self.vectorizer = TfidfVectorizer
-        self.vectorizer.fit_transform(self.docs)
+        self.vectorizer.fit_transform(self._captions)
         print 'fitting tf-idf completed!'
 
 
