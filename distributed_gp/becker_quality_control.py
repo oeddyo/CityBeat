@@ -6,6 +6,8 @@ from numpy import dot
 from scipy.sparse import *
 from sklearn.metrics.pairwise import linear_kernel
 
+import re
+
 #from sklearn.metrics.pairwise import euclidean_distances
 
 
@@ -30,11 +32,19 @@ class Representor():
         print 'begin fitting tf-idf...'
 
         if vectorizer is None:
-            self.vectorizer = TfidfVectorizer( max_df=0.5, min_df = 2, strip_accents='ascii', smooth_idf=True, stop_words='english')
+            self.vectorizer = TfidfVectorizer( max_df=0.5, min_df = 2, strip_accents='ascii', smooth_idf=True, stop_words='english', preprocessor = self._preProcessor)
         else:
             self.vectorizer = vectorizer
         self.vectorizer.fit_transform(self._captions)
         print 'fitting tf-idf completed!'
+    
+    def _preProcessor(self, caption):
+        regex = re.compile(r"#\w+")
+        match = regex.findall(caption)
+        if len(match)>=3:
+            return ""
+        else:
+            return caption
 
     def _getAllCaptions(self):
         _captions = []
@@ -60,6 +70,7 @@ class Representor():
         if below==0 or below2 == 0:
             return 0.0
         return above*1.0/(below*below2)
+
     def _getEventCaptions(self, event):
         """For a given event, return the captions as a list. Note for photo without caption,
         use a None to hold the place"""
@@ -72,12 +83,6 @@ class Representor():
         return event_captions 
     
     def getRepresentivePhotos(self, event):
-        #event = self.ei.getEventByID(event_id)
-
-        # now for each event
-        # get the photos, and get the tf-idf score. get centroid
-        # and compute the cloestest top 5
-        #for event in self.events:
           
         print event['_id']
         
@@ -90,70 +95,11 @@ class Representor():
         cosine_similarities = linear_kernel(centroid, event_tfidf).flatten()
         most_related_pics = cosine_similarities.argsort()[:-10:-1]
         for idx in most_related_pics:
-            print event['photos'][idx]['link']
+            try:
+                print event['photos'][idx]['location']['name']
+            except:
+                continue
         return 
-
-
-        res = [ ] 
-        print 'large trans'
-        for doc,link,loc,time in zip(docs, links, locs, times):
-            y = self.vectorizer.transform([doc,])
-            res.append( (self._cosine(y, centroid), link, loc, time) ) 
-        print 'end large trans'
-        sorted_res = sorted(res, key=lambda tup: tup[0] )
-        print 'length is ',len(sorted_res)
-        sorted_res.reverse()
-        #if sorted_res[0][0]<0.4:
-        #    return 
-        print '---- top tf-idf -----' 
-        print sorted_res[:10]
-        if sorted_res[0][2] == sorted_res[1][2]:
-            #and sorted_res[1][2] == sorted_res[2][2] :
-            #and sorted_res[2][2] == sorted_res[3][2]:
-            self.full_fill_count += 1
-        
-
-        places_dic = {}
-        for place in sorted_res[:10]:
-            if place[2] not in places_dic:
-                places_dic[place[2]] = 1
-            else:
-                places_dic[place[2]] += 1
-
-        #print '-----top degrees ----'
-        
-        common_place_cnt = max( places_dic.values())
-        ratio = common_place_cnt*1.0/len(sorted_res)
-        
-        self.ratio_count_all+=1
-        if ratio>=0.2:
-            self.ratio_count+=1
-        print 'new ratio ', self.ratio_count*1.0/self.ratio_count_all
-            
-        """
-            for a in docs:
-                for b in docs:
-                    if a<b:
-                        t_a = self.vectorizer.transform(a)
-                        t_b = self.vectorizer.transform(b)
-                        if self._cosine(t_a, t_b)>=0.05:
-                            degrees[docs.index(t_a)]+=1
-                            degrees[docs.index(t_b)]+=1
-            sorted_index = [i[0] for i in sorted(enumerate(degrees), key=lambda x:x[1])]
-            mylinks = [ links[idx] for idx in sorted_index[:5]]
-            print mylinks
-
-            print 'current ratio %d / %d = %f'%(self.full_fill_count, self.tmp_count, self.full_fill_count*1.0/self.tmp_count)
-        """
-        return  
-        """
-        print type(X_train)
-        print dir(X_train)
-        print type(X_train[0])
-        print X_train[0]
-        print 'all words',len(vectorizer.get_feature_names())
-        print vectorizer.get_feature_names()
-        """
 
 def main():
 
