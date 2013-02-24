@@ -10,7 +10,7 @@ from sklearn.metrics.pairwise import linear_kernel
 
 
 class Representor():
-    def __init__(self, TfidfVectorizer = None):
+    def __init__(self, vectorizer = None):
         """Given an event, return a list incices of the photos in 'photos' filed 
         which are representative to stands for this cluster
         
@@ -28,37 +28,13 @@ class Representor():
         
         print '# of all captions ',len(self._captions)
         print 'begin fitting tf-idf...'
-        if TfidfVectorizer is not None:
+
+        if vectorizer is None:
             self.vectorizer = TfidfVectorizer( max_df=0.5, min_df = 2, strip_accents='ascii', smooth_idf=True, stop_words='english')
         else:
-            self.vectorizer = TfidfVectorizer
+            self.vectorizer = vectorizer
         self.vectorizer.fit_transform(self._captions)
         print 'fitting tf-idf completed!'
-
-
-    def _getCaptionsWithLinks(self, event):
-        caps = []
-        links = []
-        locs = []
-        times = []
-        user_dic = set()
-        for p in event['photos']:
-            try:
-                cap = p['caption']['text']
-                link = p['link']
-                loc = p['location']['name']
-                time = p['created_time']
-                if p['user']['username'] in user_dic:
-                    continue
-                else:
-                    user_dic.add(p['user']['username'])
-                caps.append(cap)
-                links.append(link)
-                locs.append(loc)
-                times.append( time)
-            except:
-                continue
-        return caps,links,locs, times
 
     def _getAllCaptions(self):
         _captions = []
@@ -67,10 +43,13 @@ class Representor():
             for p in e['photos']:
                 try:
                     text = p['caption']['text']
-                    _captions.append(text) 
+                    if text is not None:
+                        _captions.append(text) 
                 except:
+                    print 'error'
                     continue
         return _captions
+
     def _cosine(self,y, centroid):
         above = y*centroid.T
         above = above[0,0]
@@ -89,10 +68,10 @@ class Representor():
             try:
                 event_captions.append( p['caption']['text'] )
             except:
-                event_captions.append( None )
+                event_captions.append( "" )
+        return event_captions 
     
     def getRepresentivePhotos(self, event):
-        
         #event = self.ei.getEventByID(event_id)
 
         # now for each event
@@ -102,16 +81,16 @@ class Representor():
           
         print event['_id']
         
+        event_captions = self._getEventCaptions(event)
         print 'before trans'
-        event_tfidf = self.vectorizer.transform(docs)
+        print event_captions
+        event_tfidf = self.vectorizer.transform(event_captions)
         print 'end trans'
-        return 
         centroid = event_tfidf.mean(axis=0)
         cosine_similarities = linear_kernel(centroid, event_tfidf).flatten()
         most_related_pics = cosine_similarities.argsort()[:-10:-1]
-
         for idx in most_related_pics:
-            print docs[idx]
+            print event_captions[idx]
         return  
         res = [ ] 
         print 'large trans'
@@ -189,12 +168,10 @@ def main():
             negative.append(t[0])
     rep = Representor()
 
-    """
     for event in rep.events:
         rep.getRepresentivePhotos( event )
     
     return 
-    """
     for id in positive:
         for e in rep.events:
             if id == str(e['_id']):
