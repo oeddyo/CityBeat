@@ -85,8 +85,6 @@ class Representor():
 
         photos_to_return.reverse() 
 
-        for p in photos_to_return:
-            print p['link']
         return photos_to_return 
 
 
