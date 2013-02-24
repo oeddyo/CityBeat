@@ -23,7 +23,7 @@ class Representor():
         self.ei.setDB('citybeat')
         self.ei.setCollection('candidate_event_25by25_merged')
 
-        self.events = [e for e in self.ei.getAllDocuments()]
+        self.events = [e for e in self.ei.getAllDocuments(limit = 10)]
         self._captions = self._getAllCaptions()
         
         print '# of all captions ',len(self._captions)
@@ -66,8 +66,8 @@ class Representor():
             caption = ""
             for p in e['photos']:
                 try:
-                    text = self._filterText(p['caption']['text'])
-                    self.docs.append( text )
+                    text = p['caption']['text']
+                    _captions.append(text) 
                 except:
                     continue
         return _captions
