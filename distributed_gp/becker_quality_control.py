@@ -88,15 +88,14 @@ class Representor():
         
         event_captions = self._getEventCaptions(event)
         print 'before trans'
-        print event_captions
         event_tfidf = self.vectorizer.transform(event_captions)
         print 'end trans'
         centroid = event_tfidf.mean(axis=0)
         cosine_similarities = linear_kernel(centroid, event_tfidf).flatten()
-        most_related_pics = cosine_similarities.argsort()[:-10:-1]
+        most_related_pics = cosine_similarities.argsort()[:-15:-1]
         for idx in most_related_pics:
             try:
-                print event['photos'][idx]['location']['name']
+                print event['photos'][idx]['location']['name'], event['photos'][idx]['link']
             except:
                 continue
         return 
