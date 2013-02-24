@@ -10,28 +10,31 @@ from sklearn.metrics.pairwise import linear_kernel
 
 
 class Representor():
-    def __init__(self):
+    def __init__(self, TfidfVectorizer = None):
+        """Given an event, return a list incices of the photos in 'photos' filed 
+        which are representative to stands for this cluster
+        
+        Could overwrite TfidfVectorizer as a parameter so that you could customize
+        your own tfidf parameters. 
+        see http://scikit-learn.org/dev/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html
+        """
+
         self.ei = EventInterface()
         self.ei.setDB('citybeat')
         self.ei.setCollection('candidate_event_25by25_merged')
 
         self.events = [e for e in self.ei.getAllDocuments()]
-        
         self._captions = self._getAllCaptions()
-        print 'all docs ',len(self.docs)
-
-        self.vectorizer = TfidfVectorizer( max_df=0.5, min_df = 2, strip_accents='ascii', smooth_idf=True, stop_words='english')
-        tfidf = self.vectorizer.fit_transform(self.docs)
         
-        self.tmp_count = 0
-        self.full_fill_count = 0
+        print '# of all captions ',len(self.docs)
+        print 'begin fitting tf-idf...'
+        if TfidfVectorizer = None:
+            self.vectorizer = TfidfVectorizer( max_df=0.5, min_df = 2, strip_accents='ascii', smooth_idf=True, stop_words='english')
+        else:
+            self.vectorizer = TfidfVectorizer
+        self.vectorizer.fit_transform(self.docs)
+        print 'fitting tf-idf completed!'
 
-        self.ratio_count = 0
-        self.ratio_count_all = 0
-
-        return 
-    def _filterText(self, text):
-        return text
 
     def _getCaptionsWithLinks(self, event):
         caps = []
@@ -58,9 +61,7 @@ class Representor():
         return caps,links,locs, times
 
     def _getAllCaptions(self):
-        _captions = [ p['caption']['text'] if 'caption' in p and 'text' in p['caption'] for e in self.events for p in e['photos']]
-        return _captions
-        """
+        _captions = []
         for e in self.events:
             caption = ""
             for p in e['photos']:
@@ -69,7 +70,7 @@ class Representor():
                     self.docs.append( text )
                 except:
                     continue
-        """
+        return _captions
     def _cosine(self,y, centroid):
         above = y*centroid.T
         above = above[0,0]
@@ -80,7 +81,16 @@ class Representor():
         if below==0 or below2 == 0:
             return 0.0
         return above*1.0/(below*below2)
-
+    def _getEventCaptions(self, event):
+        """For a given event, return the captions as a list. Note for photo without caption,
+        use a None to hold the place"""
+        event_captions = []
+        for p in event['photos']:
+            try:
+                event_captions.append( p['caption']['text'] )
+            except:
+                event_captions.append( None )
+    
     def getRepresentivePhotos(self, event):
         
         #event = self.ei.getEventByID(event_id)
@@ -89,61 +99,55 @@ class Representor():
         # get the photos, and get the tf-idf score. get centroid
         # and compute the cloestest top 5
         #for event in self.events:
-
-        docs,links, locs, times = self._getCaptionsWithLinks(event)
-        degrees = [0]*len(docs)
+          
         print event['_id']
+        
+        print 'before trans'
+        event_tfidf = self.vectorizer.transform(docs)
+        print 'end trans'
+        return 
+        centroid = event_tfidf.mean(axis=0)
+        cosine_similarities = linear_kernel(centroid, event_tfidf).flatten()
+        most_related_pics = cosine_similarities.argsort()[:-10:-1]
 
-        if len(docs)<5:
-            print 'negative directly jump'
-            return 
-        if len(docs)>5 :
-            self.tmp_count+=1
-            print 'before trans'
-            ys = self.vectorizer.transform(docs)
-            print 'end trans'
-            centroid = ys.mean(axis=0)
-            cosine_similarities = linear_kernel(centroid, ys).flatten()
-            most_related_pics = cosine_similarities.argsort()[:-10:-1]
+        for idx in most_related_pics:
+            print docs[idx]
+        return  
+        res = [ ] 
+        print 'large trans'
+        for doc,link,loc,time in zip(docs, links, locs, times):
+            y = self.vectorizer.transform([doc,])
+            res.append( (self._cosine(y, centroid), link, loc, time) ) 
+        print 'end large trans'
+        sorted_res = sorted(res, key=lambda tup: tup[0] )
+        print 'length is ',len(sorted_res)
+        sorted_res.reverse()
+        #if sorted_res[0][0]<0.4:
+        #    return 
+        print '---- top tf-idf -----' 
+        print sorted_res[:10]
+        if sorted_res[0][2] == sorted_res[1][2]:
+            #and sorted_res[1][2] == sorted_res[2][2] :
+            #and sorted_res[2][2] == sorted_res[3][2]:
+            self.full_fill_count += 1
+        
 
-            for idx in most_related_pics:
-                print docs[idx]
-            return  
-            res = [ ] 
-            print 'large trans'
-            for doc,link,loc,time in zip(docs, links, locs, times):
-                y = self.vectorizer.transform([doc,])
-                res.append( (self._cosine(y, centroid), link, loc, time) ) 
-            print 'end large trans'
-            sorted_res = sorted(res, key=lambda tup: tup[0] )
-            print 'length is ',len(sorted_res)
-            sorted_res.reverse()
-            #if sorted_res[0][0]<0.4:
-            #    return 
-            print '---- top tf-idf -----' 
-            print sorted_res[:10]
-            if sorted_res[0][2] == sorted_res[1][2]:
-                #and sorted_res[1][2] == sorted_res[2][2] :
-                #and sorted_res[2][2] == sorted_res[3][2]:
-                self.full_fill_count += 1
-            
+        places_dic = {}
+        for place in sorted_res[:10]:
+            if place[2] not in places_dic:
+                places_dic[place[2]] = 1
+            else:
+                places_dic[place[2]] += 1
 
-            places_dic = {}
-            for place in sorted_res[:10]:
-                if place[2] not in places_dic:
-                    places_dic[place[2]] = 1
-                else:
-                    places_dic[place[2]] += 1
-
-            #print '-----top degrees ----'
-            
-            common_place_cnt = max( places_dic.values())
-            ratio = common_place_cnt*1.0/len(sorted_res)
-            
-            self.ratio_count_all+=1
-            if ratio>=0.2:
-                self.ratio_count+=1
-            print 'new ratio ', self.ratio_count*1.0/self.ratio_count_all
+        #print '-----top degrees ----'
+        
+        common_place_cnt = max( places_dic.values())
+        ratio = common_place_cnt*1.0/len(sorted_res)
+        
+        self.ratio_count_all+=1
+        if ratio>=0.2:
+            self.ratio_count+=1
+        print 'new ratio ', self.ratio_count*1.0/self.ratio_count_all
             
             """
             for a in docs:
