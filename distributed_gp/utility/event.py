@@ -38,6 +38,7 @@ class Event(object):
 		user_ids = set()
 		for photo in self._event['photos']:
 			user_ids.add(int(photo['user']['id']))
+		self.setActualValue(len(user_ids))
 		return len(user_ids)
 	
 	def getRegion(self):
