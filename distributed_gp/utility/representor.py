@@ -1,4 +1,4 @@
-from utility.event_interface import EventInterface
+from event_interface import EventInterface
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from math import sqrt
@@ -7,9 +7,6 @@ from scipy.sparse import *
 from sklearn.metrics.pairwise import linear_kernel
 
 import re
-
-#from sklearn.metrics.pairwise import euclidean_distances
-
 
 class Representor():
     def __init__(self, vectorizer = None):
@@ -25,7 +22,7 @@ class Representor():
         self.ei.setDB('citybeat')
         self.ei.setCollection('candidate_event_25by25_merged')
 
-        self.events = [e for e in self.ei.getAllDocuments()]
+        self.events = [e for e in self.ei.getAllDocuments( )]
         self._captions = self._getAllCaptions()
         
         print '# of all captions ',len(self._captions)
@@ -91,18 +88,20 @@ class Representor():
         centroid = event_tfidf.mean(axis=0)
         cosine_similarities = linear_kernel(centroid, event_tfidf).flatten()
 
-        most_related_pics = cosine_similarities.argsort()[:-15:-1]
+        most_related_pics = cosine_similarities.argsort()[:-500:-1]
+        photos_to_return = []
+
         for idx in most_related_pics:
-            try:
-                print event['photos'][idx]['location'],event['photos'][idx]['link']
+            photos_to_return.append( event['photos'][idx] )
+            #try:
+            #    print event['photos'][idx]['location'],event['photos'][idx]['link']
 		#print event['photos'][idx]['location']['name'], event['photos'][idx]['link']
-            except:
-                continue
-        return 
+            #except:
+            #    continue
+        
+        return photos_to_return 
 
 def main():
-
-
     #read labels and ids
     lines = open('label_data_csv2.txt').readlines()
     positive = []
@@ -115,12 +114,15 @@ def main():
             negative.append(t[0])
     rep = Representor()
 
-    #for event in rep.events:
-    #    rep.getRepresentivePhotos( event )
+    for event in rep.events:
+        print len(rep.getRepresentivePhotos( event ))
     
-    #return 
+    return 
+    
     for id in positive:
         for e in rep.events:
             if id == str(e['_id']):
                 rep.getRepresentivePhotos( e )
-main()
+
+if __name__ == '__main__':
+    main()
