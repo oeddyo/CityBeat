@@ -30,7 +30,7 @@ for event in events:
 	if event['actual_value'] < 10:
 		continue
 	try:
-		print event['photos'][0]['location']['name']
+		print event['photos'][0]['location']
 	except Exception as e:
 		print 
 

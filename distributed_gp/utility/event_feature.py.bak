@@ -39,6 +39,9 @@ class EventFeature(Event):
 	
 	def _selectRelaventPhotos(self, k=10):
 		photos = self._representor.getRepresentivePhotos(self.toJSON())
+		# choose first 30%
+		k = max(k, 0.3*len(photos))
+		k = int(k + 0.5)
 		self.setPhotos(photos[0:min(k, len(photos))])
 		
 	def _selectOnePhotoForOneUser(self):
@@ -49,6 +52,7 @@ class EventFeature(Event):
 			user_id = photo['user']['id']
 			if user_id in user_ids:
 				continue
+			user_ids.add(user_id)
 			new_photos.append(photo)
 		self._event['photos'] = new_photos
 	
@@ -372,6 +376,10 @@ class EventFeature(Event):
 		# not a good feature
 		return 1.0 * self.getActualValue() / len(self._event['photos'])
 		
+	
+	def getTopPhotosLocationSimilarity(k=10):
+		k = min(k, len(self._event['photos']))
+		
 	def getHistoricFeatures(self, entropy_para):
 		# this method computes the features that capture the difference between current
 		# event and background knowledge
@@ -434,41 +442,7 @@ class EventFeature(Event):
 		return [event.getAvgPhotoDis(), topic_divergence,
 #		        event.getEntropy(entropy_para),
 		        entropy_divergence]
-
-def generateData(biased=True):
-	ei = EventInterface()
-	ei.setDB('historic_alarm')
-	ei.setCollection('labeled_event')
-	events = ei.getAllDocuments()
-	
-	EventFeature.GenerateArffFileHeader()
-	true_events = []
-	false_events = []
-	for event in events:
-		event = EventFeature(event)
-		feature_vector = event.extractFeatures(3)
-		if feature_vector[-1] == 1:
-			true_events.append(feature_vector)
-		else:
-			false_events.append(feature_vector)
-
-	
-	random.shuffle(false_events)
 			
-	for fv in true_events:
-		for i in xrange(0, len(fv) - 1):
-			print fv[i],',',
-		print fv[-1]
-		
-	j = 0
-	for fv in false_events:
-		for i in xrange(0, len(fv) - 1):
-			print fv[i],',',
-		print fv[-1]
-		j += 1
-		if not biased and j == len(true_events):
-			break
-
 if __name__=='__main__':
 	generateData()
 #	ei = EventInterface()
