@@ -4,7 +4,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from math import sqrt
 from numpy import dot
 from scipy.sparse import *
-
+from sklearn.metrics.pairwise import linear_kernel
 
 #from sklearn.metrics.pairwise import euclidean_distances
 
@@ -101,13 +101,22 @@ class Representor():
             return 
         if len(docs)>5 :
             self.tmp_count+=1
+            print 'before trans'
             ys = self.vectorizer.transform(docs)
+            print 'end trans'
             centroid = ys.mean(axis=0)
+            cosine_similarities = linear_kernel(centroid, ys).flatten()
+            most_related_pics = cosine_similarities.argsort()[:-10:-1]
+
+            for idx in most_related_pics:
+                print docs[idx]
+            return  
             res = [ ] 
+            print 'large trans'
             for doc,link,loc,time in zip(docs, links, locs, times):
                 y = self.vectorizer.transform([doc,])
                 res.append( (self._cosine(y, centroid), link, loc, time) ) 
-
+            print 'end large trans'
             sorted_res = sorted(res, key=lambda tup: tup[0] )
             print 'length is ',len(sorted_res)
             sorted_res.reverse()
