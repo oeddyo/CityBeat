@@ -28,7 +28,7 @@ class Representor():
         
         print '# of all captions ',len(self.docs)
         print 'begin fitting tf-idf...'
-        if TfidfVectorizer = None:
+        if TfidfVectorizer is None:
             self.vectorizer = TfidfVectorizer( max_df=0.5, min_df = 2, strip_accents='ascii', smooth_idf=True, stop_words='english')
         else:
             self.vectorizer = TfidfVectorizer
@@ -149,7 +149,7 @@ class Representor():
             self.ratio_count+=1
         print 'new ratio ', self.ratio_count*1.0/self.ratio_count_all
             
-            """
+        """
             for a in docs:
                 for b in docs:
                     if a<b:
@@ -163,7 +163,7 @@ class Representor():
             print mylinks
 
             print 'current ratio %d / %d = %f'%(self.full_fill_count, self.tmp_count, self.full_fill_count*1.0/self.tmp_count)
-            """
+        """
         return  
         """
         print type(X_train)
