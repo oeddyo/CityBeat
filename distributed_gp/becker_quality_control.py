@@ -56,7 +56,6 @@ class Representor():
                     if text is not None:
                         _captions.append(text) 
                 except:
-                    print 'error'
                     continue
         return _captions
 
@@ -83,15 +82,15 @@ class Representor():
         return event_captions 
     
     def getRepresentivePhotos(self, event):
-          
+        print '\n' 
         print event['_id']
         
         event_captions = self._getEventCaptions(event)
-        print 'before trans'
         event_tfidf = self.vectorizer.transform(event_captions)
-        print 'end trans'
+        
         centroid = event_tfidf.mean(axis=0)
         cosine_similarities = linear_kernel(centroid, event_tfidf).flatten()
+
         most_related_pics = cosine_similarities.argsort()[:-15:-1]
         for idx in most_related_pics:
             try:
