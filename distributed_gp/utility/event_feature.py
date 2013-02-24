@@ -49,6 +49,7 @@ class EventFeature(Event):
 			user_id = photo['user']['id']
 			if user_id in user_ids:
 				continue
+			user_ids.add(user_id)
 			new_photos.append(photo)
 		self._event['photos'] = new_photos
 	
