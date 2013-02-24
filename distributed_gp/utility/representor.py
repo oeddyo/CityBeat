@@ -77,13 +77,14 @@ class Representor():
         centroid = event_tfidf.mean(axis=0)
         cosine_similarities = linear_kernel(centroid, event_tfidf).flatten()
 
-        most_related_pics = cosine_similarities.argsort()[:-1000:-1]
-        most_related_pics.reverse()
+        most_related_pics = cosine_similarities.argsort()
         photos_to_return = []
 
         for idx in most_related_pics:
             photos_to_return.append( event['photos'][idx] )
             print event['photos'][idx]['link']
+
+        photos_to_return.reverse() 
         
         return photos_to_return 
 
