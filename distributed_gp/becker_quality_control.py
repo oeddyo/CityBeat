@@ -28,7 +28,7 @@ class Representor():
         
         print '# of all captions ',len(self._captions)
         print 'begin fitting tf-idf...'
-        if TfidfVectorizer is None:
+        if TfidfVectorizer is not None:
             self.vectorizer = TfidfVectorizer( max_df=0.5, min_df = 2, strip_accents='ascii', smooth_idf=True, stop_words='english')
         else:
             self.vectorizer = TfidfVectorizer
