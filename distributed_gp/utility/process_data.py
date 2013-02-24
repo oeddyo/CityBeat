@@ -8,6 +8,7 @@ from caption_parser import CaptionParser
 from stopwords import Stopwords
 from bson.objectid import ObjectId
 from corpus import Corpus
+from representor import Representor
 
 import operator
 import string
@@ -145,6 +146,7 @@ def readFromArff():
 
 def generateData(use_all_event=True):
 	
+	rep = Representor()
 	corpus = Corpus()
 	corpus.buildCorpusOnDB('citybeat', 'candidate_event_25by25_merged')
 	
@@ -154,14 +156,14 @@ def generateData(use_all_event=True):
 	EventFeature.GenerateArffFileHeader()
 	true_events = []
 	for event in true_event_list:
-		event = EventFeature(event, corpus)
+		event = EventFeature(event, corpus, rep)
 		feature_vector = event.extractFeatures(3)
 		true_events.append(feature_vector)
 		
 	
 	false_events = []
 	for event in false_event_list:
-		event = EventFeature(event, corpus)
+		event = EventFeature(event, corpus, rep)
 		feature_vector = event.extractFeatures(3)
 		false_events.append(feature_vector)
 

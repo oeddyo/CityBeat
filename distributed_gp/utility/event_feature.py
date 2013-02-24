@@ -20,17 +20,28 @@ class EventFeature(Event):
 	# this class is the extension of class Event, especially for feature extraction
 	# to prevent the class Event from being too long to read
 	
-	def __init__(self, event, corpus=None):
+	def __init__(self, event, corpus=None, representor=None):
 		super(EventFeature, self).__init__(event)
 		# note that, if you want to use any feature related with tfidf, corpus must be set
 		# the the definition of Corpus class in corpus.py
 		if corpus is not None:
 			self._corpus = corpus
+		if representor is not None:
+			self._representor = representor
 				
 #	def getDuration(self):
 #		return self.getLatestPhotoTime() - self.getEarliestPhotoTime()
 	
-	def selectOnePhotoForOneUser(self):
+	
+	def preprocess(self):
+		self._selectOnePhotoForOneUser()
+		self._selectRelaventPhotos()
+	
+	def _selectRelaventPhotos(self, k=10):
+		photos = self._representor.getRepresentivePhotos(self.toJSON())
+		self.setPhotos(photos[0:min(k, len(photos))])
+		
+	def _selectOnePhotoForOneUser(self):
 		user_ids = set()
 		photos = self._event['photos']
 		new_photos = []
@@ -119,7 +130,7 @@ class EventFeature(Event):
 	
 	def extractFeatures(self, entropy_para=3, k_topwords=3):
 		# it outputs the feature vector
-		self.selectOnePhotoForOneUser()
+		self.preprocess()
 		avg_cap_len = self.getAvgCaptionLen()
 		avg_photo_dis = self.getAvgPhotoDis()
 		avg_photo_dis_cap = self.getAvgPhotoDisByCaption()
@@ -166,7 +177,7 @@ class EventFeature(Event):
 		        label]
 		        
 	@staticmethod
-	def GenerateArffFileHeader():
+	def GenerateArffFileHeader(feature_list=None):
 		print '@relation CityBeatEvents'
 		print '@attribute AvgCaptionLen real'
 		print '@attribute AvgPhotoDis real'
