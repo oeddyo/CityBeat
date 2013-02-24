@@ -130,6 +130,9 @@ def readFromArff():
 		if modified_events.has_key(ID):
 			event['label'] = modified_events[ID]
 		
+		if event['actual_value'] < 8:
+			continue
+		
 		if event['label'] == -1:
 			false_events.append(event)
 		else:
@@ -146,8 +149,8 @@ def generateData(use_all_event=True):
 	corpus.buildCorpusOnDB('citybeat', 'candidate_event_25by25_merged')
 	
 #	true_event_list, false_event_list = readCrowdFlowerData()
-#	true_event_list, false_event_list = readFromArff()
-	true_event_list, false_event_list = readCrowdFlowerData2()
+	true_event_list, false_event_list = readFromArff()
+#	true_event_list, false_event_list = readCrowdFlowerData2()
 	EventFeature.GenerateArffFileHeader()
 	true_events = []
 	for event in true_event_list:
