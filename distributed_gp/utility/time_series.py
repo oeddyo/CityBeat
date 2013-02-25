@@ -18,7 +18,6 @@ from region import Region
 from config import InstagramConfig
 import photo_interface
 
-
 class TimeSeries(object):
     """For a single region specified by a box of
     [upper_left_lat, upper_left_lng, down_right_lat, down_right_lng]

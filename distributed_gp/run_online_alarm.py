@@ -49,7 +49,7 @@ class Alarm():
         return pi.getNearestPrediction(self.region, str(self.cur_time))
 
     def _getFiftenMiniutesPhotos(self):
-        pi = PhotoInterface('citybeat', 'photos')
+        pi = PhotoInterface()
         _fifteen_minutes_ago = 15*60
         cursor  = pi.rangeQuery( self.region , (str( self.cur_time - _fifteen_minutes_ago), str(self.cur_time)) )
         _photos = []
@@ -119,25 +119,19 @@ def run():
 
     regions = huge_region.divideRegions(alarm_region_size,alarm_region_size)
     filtered_regions = huge_region.filterRegions( regions)
-    # get the same regions as in db. Here it's 10 by 10
+
+    cur_utc_time = getCurrentStampUTC()
 
     regions = filtered_regions
-    test_cnt = 0
     print 'all regions',len(regions)
     for region in regions:
         #delete the last 7*24*3600 to set it back to Dec 1st
-        start_of_time =  1354320000 + 7*24*3600
-        end_of_time = 1354320000 + 7*24*3600 + 7*24*3600
-        alarm = Alarm(region, start_of_time, end_of_time, 'next_week_prediction_25by25', 'next_week_candidate_event_25by25')
-        cnt = 0
+        start_of_time =  cur_utc_time
+        end_of_time = cur_utc_time
+        alarm = Alarm(region, start_of_time, end_of_time, 'online_prediction', 'online_candidate')
         region.display()
-        xia_cnt = 0
-        while alarm.nextTimeStep(300):
-            cnt += 1
-            alarm.fireAlarm()
-            if cnt%100==0:
-                print 'cur = ', time.gmtime(float(alarm.cur_time) )
-                print 'alarm = ',cnt
-        print '\n\n' 
+        alarm.fireAlarm()
+
+
 if __name__ == "__main__":
     run()                            

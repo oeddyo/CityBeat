@@ -35,13 +35,13 @@ def save_to_mongo(_results, _saved, model_update_time):
                 to_save = (result_pair[0], result_pair[1].return_value, result_pair[2]) 
                 region = to_save[0]
                 for single_hour_prediction in zip(to_save[1], to_save[2]):
-                    p = Prediction('citybeat', 'online_prediction')
+                    p = Prediction()
                     p.setRegion(region)
                     p.setModelUpdateTime(model_update_time)
                     p.setPredictedValues( float(single_hour_prediction[0][1]), math.sqrt(float(single_hour_prediction[0][2])))
                     p.setTime( str(single_hour_prediction[1]) )
                     p_json = p.toJSON()
-                    save_interface = PredictionInterface()
+                    save_interface = PredictionInterface('citybeat','online_prediction')
                     save_interface.saveDocument( p_json )
     return done
 
@@ -62,17 +62,18 @@ def run():
         r.display()
 
     cur_utc_timestamp = getCurrentStampUTC() 
-    #experiment start time - Dec 1 00:00
+    
     _results =  {} 
     _saved = {}
 
     redis_conn = Redis("tall4")
     redis_queue = Queue(connection = redis_conn)
+    fourteen_days_ago = cur_utc_timestamp - 24*14*3600
 
     for i in range(len(regions)):
         test_region = regions[i]
         try:
-            gp = GaussianProcessJob( test_region, str(fourteen_days_ago), str(clock) , redis_queue)
+            gp = GaussianProcessJob( test_region, str(fourteen_days_ago), str(cur_utc_timestamp) , redis_queue)
             res, pred_time = gp.submit()
         except Exception as e:
             print 'Initialization of gp error. continue, error message %s'%(e)

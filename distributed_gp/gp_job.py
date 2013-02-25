@@ -11,8 +11,6 @@ from uuid import uuid4
 from utility.instagram_time_series import InstagramTimeSeries
 from utility.region import Region
 from utility.config import InstagramConfig
-#from rq import Queue, Connection
-#from redis import Redis
 
 from do_gp import Predict
 
