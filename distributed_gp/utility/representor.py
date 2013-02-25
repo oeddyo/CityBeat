@@ -24,8 +24,6 @@ class Representor():
         self.events = [e for e in self.ei.getAllDocuments()]
         self._captions = self._getAllCaptions()
         
-#        print '# of all captions ',len(self._captions)
-#        print 'begin fitting tf-idf...'
 
         if vectorizer is None:
             self.vectorizer = TfidfVectorizer( max_df=0.7, min_df = 3, strip_accents='ascii', smooth_idf=True, preprocessor = self._preProcessor, sublinear_tf=True )
@@ -33,8 +31,6 @@ class Representor():
             self.vectorizer = vectorizer
         self.vectorizer.fit_transform(self._captions)
         print self.vectorizer.get_feature_names()
-#        print 'fitting tf-idf completed!'
-    
     def _preProcessor(self, caption):
         regex = re.compile(r"#\w+")
         match = regex.findall(caption)
@@ -73,8 +69,6 @@ class Representor():
         return event_captions 
     
     def getRepresentivePhotos(self, event):
-#        print '\n' 
-#        print event['_id']
         
         event_captions = self._getEventCaptions(event)
         event_tfidf = self.vectorizer.transform(event_captions)
