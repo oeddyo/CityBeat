@@ -2,7 +2,7 @@ from event_interface import EventInterface
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from math import sqrt
-from numpy import dot
+import numpy as np
 from scipy.sparse import *
 from sklearn.metrics.pairwise import linear_kernel
 
@@ -22,18 +22,18 @@ class Representor():
         self.ei.setDB('citybeat')
         self.ei.setCollection('candidate_event_25by25_merged')
 
-        self.events = [e for e in self.ei.getAllDocuments(  )]
+        self.events = [e for e in self.ei.getAllDocuments(limit=30  )]
         self._captions = self._getAllCaptions()
         
 #        print '# of all captions ',len(self._captions)
 #        print 'begin fitting tf-idf...'
 
         if vectorizer is None:
-            self.vectorizer = TfidfVectorizer( max_df=0.5, min_df = 2, strip_accents='ascii', smooth_idf=True, stop_words='english', preprocessor = self._preProcessor)
+            self.vectorizer = TfidfVectorizer( max_df=0.7, min_df = 3, strip_accents='ascii', smooth_idf=True, preprocessor = self._preProcessor)
         else:
             self.vectorizer = vectorizer
         self.vectorizer.fit_transform(self._captions)
-        self.vectorizer.vocabulary_
+        print self.vectorizer.get_feature_names()
 #        print 'fitting tf-idf completed!'
     
     def _preProcessor(self, caption):
@@ -46,6 +46,10 @@ class Representor():
 
     def _getAllCaptions(self):
         _captions = []
+        for event in self.events:
+            _captions += self._getEventCaptions(event)
+        """
+        _captions = []
         for e in self.events:
             caption = ""
             for p in e['photos']:
@@ -55,6 +59,7 @@ class Representor():
                         _captions.append(text) 
                 except:
                     continue
+        """
         return _captions
     
     def _getEventCaptions(self, event):
@@ -63,7 +68,7 @@ class Representor():
         event_captions = []
         for p in event['photos']:
             try:
-                event_captions.append( p['caption']['text'] )
+                event_captions.append( p['caption']['text'].lower() )
             except:
                 event_captions.append( "" )
         return event_captions 
@@ -88,8 +93,21 @@ class Representor():
 
         return photos_to_return 
 
-    #def getTfidfVector(self, event):
-    #    pass
+    def getTfidfVector(self, event):
+        print 'the idx is ',self.vectorizer.get_feature_names()
+        print self.vectorizer.transform(self._getEventCaptions(event)).mean(axis=0)
+        voc = self.vectorizer.get_feature_names()
+        tf_vec = self.vectorizer.transform(self._getEventCaptions(event)).mean(axis=0)
+        print type(tf_vec)
+
+        print 'lens are ',len(voc),   tf_vec[0].shape
+
+        print 'words none-zero'
+        print self._getEventCaptions(event) 
+        res = np.nonzero(tf_vec)[1]
+        res_list = res.ravel().tolist()[0] 
+        for n in res_list:
+            print voc[n]
 
 
 def main():
@@ -105,8 +123,9 @@ def main():
             negative.append(t[0])
     rep = Representor()
 
-#    for event in rep.events:
-#        print len(rep.getRepresentivePhotos( event ))
+    for event in rep.events:
+        #print len(rep.getRepresentivePhotos( event ))
+        print rep.getTfidfVector(event),'\n'
     
     return 
     
