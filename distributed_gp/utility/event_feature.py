@@ -193,8 +193,8 @@ class EventFeature(Event):
 		print feature_list[-1]
 			
 			
-	@staticmethod
-	def GenerateArffFileHeader(feature_list=None):
+#	@staticmethod
+	def GenerateArffFileHeader(self):
 		print '@relation CityBeatEvents'
 		print '@attribute AvgCaptionLen real'
 		print '@attribute AvgPhotoDis real'

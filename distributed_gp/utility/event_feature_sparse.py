@@ -45,8 +45,8 @@ class EventFeatureSparse(EventFeature):
 		print feature_list[-1]
 		print '}'
 		
-	@staticmethod
-	def GenerateArffFileHeader(self, feature_list=None):
+#	@staticmethod
+	def GenerateArffFileHeader(self):
 		print '@relation CityBeatEvents'
 		
 		word_list = self._representor.getCorpusWordsVector()

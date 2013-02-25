@@ -148,6 +148,7 @@ def readFromArff():
 def generateData(use_all_event=True):
 	
 	rep = Representor()
+#	rep = None
 	corpus = Corpus()
 	corpus.buildCorpusOnDB('citybeat', 'candidate_event_25by25_merged')
 	
