@@ -22,7 +22,7 @@ class Representor():
         self.ei.setDB('citybeat')
         self.ei.setCollection('candidate_event_25by25_merged')
 
-        self.events = [e for e in self.ei.getAllDocuments( limit = 10)]
+        self.events = [e for e in self.ei.getAllDocuments(  )]
         self._captions = self._getAllCaptions()
         
 #        print '# of all captions ',len(self._captions)
@@ -88,8 +88,8 @@ class Representor():
 
         return photos_to_return 
 
-    def getTfidfVector(self, event):
-        pass
+    #def getTfidfVector(self, event):
+    #    pass
 
 
 def main():
