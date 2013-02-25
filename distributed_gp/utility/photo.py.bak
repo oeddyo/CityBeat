@@ -19,8 +19,8 @@ class Photo:
 			for c in location.lower():
 				if c >= 'a' and c <= 'z':
 					mod_location += c
-		except Exception as e:
-			pass
+			except Exception as e:
+				pass
 		return mod_location
 	
 	def getLocations(self):

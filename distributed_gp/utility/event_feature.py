@@ -40,8 +40,8 @@ class EventFeature(Event):
 	def _selectRelaventPhotos(self, k=10):
 		photos = self._representor.getRepresentivePhotos(self.toJSON())
 		# choose first 30%
-		k = max(k, 0.3*len(photos))
-		k = int(k + 0.5)
+#		k = max(k, 0.3*len(photos))
+#		k = int(k + 0.5)
 		self.setPhotos(photos[0:min(k, len(photos))])
 		
 	def _selectOnePhotoForOneUser(self):
@@ -170,6 +170,10 @@ class EventFeature(Event):
 #		        event.getEntropy(entropy_para),
 #		        event.getAvgCaptionLen(), event.getRatioOfPeopleToPhoto()]
 		
+		
+		location_name_similarity = self.getTopPhotosLocationSimilarity()
+		location_name_same = self.checkIfTopPhotoLocationSame()
+		
 		return [avg_cap_len, avg_photo_dis, avg_photo_dis_cap, cap_per, people_num, #duration,
 		        std, top_word_pop, zscore, entropy, ratio,
 		        diff_avg_photo_dis, diff_top_word_pop, diff_entropy,
@@ -177,6 +181,7 @@ class EventFeature(Event):
 		        tfidf_top3[0], tfidf_top3[1], tfidf_top3[2], 
 		        hashtage_cnt3[0], hashtage_cnt3[1], hashtage_cnt3[2],
 		        number_photos_associated_with_keywords3[0], number_photos_associated_with_keywords3[1], number_photos_associated_with_keywords3[2],
+		        location_name_similarity, location_name_same,
 		        event_id,
 		        label]
 		        
@@ -212,6 +217,9 @@ class EventFeature(Event):
 		print '@attribute NumberOfPhotsoContaingTopWord1 real'
 		print '@attribute NumberOfPhotsoContaingTopWord2 real'
 		print '@attribute NumberOfPhotsoContaingTopWord3 real'
+		
+		print '@attribute Top10PhotoLocationNameFreq real'
+		print '@attribute Top3PhotoLocationNameSame real'
 								
 		print '@attribute ID string'
 		print '@attribute label {1,-1}'
@@ -378,9 +386,31 @@ class EventFeature(Event):
 		
 	
 	def getTopPhotosLocationSimilarity(k=10):
+		freq = {}
+		most_freq = 0
 		k = min(k, len(self._event['photos']))
-		pass
+		for photo in self._event['photos']:
+			p = Photo(photo)
+			location_name = p.getLocationName()
+			if location_name == '':
+					continue
+			cur_freq = freq.get(location_name, 0) + 1
+			freq[location_name] = cur_freq
+			if cur_freq > most_freq:
+				most_freq = cur_freq
+		return most_freq*1.0 / k
 		
+	def checkIfTopPhotoLocationSame(k=3):
+		k = min(k, len(self._event['photos']))
+		photos = self._event['photos']
+		location_name = Photo(photos[0]).getLocationName()
+		if location_name == '':
+			return 0
+		for i in xrange(1, len(photos)):
+			if not Photo(photos[i]).getLocationName() == location_name:
+				return 0
+		return 1
+			
 	def getHistoricFeatures(self, entropy_para):
 		# this method computes the features that capture the difference between current
 		# event and background knowledge
