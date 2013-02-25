@@ -35,14 +35,14 @@ class EventFeatureSparse(EventFeature):
 		print '{',
 		tfidf_list = self.getAllWordTFIDF()
 		if len(tfidf_list) > 0:
-			for word,ind,freq in tfidf_list:
+			for ind,word,freq in tfidf_list:
 					print ind, freq,',',
 					
 		feature_list = self.extractFeatures()
 		n = len(feature_list)
 		for i in xrange(0, n-1):
-			print feature_list[i],',',
-		print feature_list[-1]
+			print i+len(tfidf_list), feature_list[i],',',
+		print n-1+len(tfidf_list), feature_list[-1]
 		print '}'
 		
 #	@staticmethod
