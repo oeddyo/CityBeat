@@ -29,6 +29,7 @@ class EventFeatureSparse(EventFeature):
 		feature_list = []
 		for i in xrange(0, len(index_list)):
 			feature_list.append([index_list[i], word_list[i], tfidf_list[i]])
+		return feature_list
 		        
 	def printFeatures(self):
 		print '{',
