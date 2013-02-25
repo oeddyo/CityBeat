@@ -25,7 +25,10 @@ class EventFeatureSparse(EventFeature):
 		super(EventFeatureSparse, self).__init__(event, corpus, representor)
 	
 	def getAllWordTFIDF(self):
-		pass
+		index_list, word_list, tfidf_list = self._representor.getTfidfVector(self._event)
+		feature_list = []
+		for i in xrange(0, len(index_list)):
+			feature_list.append([index_list[i], word_list[i], tfidf_list[i]])
 		        
 	def printFeatures(self):
 		print '{',
@@ -42,10 +45,11 @@ class EventFeatureSparse(EventFeature):
 		print '}'
 		
 	@staticmethod
-	def GenerateArffFileHeader(feature_list=None, word_list):
+	def GenerateArffFileHeader(feature_list=None):
 		print '@relation CityBeatEvents'
 		
-		for word, ind in word_list:
+		word_list = self._representor.getCorpusWordsVector()
+		for word in word_list:
 			print '@attribute tfidf_' + word + ' real'
 			
 		print '@attribute AvgCaptionLen real'

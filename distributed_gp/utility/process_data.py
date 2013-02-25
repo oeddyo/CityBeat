@@ -1,5 +1,6 @@
 from event_interface import EventInterface
 from event_feature import EventFeature
+from event_feature_sparse import EventFeatureSparse
 from photo_interface import PhotoInterface
 from photo import Photo
 from region import Region
@@ -156,12 +157,12 @@ def generateData(use_all_event=True):
 	EventFeature.GenerateArffFileHeader()
 			
 	for event in true_event_list:
-		EventFeature(event, corpus, rep).printFeatures()
+		EventFeatureSparse(event, corpus, rep).printFeatures()
 		
 	random.shuffle(false_event_list)
 	j = 0
 	for event in false_event_list:
-		EventFeature(event, corpus, rep).printFeatures()
+		EventFeatureSparse(event, corpus, rep).printFeatures()
 		j += 1
 		if not use_all_event and j == len(true_events):
 			break
