@@ -400,7 +400,7 @@ class EventFeature(Event):
 				most_freq = cur_freq
 		return most_freq*1.0 / k
 		
-	def checkIfTopPhotoLocationSame(k=3):
+	def checkIfTopPhotoLocationSame(self, k=3):
 		k = min(k, len(self._event['photos']))
 		photos = self._event['photos']
 		location_name = Photo(photos[0]).getLocationName()

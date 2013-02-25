@@ -40,8 +40,8 @@ class EventFeature(Event):
 	def _selectRelaventPhotos(self, k=10):
 		photos = self._representor.getRepresentivePhotos(self.toJSON())
 		# choose first 30%
-		k = max(k, 0.3*len(photos))
-		k = int(k + 0.5)
+#		k = max(k, 0.3*len(photos))
+#		k = int(k + 0.5)
 		self.setPhotos(photos[0:min(k, len(photos))])
 		
 	def _selectOnePhotoForOneUser(self):
