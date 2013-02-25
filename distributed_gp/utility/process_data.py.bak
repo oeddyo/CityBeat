@@ -163,7 +163,7 @@ def generateData(use_all_event=True):
 	
 	false_events = []
 	for event in false_event_list:
-		event = EventFeature(event, corpus=None, representor=rep)
+		event = EventFeature(event, corpus, representor=rep)
 		feature_vector = event.extractFeatures(3)
 		false_events.append(feature_vector)
 

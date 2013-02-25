@@ -151,8 +151,8 @@ def generateData(use_all_event=True):
 	corpus.buildCorpusOnDB('citybeat', 'candidate_event_25by25_merged')
 	
 #	true_event_list, false_event_list = readCrowdFlowerData()
-	true_event_list, false_event_list = readFromArff()
-#	true_event_list, false_event_list = readCrowdFlowerData2()
+#	true_event_list, false_event_list = readFromArff()
+	true_event_list, false_event_list = readCrowdFlowerData2()
 	EventFeature.GenerateArffFileHeader()
 	true_events = []
 	for event in true_event_list:
