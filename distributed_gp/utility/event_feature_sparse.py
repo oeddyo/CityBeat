@@ -9,8 +9,10 @@ from stopwords import Stopwords
 from corpus import Corpus
 from _kl_divergence import kldiv
 
+
 import kl_divergence as KLDivergence
 
+import sys
 import operator
 import string
 import types
@@ -49,10 +51,10 @@ class EventFeatureSparse(EventFeature):
 #	@staticmethod
 	def GenerateArffFileHeader(self):
 		print '@relation CityBeatEvents'
-		
+
 		word_list = self._representor.getCorpusWordsVector()
 		for word in word_list:
-			print '@attribute tfidf_' + word + ' real'
+			print '@attribute tfidf_' + word.encode('utf8') + ' real'
 			
 		print '@attribute AvgCaptionLen real'
 		print '@attribute AvgPhotoDis real'
