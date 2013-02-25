@@ -29,7 +29,7 @@ class Representor():
 #        print 'begin fitting tf-idf...'
 
         if vectorizer is None:
-            self.vectorizer = TfidfVectorizer( max_df=0.7, min_df = 3, strip_accents='ascii', smooth_idf=True, preprocessor = self._preProcessor)
+            self.vectorizer = TfidfVectorizer( max_df=0.7, min_df = 3, strip_accents='ascii', smooth_idf=True, preprocessor = self._preProcessor, sublinear_tf=True )
         else:
             self.vectorizer = vectorizer
         self.vectorizer.fit_transform(self._captions)
@@ -98,16 +98,27 @@ class Representor():
         print self.vectorizer.transform(self._getEventCaptions(event)).mean(axis=0)
         voc = self.vectorizer.get_feature_names()
         tf_vec = self.vectorizer.transform(self._getEventCaptions(event)).mean(axis=0)
-        print type(tf_vec)
 
         print 'lens are ',len(voc),   tf_vec[0].shape
 
         print 'words none-zero'
-        print self._getEventCaptions(event) 
-        res = np.nonzero(tf_vec)[1]
-        res_list = res.ravel().tolist()[0] 
+        print self._getEventCaptions(event)
+
+        nonzeros = np.nonzero(tf_vec)[1]
+        res_list = nonzeros.ravel().tolist()[0] 
+
+        values = []
+        words = []
         for n in res_list:
-            print voc[n]
+            words.append( voc[n] )
+            values.append( tf_vec[0,n] )
+
+        print words
+        print values
+        return res_list, words, values
+
+    def getCorpusWordsVector(self):
+        return self.vectorizer.get_feature_names()
 
 
 def main():
