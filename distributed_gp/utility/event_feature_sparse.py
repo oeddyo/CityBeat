@@ -41,16 +41,16 @@ class EventFeatureSparse(EventFeature):
 		feature_list = self.extractFeatures()
 		n = len(feature_list)
 		for i in xrange(0, n-1):
-			print i+len(tfidf_list), feature_list[i],',',
-		print n-1+len(tfidf_list), feature_list[-1]
+			print i+len(self._word_list), feature_list[i],',',
+		print n-1+len(self._word_list), feature_list[-1]
 		print '}'
 		
 #	@staticmethod
 	def GenerateArffFileHeader(self):
 		print '@relation CityBeatEvents'
 		
-		word_list = self._representor.getCorpusWordsVector()
-		for word in word_list:
+		self._word_list = self._representor.getCorpusWordsVector()
+		for word in self._word_list:
 			print '@attribute tfidf_' + word + ' real'
 			
 		print '@attribute AvgCaptionLen real'
