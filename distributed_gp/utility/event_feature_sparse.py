@@ -43,7 +43,7 @@ class EventFeatureSparse(EventFeature):
 		n = len(feature_list)
 		for i in xrange(0, n-1):
 			print i+self._corpus_len, feature_list[i],',',
-		print n-1+self._corpus_len, feature_list[-1]
+		print n-1+self._corpus_len, feature_list[-1],
 		print '}'
 		
 #	@staticmethod
