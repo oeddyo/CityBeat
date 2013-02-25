@@ -154,7 +154,7 @@ def generateData(use_all_event=True):
 #	true_event_list, false_event_list = readCrowdFlowerData()
 	true_event_list, false_event_list = readFromArff()
 #	true_event_list, false_event_list = readCrowdFlowerData2()
-	EventFeatureSparse.GenerateArffFileHeader()
+	EventFeatureSparse(true_event_list[0], corpus, rep).GenerateArffFileHeader()
 			
 	for event in true_event_list:
 		EventFeatureSparse(event, corpus, rep).printFeatures()
