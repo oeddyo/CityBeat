@@ -159,10 +159,10 @@ class EventFeature(Event):
 		
 		
 #		historic_features = [0]*3  # for test only
-		historic_features = self.getHistoricFeatures(entropy_para)
-		diff_avg_photo_dis = avg_photo_dis - historic_features[0]
-		diff_top_word_pop = historic_features[1]
-		diff_entropy = historic_features[2]
+#		historic_features = self.getHistoricFeatures(entropy_para)
+#		diff_avg_photo_dis = avg_photo_dis - historic_features[0]
+#		diff_top_word_pop = historic_features[1]
+#		diff_entropy = historic_features[2]
 #		diff_avg_cap_len = avg_cap_len - historic_features[3]
 #		diff_ratio = ratio - historic_features[4]
 		
@@ -176,7 +176,7 @@ class EventFeature(Event):
 		
 		return [avg_cap_len, avg_photo_dis, avg_photo_dis_cap, cap_per, people_num, #duration,
 		        std, top_word_pop, zscore, entropy, ratio,
-		        diff_avg_photo_dis, diff_top_word_pop, diff_entropy,
+#		        diff_avg_photo_dis, diff_top_word_pop, diff_entropy,
 #		        diff_avg_cap_len, diff_ratio,
 #		        tfidf_top3[0], tfidf_top3[1], tfidf_top3[2], 
 #		        hashtage_cnt3[0], hashtage_cnt3[1], hashtage_cnt3[2],
