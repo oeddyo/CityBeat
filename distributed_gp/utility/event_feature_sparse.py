@@ -41,7 +41,7 @@ class EventFeatureSparse(EventFeature):
 		feature_list = self.extractFeatures()
 		n = len(feature_list)
 		for i in xrange(0, n-1):
-			print feature_list[i],','
+			print feature_list[i],',',
 		print feature_list[-1]
 		print '}'
 		
