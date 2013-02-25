@@ -147,8 +147,8 @@ def readFromArff():
 def generateData(use_all_event=True):
 	
 	rep = Representor()
-	corpus = Corpus()
-	corpus.buildCorpusOnDB('citybeat', 'candidate_event_25by25_merged')
+#	corpus = Corpus()
+#	corpus.buildCorpusOnDB('citybeat', 'candidate_event_25by25_merged')
 	
 #	true_event_list, false_event_list = readCrowdFlowerData()
 	true_event_list, false_event_list = readFromArff()

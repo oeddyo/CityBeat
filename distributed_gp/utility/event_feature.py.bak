@@ -385,7 +385,7 @@ class EventFeature(Event):
 		return 1.0 * self.getActualValue() / len(self._event['photos'])
 		
 	
-	def getTopPhotosLocationSimilarity(k=10):
+	def getTopPhotosLocationSimilarity(self, k=10):
 		freq = {}
 		most_freq = 0
 		k = min(k, len(self._event['photos']))
