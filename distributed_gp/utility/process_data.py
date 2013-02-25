@@ -151,34 +151,17 @@ def generateData(use_all_event=True):
 	corpus.buildCorpusOnDB('citybeat', 'candidate_event_25by25_merged')
 	
 #	true_event_list, false_event_list = readCrowdFlowerData()
-#	true_event_list, false_event_list = readFromArff()
-	true_event_list, false_event_list = readCrowdFlowerData2()
+	true_event_list, false_event_list = readFromArff()
+#	true_event_list, false_event_list = readCrowdFlowerData2()
 	EventFeature.GenerateArffFileHeader()
-	true_events = []
-	for event in true_event_list:
-		event = EventFeature(event, corpus, representor=rep)
-		feature_vector = event.extractFeatures(3)
-		true_events.append(feature_vector)
-		
-	
-	false_events = []
-	for event in false_event_list:
-		event = EventFeature(event, corpus, representor=rep)
-		feature_vector = event.extractFeatures(3)
-		false_events.append(feature_vector)
-
-	random.shuffle(false_events)
 			
-	for fv in true_events:
-		for i in xrange(0, len(fv) - 1):
-			print fv[i],',',
-		print fv[-1]
+	for event in true_event_list:
+		EventFeature(event, corpus, rep).printFeatures()
 		
+	random.shuffle(false_event_list)
 	j = 0
-	for fv in false_events:
-		for i in xrange(0, len(fv) - 1):
-			print fv[i],',',
-		print fv[-1]
+	for event in false_event_list:
+		EventFeature(event, corpus, rep).printFeatures()
 		j += 1
 		if not use_all_event and j == len(true_events):
 			break

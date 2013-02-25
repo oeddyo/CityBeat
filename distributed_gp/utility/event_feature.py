@@ -185,6 +185,14 @@ class EventFeature(Event):
 		        event_id,
 		        label]
 		        
+	def printFeatures(self):
+		feature_list = self.extractFeatures()
+		n = len(feature_list)
+		for i in xrange(0, n-1):
+			print feature_list[i],',',
+		print feature_list[-1]
+			
+			
 	@staticmethod
 	def GenerateArffFileHeader(feature_list=None):
 		print '@relation CityBeatEvents'

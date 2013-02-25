@@ -48,21 +48,18 @@ class PredictionInterface(MongoDBInterface):
 
 if __name__=="__main__":
 	pi = PredictionInterface()
-	pi.setCollection('prediction_25by25')
+	pi.setDB('citybeat')
+	pi.setCollection('online_prediction')
 	
-	region = {
-		"min_lat" : 40.72766796,
-		"max_lng" : -73.99410076,
-		"min_lng" : -74.00210704,
-		"max_lat" : 40.73297324
-	}
+	region = {'min_lat': 40.775415479999999, 
+		        'max_lng': -73.970081919999998, 
+		        'min_lng': -73.978088200000002, 
+		        'max_lat': 40.780720760000001}
 	
 	condition = ({'region.min_lat':region['min_lat'],
 		          'region.min_lng':region['min_lng'],
 		          'region.max_lat':region['max_lat'],
 		          'region.max_lng':region['max_lng']})
-	predictions = pi.getAllDocuments(condition).sort('time', 1)
-	for prediction in predictions:
-		t = int(prediction['time'])
-		print getDate(t)
+	prediction = pi.getNearestPrediction(region, '1361768528') #1361772000
+	print prediction
 	

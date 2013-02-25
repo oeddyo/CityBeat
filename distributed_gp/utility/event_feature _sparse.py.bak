@@ -1,4 +1,5 @@
 from event_interface import EventInterface
+from event_feature import EventFeature
 from photo_interface import PhotoInterface
 from photo import Photo
 from region import Region
@@ -16,22 +17,13 @@ import types
 import random
 import math
 
-class EventFeature(Event):
+class EventFeatureSparse(EventFeature):
 	# this class is the extension of class Event, especially for feature extraction
 	# to prevent the class Event from being too long to read
 	
 	def __init__(self, event, corpus=None, representor=None):
-		super(EventFeature, self).__init__(event)
-		# note that, if you want to use any feature related with tfidf, corpus must be set
-		# the the definition of Corpus class in corpus.py
-		if corpus is not None:
-			self._corpus = corpus
-		if representor is not None:
-			self._representor = representor
+		super(EventFeatureSparse, self).__init__(event, corpus, representor)
 				
-#	def getDuration(self):
-#		return self.getLatestPhotoTime() - self.getEarliestPhotoTime()
-	
 	
 	def preprocess(self):
 		self._selectOnePhotoForOneUser()
@@ -174,7 +166,7 @@ class EventFeature(Event):
 		location_name_similarity = self.getTopPhotosLocationSimilarity()
 		location_name_same = self.checkIfTopPhotoLocationSame()
 		
-		return [avg_cap_len, avg_photo_dis, avg_photo_dis_cap, cap_per, people_num, #duration,
+		return [avg_cap_len, avg_photo_dis, avg_photo_dis_cap, cap_per, #people_num, #duration,
 		        std, top_word_pop, zscore, entropy, ratio,
 #		        diff_avg_photo_dis, diff_top_word_pop, diff_entropy,
 #		        diff_avg_cap_len, diff_ratio,
