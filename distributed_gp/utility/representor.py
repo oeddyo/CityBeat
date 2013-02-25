@@ -26,7 +26,7 @@ class Representor():
         
 
         if vectorizer is None:
-            self.vectorizer = TfidfVectorizer( max_df=0.7, min_df = 3, strip_accents='ascii', smooth_idf=True, preprocessor = self._preProcessor, sublinear_tf=True )
+            self.vectorizer = TfidfVectorizer( max_df=0.7, min_df = 3, strip_accents='ascii', smooth_idf=True, preprocessor = self._preProcessor, sublinear_tf=True)
         else:
             self.vectorizer = vectorizer
         self.vectorizer.fit_transform(self._captions)
@@ -126,7 +126,11 @@ def main():
         elif t[1]=='-1':
             negative.append(t[0])
     rep = Representor()
+    print rep.getCorpusWordsVector()
+    return
 
+
+ 
     for event in rep.events:
         #print len(rep.getRepresentivePhotos( event ))
         print rep.getTfidfVector(event),'\n'
