@@ -22,7 +22,7 @@ class Representor():
         self.ei.setDB('citybeat')
         self.ei.setCollection('candidate_event_25by25_merged')
 
-        self.events = [e for e in self.ei.getAllDocuments( )]
+        self.events = [e for e in self.ei.getAllDocuments( limit = 10)]
         self._captions = self._getAllCaptions()
         
 #        print '# of all captions ',len(self._captions)
@@ -33,12 +33,13 @@ class Representor():
         else:
             self.vectorizer = vectorizer
         self.vectorizer.fit_transform(self._captions)
+        self.vectorizer.vocabulary_
 #        print 'fitting tf-idf completed!'
     
     def _preProcessor(self, caption):
         regex = re.compile(r"#\w+")
         match = regex.findall(caption)
-        if len(match)>=3:
+        if len(match)>=5:
             return ""
         else:
             return caption
@@ -87,9 +88,8 @@ class Representor():
 
         return photos_to_return 
 
-
-def feature_extractor(event):
-    return
+    def getTfidfVector(self, event):
+        pass
 
 
 def main():
