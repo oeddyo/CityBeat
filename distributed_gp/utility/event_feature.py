@@ -139,7 +139,7 @@ class EventFeature(Event):
 		avg_photo_dis = self.getAvgPhotoDis()
 		avg_photo_dis_cap = self.getAvgPhotoDisByCaption()
 		cap_per = self.getCaptionPercentage()
-		people_num = self.getActualValueByCounting()
+#		people_num = self.getActualValueByCounting()
 #		duration = self.getDuration()
 #		stop_word_per = self.getPercentageOfStopwordsFromTopWords()
 		std = self.getPredictedStd()
@@ -159,10 +159,10 @@ class EventFeature(Event):
 		
 		
 #		historic_features = [0]*3  # for test only
-		historic_features = self.getHistoricFeatures(entropy_para)
-		diff_avg_photo_dis = avg_photo_dis - historic_features[0]
-		diff_top_word_pop = historic_features[1]
-		diff_entropy = historic_features[2]
+#		historic_features = self.getHistoricFeatures(entropy_para)
+#		diff_avg_photo_dis = avg_photo_dis - historic_features[0]
+#		diff_top_word_pop = historic_features[1]
+#		diff_entropy = historic_features[2]
 #		diff_avg_cap_len = avg_cap_len - historic_features[3]
 #		diff_ratio = ratio - historic_features[4]
 		
@@ -174,9 +174,9 @@ class EventFeature(Event):
 		location_name_similarity = self.getTopPhotosLocationSimilarity()
 		location_name_same = self.checkIfTopPhotoLocationSame()
 		
-		return [avg_cap_len, avg_photo_dis, avg_photo_dis_cap, cap_per, people_num, #duration,
+		return [avg_cap_len, avg_photo_dis, avg_photo_dis_cap, cap_per, #people_num, #duration,
 		        std, top_word_pop, zscore, entropy, ratio,
-		        diff_avg_photo_dis, diff_top_word_pop, diff_entropy,
+#		        diff_avg_photo_dis, diff_top_word_pop, diff_entropy,
 #		        diff_avg_cap_len, diff_ratio,
 		        tfidf_top3[0], tfidf_top3[1], tfidf_top3[2], 
 		        hashtage_cnt3[0], hashtage_cnt3[1], hashtage_cnt3[2],
@@ -192,7 +192,7 @@ class EventFeature(Event):
 		print '@attribute AvgPhotoDis real'
 		print '@attribute AvgPhotoDisbyCap real'
 		print '@attribute CaptionPercentage real'
-		print '@attribute PeopleNumber real'
+#		print '@attribute PeopleNumber real'
 #		print '@attribute Duration real'
 #		print '@attribute PercentageOfStopwordsFromTopWords real'
 		print '@attribute PredictedStd real'
@@ -200,11 +200,9 @@ class EventFeature(Event):
 		print '@attribute Zscore real'
 		print '@attribute Entropy real'
 		print '@attribute TheRatioOfPeopleToPhoto real'
-		print '@attribute diff_AvgPhotoDis real'
-		print '@attribute diff_TopWordPopularity real'
-		print '@attribute diff_Entropy real'
-#		print '@attribute diff_AvgCaptionLen real'
-#		print '@attribute diff_TheRatioOfPeopleToPhoto real'
+#		print '@attribute diff_AvgPhotoDis real'
+#		print '@attribute diff_TopWordPopularity real'
+#		print '@attribute diff_Entropy real'
 
 		print '@attribute tfidf1 real'	
 		print '@attribute tfidf2 real'	
@@ -406,7 +404,7 @@ class EventFeature(Event):
 		location_name = Photo(photos[0]).getLocationName()
 		if location_name == '':
 			return 0
-		for i in xrange(1, len(photos)):
+		for i in xrange(1, k):
 			if not Photo(photos[i]).getLocationName() == location_name:
 				return 0
 		return 1

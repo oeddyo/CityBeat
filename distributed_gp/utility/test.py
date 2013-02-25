@@ -30,7 +30,8 @@ for event in events:
 	if event['actual_value'] < 10:
 		continue
 	try:
-		print event['photos'][0]['location']['name']
+		for photo in event['photos']:
+			print Photo(photo).getLocationName()
 	except Exception as e:
 		print 
 
