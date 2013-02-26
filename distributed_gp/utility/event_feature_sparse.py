@@ -42,7 +42,7 @@ class EventFeatureSparse(EventFeature):
 			assert word in word_index
 			sorted_tfidf_list.append([word_index[word], freq])
 			
-		sorted_tfidf_list.sort(key=operator.itemgetter(1))
+		sorted_tfidf_list.sort(key=operator.itemgetter(0))
 		
 		for ind, freq in sorted_tfidf_list:
 			print ind, freq,',',
