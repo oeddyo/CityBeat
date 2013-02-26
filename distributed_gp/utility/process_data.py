@@ -161,7 +161,7 @@ def getCorpusWordList(rep, event_list):
 				ind += 1
 				word_index_list.append(word)
 			word_list[i][0] = word_index_dict[word]
-	return word_index_list
+	return word_index_dict, word_index_list
 
 def generateData(use_all_event=True):
 	
@@ -173,19 +173,19 @@ def generateData(use_all_event=True):
 #	true_event_list, false_event_list = readCrowdFlowerData()
 	true_event_list, false_event_list = readFromArff()
 #	true_event_list, false_event_list = readCrowdFlowerData2()
-	
-	word_list = getCorpusWordList(rep, true_event_list + false_event_list)
-	corpus_len = len(word_list)
+	#323232432
+	a = 1
+	word_index_dict, word_list = getCorpusWordList(rep, true_event_list + false_event_list)
 	
 	EventFeatureSparse(None).GenerateArffFileHeader(word_list)
 	
 	for event in true_event_list:
-		EventFeatureSparse(event, corpus, rep).printFeatures(corpus_len)
+		EventFeatureSparse(event, corpus, rep).printFeatures(word_index_dict)
 		
 	random.shuffle(false_event_list)
 	j = 0
 	for event in false_event_list:
-		EventFeatureSparse(event, corpus, rep).printFeatures(corpus_len)
+		EventFeatureSparse(event, corpus, rep).printFeatures(word_index_dict)
 		j += 1
 		if not use_all_event and j == len(true_events):
 			break
