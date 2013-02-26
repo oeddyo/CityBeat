@@ -174,7 +174,6 @@ def generateData(use_all_event=True):
 #	true_event_list, false_event_list = readCrowdFlowerData2()
 	
 	word_index, word_list = getCorpusWordList(rep, true_event_list + false_event_list)
-	print word_list
 	EventFeatureSparse(None).GenerateArffFileHeader(word_list)
 
 	for event in true_event_list:

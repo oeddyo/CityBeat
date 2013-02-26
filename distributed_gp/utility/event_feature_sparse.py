@@ -36,9 +36,16 @@ class EventFeatureSparse(EventFeature):
 	def printFeatures(self, word_index):
 		print '{',
 		tfidf_list = self.getAllWordTFIDF()
+		sorted_tfidf_list = []
+		
 		for ind,word,freq in tfidf_list:
 			assert word in word_index
-			print word_index[word], freq,',',
+			sorted_tfidf_list.append([word_index[word], freq])
+			
+		sorted_tfidf_list.sort(key=operator.itemgetter(1))
+		
+		for ind, freq in sorted_tfidf_list:
+			print ind, freq,',',
 					
 		feature_list = self.extractFeatures()
 		n = len(feature_list)
