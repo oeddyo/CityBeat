@@ -153,15 +153,13 @@ def getCorpusWordList(rep, event_list):
 	ind = 0
 	for event in event_list:
 		e = EventFeatureSparse(event, representor=rep)
-		word_list = e.getAllWordTFIDF()
-		for i in xrange(0, len(word_list)):
-			word = word_list[i][1]
+		wl = e.getAllWordTFIDF()
+		for i in xrange(0, len(wl)):
+			word = wl[i][1]
 			if word not in word_index:
 				word_index[word] = ind
 				ind += 1
 				word_list.append(word)
-				
-				
 	return word_index, word_list
 
 def generateData(use_all_event=True):
