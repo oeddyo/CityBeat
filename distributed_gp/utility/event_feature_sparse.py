@@ -23,9 +23,8 @@ class EventFeatureSparse(EventFeature):
 	# this class is the extension of class Event, especially for feature extraction
 	# to prevent the class Event from being too long to read
 	
-	def __init__(self, event, corpus=None, representor=None, corpus_len=0):
+	def __init__(self, event, corpus=None, representor=None):
 		super(EventFeatureSparse, self).__init__(event, corpus, representor)
-		self._corpus_len = corpus_len
 	
 	def getAllWordTFIDF(self):
 		index_list, word_list, tfidf_list = self._representor.getTfidfVector(self._event)
@@ -34,25 +33,23 @@ class EventFeatureSparse(EventFeature):
 			feature_list.append([index_list[i], word_list[i], tfidf_list[i]])
 		return feature_list
 		        
-	def printFeatures(self):
+	def printFeatures(self, corpus_len):
 		print '{',
 		tfidf_list = self.getAllWordTFIDF()
-		if len(tfidf_list) > 0:
-			for ind,word,freq in tfidf_list:
-					print ind, freq,',',
+		for ind,word,freq in tfidf_list:
+			print ind, freq,',',
 					
 		feature_list = self.extractFeatures()
 		n = len(feature_list)
 		for i in xrange(0, n-1):
-			print i+self._corpus_len, feature_list[i],',',
-		print n-1+self._corpus_len, feature_list[-1],
+			print i+corpus_len, feature_list[i],',',
+		print n-1+corpus_len, feature_list[-1],
 		print '}'
 		
-#	@staticmethod
-	def GenerateArffFileHeader(self):
+	@staticmethod
+	def GenerateArffFileHeader(word_list):
 		print '@relation CityBeatEvents'
 
-		word_list = self._representor.getCorpusWordsVector()
 		for word in word_list:
 			print '@attribute tfidf_' + word.encode('utf8') + ' real'
 			
