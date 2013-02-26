@@ -24,11 +24,8 @@ class Representor():
         self.events = [e for e in self.ei.getAllDocuments()]
         self._captions = self._getAllCaptions()
         
-#        print '# of all captions ',len(self._captions)
-#        print 'begin fitting tf-idf...'
-
         if vectorizer is None:
-            self.vectorizer = TfidfVectorizer( max_df=0.7, min_df = 3, strip_accents='ascii', smooth_idf=True, preprocessor = self._preProcessor, sublinear_tf=True )
+            self.vectorizer = TfidfVectorizer( max_df=0.7, min_df = 3, strip_accents='ascii', smooth_idf=True, preprocessor = self._preProcessor, sublinear_tf=True, norm = 'l1')
         else:
             self.vectorizer = vectorizer
         self.vectorizer.fit_transform(self._captions)
@@ -47,27 +44,19 @@ class Representor():
         _captions = []
         for event in self.events:
             _captions += self._getEventCaptions(event)
-        """
-        _captions = []
-        for e in self.events:
-            caption = ""
-            for p in e['photos']:
-                try:
-                    text = p['caption']['text']
-                    if text is not None:
-                        _captions.append(text) 
-                except:
-                    continue
-        """
         return _captions
-    
+
+    def _is_ascii(self, _str):
+        return all(ord(c) < 128 for c in s)
+
     def _getEventCaptions(self, event):
         """For a given event, return the captions as a list. Note for photo without caption,
         use a None to hold the place"""
         event_captions = []
         for p in event['photos']:
             try:
-                event_captions.append( p['caption']['text'].lower() )
+                if self._is_ascii(p['caption']['text']):
+                    event_captions.append( p['caption']['text'].lower() )
             except:
                 event_captions.append( "" )
         return event_captions 
