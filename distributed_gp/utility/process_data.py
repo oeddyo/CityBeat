@@ -173,8 +173,7 @@ def generateData(use_all_event=True):
 #	true_event_list, false_event_list = readCrowdFlowerData()
 	true_event_list, false_event_list = readFromArff()
 #	true_event_list, false_event_list = readCrowdFlowerData2()
-	#323232432
-	a = 1
+
 	word_index_dict, word_list = getCorpusWordList(rep, true_event_list + false_event_list)
 	
 	EventFeatureSparse(None).GenerateArffFileHeader(word_list)
