@@ -148,20 +148,21 @@ def readFromArff():
 
 
 def getCorpusWordList(rep, event_list):
-	word_index_dict={}
-	word_index_list=[]
+	word_index={}
+	word_list=[]
 	ind = 0
 	for event in event_list:
 		e = EventFeatureSparse(event, representor=rep)
 		word_list = e.getAllWordTFIDF()
 		for i in xrange(0, len(word_list)):
 			word = word_list[i][1]
-			if word not in word_index_dict:
-				word_index_dict[word] = ind
+			if word not in word_index:
+				word_index[word] = ind
 				ind += 1
-				word_index_list.append(word)
-			word_list[i][0] = word_index_dict[word]
-	return word_index_list
+				word_list.append(word)
+				
+				
+	return word_index, word_list
 
 def generateData(use_all_event=True):
 	
@@ -174,18 +175,17 @@ def generateData(use_all_event=True):
 	true_event_list, false_event_list = readFromArff()
 #	true_event_list, false_event_list = readCrowdFlowerData2()
 	
-	word_list = getCorpusWordList(rep, true_event_list + false_event_list)
-	corpus_len = len(word_list)
+	word_index, word_list = getCorpusWordList(rep, true_event_list + false_event_list)
 	
 	EventFeatureSparse(None).GenerateArffFileHeader(word_list)
 	
 	for event in true_event_list:
-		EventFeatureSparse(event, corpus, rep).printFeatures(corpus_len)
+		EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
 		
 	random.shuffle(false_event_list)
 	j = 0
 	for event in false_event_list:
-		EventFeatureSparse(event, corpus, rep).printFeatures(corpus_len)
+		EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
 		j += 1
 		if not use_all_event and j == len(true_events):
 			break

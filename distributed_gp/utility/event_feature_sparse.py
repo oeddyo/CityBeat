@@ -33,17 +33,18 @@ class EventFeatureSparse(EventFeature):
 			feature_list.append([index_list[i], word_list[i], tfidf_list[i]])
 		return feature_list
 		        
-	def printFeatures(self, corpus_len):
+	def printFeatures(self, word_index):
 		print '{',
 		tfidf_list = self.getAllWordTFIDF()
 		for ind,word,freq in tfidf_list:
-			print ind, freq,',',
+			assert word in word_index
+			print word_index[word], freq,',',
 					
 		feature_list = self.extractFeatures()
 		n = len(feature_list)
 		for i in xrange(0, n-1):
-			print i+corpus_len, feature_list[i],',',
-		print n-1+corpus_len, feature_list[-1],
+			print i+len(word_index), feature_list[i],',',
+		print n-1+len(word_index), feature_list[-1],
 		print '}'
 		
 	@staticmethod
