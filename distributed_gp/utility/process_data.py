@@ -1,5 +1,6 @@
 from event_interface import EventInterface
 from event_feature import EventFeature
+from event_feature_sparse import EventFeatureSparse
 from photo_interface import PhotoInterface
 from photo import Photo
 from region import Region
@@ -147,21 +148,24 @@ def readFromArff():
 def generateData(use_all_event=True):
 	
 	rep = Representor()
+	corpus_len = len(rep.getCorpusWordsVector())
+#	rep = None
 	corpus = Corpus()
 	corpus.buildCorpusOnDB('citybeat', 'candidate_event_25by25_merged')
 	
 #	true_event_list, false_event_list = readCrowdFlowerData()
 	true_event_list, false_event_list = readFromArff()
 #	true_event_list, false_event_list = readCrowdFlowerData2()
-	EventFeature.GenerateArffFileHeader()
-			
+	
+	EventFeatureSparse(true_event_list[0], corpus, rep).GenerateArffFileHeader()
+	
 	for event in true_event_list:
-		EventFeature(event, corpus, rep).printFeatures()
+		EventFeatureSparse(event, corpus, rep, corpus_len).printFeatures()
 		
 	random.shuffle(false_event_list)
 	j = 0
 	for event in false_event_list:
-		EventFeature(event, corpus, rep).printFeatures()
+		EventFeatureSparse(event, corpus, rep, corpus_len).printFeatures()
 		j += 1
 		if not use_all_event and j == len(true_events):
 			break

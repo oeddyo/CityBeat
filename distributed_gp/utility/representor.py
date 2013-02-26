@@ -24,14 +24,18 @@ class Representor():
         self.events = [e for e in self.ei.getAllDocuments()]
         self._captions = self._getAllCaptions()
         
+<<<<<<< HEAD
         if vectorizer is None:
             self.vectorizer = TfidfVectorizer( max_df=0.7, min_df = 3, strip_accents='ascii', smooth_idf=True, preprocessor = self._preProcessor, sublinear_tf=True, norm = 'l1')
+=======
+
+        if vectorizer is None:
+            self.vectorizer = TfidfVectorizer( max_df=0.7, min_df = 3, strip_accents='ascii', smooth_idf=True, preprocessor = self._preProcessor, sublinear_tf=True)
+>>>>>>> f81c09d0404be5cb9426910fa73d03162bbd0e06
         else:
             self.vectorizer = vectorizer
         self.vectorizer.fit_transform(self._captions)
-        print self.vectorizer.get_feature_names()
-#        print 'fitting tf-idf completed!'
-    
+#        print self.vectorizer.get_feature_names()
     def _preProcessor(self, caption):
         regex = re.compile(r"#\w+")
         match = regex.findall(caption)
@@ -62,8 +66,6 @@ class Representor():
         return event_captions 
     
     def getRepresentivePhotos(self, event):
-#        print '\n' 
-#        print event['_id']
         
         event_captions = self._getEventCaptions(event)
         event_tfidf = self.vectorizer.transform(event_captions)
@@ -82,15 +84,15 @@ class Representor():
         return photos_to_return 
 
     def getTfidfVector(self, event):
-        print 'the idx is ',self.vectorizer.get_feature_names()
-        print self.vectorizer.transform(self._getEventCaptions(event)).mean(axis=0)
+#        print 'the idx is ',self.vectorizer.get_feature_names()
+#        print self.vectorizer.transform(self._getEventCaptions(event)).mean(axis=0)
         voc = self.vectorizer.get_feature_names()
         tf_vec = self.vectorizer.transform(self._getEventCaptions(event)).mean(axis=0)
 
-        print 'lens are ',len(voc),   tf_vec[0].shape
+#        print 'lens are ',len(voc),   tf_vec[0].shape
 
-        print 'words none-zero'
-        print self._getEventCaptions(event)
+#        print 'words none-zero'
+#        print self._getEventCaptions(event)
 
         nonzeros = np.nonzero(tf_vec)[1]
         res_list = nonzeros.ravel().tolist()[0] 
@@ -101,8 +103,8 @@ class Representor():
             words.append( voc[n] )
             values.append( tf_vec[0,n] )
 
-        print words
-        print values
+#        print words
+#        print values
         return res_list, words, values
 
     def getCorpusWordsVector(self):
@@ -121,7 +123,11 @@ def main():
         elif t[1]=='-1':
             negative.append(t[0])
     rep = Representor()
+    print rep.getCorpusWordsVector()
+    return
 
+
+ 
     for event in rep.events:
         #print len(rep.getRepresentivePhotos( event ))
         print rep.getTfidfVector(event),'\n'
