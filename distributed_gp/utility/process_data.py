@@ -17,6 +17,8 @@ import types
 import random
 import math
 
+import sys
+
 def readCrowdFlowerData2():
 	
 	# load modified 
@@ -171,7 +173,11 @@ def generateData(use_all_event=True):
 	
 #	true_event_list, false_event_list = readCrowdFlowerData()
 #	true_event_list, false_event_list = readFromArff()
-	true_event_list, false_event_list = readCrowdFlowerData2()
+#	true_event_list, false_event_list = readCrowdFlowerData2()
+	if use_all_event:
+		true_event_list, false_event_list = readCrowdFlowerData2()
+	else:
+		true_event_list, false_event_list = readFromArff()
 	
 	word_index, word_list = getCorpusWordList(rep, true_event_list + false_event_list)
 	EventFeatureSparse(None).GenerateArffFileHeader(word_list)
@@ -187,6 +193,13 @@ def generateData(use_all_event=True):
 		if not use_all_event and j == len(true_events):
 			break
 
+def main():
+	
+	if len(sys.argv) > 1 and sys.argv[1] == 'unbalanced':
+		generateData()
+	else:
+		assert sys.argv[1] == 'balanced'
+		generateData(False)
+
 if __name__=='__main__':
-	generateData()
-	#readFromArff()
+	main()
