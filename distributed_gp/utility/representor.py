@@ -24,14 +24,8 @@ class Representor():
         self.events = [e for e in self.ei.getAllDocuments()]
         self._captions = self._getAllCaptions()
         
-<<<<<<< HEAD
         if vectorizer is None:
             self.vectorizer = TfidfVectorizer( max_df=0.7, min_df = 3, strip_accents='ascii', smooth_idf=True, preprocessor = self._preProcessor, sublinear_tf=True, norm = 'l1')
-=======
-
-        if vectorizer is None:
-            self.vectorizer = TfidfVectorizer( max_df=0.7, min_df = 3, strip_accents='ascii', smooth_idf=True, preprocessor = self._preProcessor, sublinear_tf=True)
->>>>>>> f81c09d0404be5cb9426910fa73d03162bbd0e06
         else:
             self.vectorizer = vectorizer
         self.vectorizer.fit_transform(self._captions)
@@ -51,7 +45,7 @@ class Representor():
         return _captions
 
     def _is_ascii(self, _str):
-        return all(ord(c) < 128 for c in s)
+        return all(ord(c) < 128 for c in _str)
 
     def _getEventCaptions(self, event):
         """For a given event, return the captions as a list. Note for photo without caption,
