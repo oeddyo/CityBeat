@@ -51,25 +51,36 @@ class Representor():
         """For a given event, return the captions as a list. Note for photo without caption,
         use a None to hold the place"""
         event_captions = []
+        print len(event['photos']),'photos!!!'
         for p in event['photos']:
             try:
                 if self._is_ascii(p['caption']['text']):
                     event_captions.append( p['caption']['text'].lower() )
+                else:
+                    event_captions.append("")
             except:
                 event_captions.append( "" )
         return event_captions 
-    
+    def _cosine_sim(self, a, b):
+        return a*b.T
+
     def getRepresentivePhotos(self, event):
         
         event_captions = self._getEventCaptions(event)
+        print 'i have ',len(event_captions),'event captions but ',len(event['photos']),'photos'
         event_tfidf = self.vectorizer.transform(event_captions)
         
         centroid = event_tfidf.mean(axis=0)
-        cosine_similarities = linear_kernel(centroid, event_tfidf).flatten()
+        #cosine_similarities = linear_kernel(centroid, event_tfidf).flatten()
+        #print 'this type is ',type(cosine_similarities)
+        #print centroid.shape, event_tfidf.shape
+        cosine_similarities = np.asarray(self._cosine_sim(centroid, event_tfidf)).flatten()
+        #print 'cosine type is ',type(cosine_similarities)
 
         most_related_pics = cosine_similarities.argsort()
+        #print most_related_pics
         photos_to_return = []
-        
+        #print type(cosine_similarities)
         for idx in most_related_pics:
             print cosine_similarities[idx], event['photos'][idx]['link']
             photos_to_return.append( event['photos'][idx] )
