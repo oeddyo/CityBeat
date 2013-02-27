@@ -65,6 +65,7 @@ class EventFeatureSparse(EventFeature):
 		print '@attribute AvgPhotoDis real'
 		print '@attribute AvgPhotoDisbyCap real'
 		print '@attribute CaptionPercentage real'
+		print '@attribute NumberOfPeopleInUnitTime real'
 #		print '@attribute PeopleNumber real'
 #		print '@attribute Duration real'
 #		print '@attribute PercentageOfStopwordsFromTopWords real'
@@ -73,9 +74,9 @@ class EventFeatureSparse(EventFeature):
 		print '@attribute Zscore real'
 		print '@attribute Entropy real'
 #		print '@attribute TheRatioOfPeopleToPhoto real'
-#		print '@attribute diff_AvgPhotoDis real'
-#		print '@attribute diff_TopWordPopularity real'
-#		print '@attribute diff_Entropy real'
+		print '@attribute diff_AvgPhotoDis real'
+		print '@attribute diff_TopWordPopularity real'
+		print '@attribute diff_Entropy real'
 
 		print '@attribute tfidf1 real'	
 		print '@attribute tfidf2 real'	
@@ -91,7 +92,7 @@ class EventFeatureSparse(EventFeature):
 		
 		print '@attribute Top10PhotoLocationNameFreq real'
 		print '@attribute Top3PhotoLocationNameSame real'
-		
+								
 		print '@attribute ID string'
 		print '@attribute label {1,-1}'
 		print '@data'
