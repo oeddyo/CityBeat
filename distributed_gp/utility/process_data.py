@@ -165,7 +165,6 @@ def getCorpusWordList(rep, event_list):
 	return word_index, word_list
 
 def generateData(use_all_event=True):
-	
 	rep = Representor()
 #	rep = None
 	corpus = Corpus()
@@ -180,21 +179,21 @@ def generateData(use_all_event=True):
 		true_event_list, false_event_list = readFromArff()
 	
 	word_index, word_list = getCorpusWordList(rep, true_event_list + false_event_list)
-	EventFeatureSparse(None).GenerateArffFileHeader(word_list)
+#	EventFeatureSparse(None).GenerateArffFileHeader(word_list)
 
+	EventFeature(None).GenerateArffFileHeader()
 	for event in true_event_list:
-		EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
+		EventFeature(event, corpus, rep).printFeatures()
+#		EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
 		
 	random.shuffle(false_event_list)
-	j = 0
-	for event in false_event_list:
-		EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
-		j += 1
-		if not use_all_event and j == len(true_events):
-			break
-
-def main():
 	
+	for event in false_event_list:
+		EventFeature(event, corpus, rep).printFeatures()
+#		EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
+		
+		
+def main():
 	if len(sys.argv) > 1 and sys.argv[1] == 'unbalanced':
 		generateData()
 	else:

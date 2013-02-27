@@ -29,13 +29,13 @@ class EventFeature(Event):
 		if representor is not None:
 			self._representor = representor
 				
-#	def getDuration(self):
-#		return self.getLatestPhotoTime() - self.getEarliestPhotoTime()
+	def getDuration(self):
+		return self.getLatestPhotoTime() - self.getEarliestPhotoTime()
 	
 	
 	def preprocess(self):
 		self._selectOnePhotoForOneUser()
-		self._selectRelaventPhotos()
+#		self._selectRelaventPhotos()
 	
 	def _selectRelaventPhotos(self, k=10):
 		photos = self._representor.getRepresentivePhotos(self.toJSON())
@@ -141,6 +141,7 @@ class EventFeature(Event):
 		cap_per = self.getCaptionPercentage()
 #		people_num = self.getActualValueByCounting()
 #		duration = self.getDuration()
+		people_num_unit = self.getActualValueByCounting() * 1.0 * 60 * 15 / self.getDuration()
 #		stop_word_per = self.getPercentageOfStopwordsFromTopWords()
 		std = self.getPredictedStd()
 		top_word_pop = self.getTopWordPopularity(k_topwords)
@@ -159,12 +160,10 @@ class EventFeature(Event):
 		
 		
 #		historic_features = [0]*3  # for test only
-#		historic_features = self.getHistoricFeatures(entropy_para)
-#		diff_avg_photo_dis = avg_photo_dis - historic_features[0]
-#		diff_top_word_pop = historic_features[1]
-#		diff_entropy = historic_features[2]
-#		diff_avg_cap_len = avg_cap_len - historic_features[3]
-#		diff_ratio = ratio - historic_features[4]
+		historic_features = self.getHistoricFeatures(entropy_para)
+		diff_avg_photo_dis = avg_photo_dis - historic_features[0]
+		diff_top_word_pop = historic_features[1]
+		diff_entropy = historic_features[2]
 		
 #				return [event.getAvgPhotoDis(), event.getTopWordPopularity(),
 #		        event.getEntropy(entropy_para),
@@ -175,9 +174,9 @@ class EventFeature(Event):
 		location_name_same = self.checkIfTopPhotoLocationSame()
 		
 		return [avg_cap_len, avg_photo_dis, avg_photo_dis_cap, cap_per, #people_num, #duration,
+						people_num_unit,
 		        std, top_word_pop, zscore, entropy, ratio,
-#		        diff_avg_photo_dis, diff_top_word_pop, diff_entropy,
-#		        diff_avg_cap_len, diff_ratio,
+		        diff_avg_photo_dis, diff_top_word_pop, diff_entropy,
 		        tfidf_top3[0], tfidf_top3[1], tfidf_top3[2], 
 		        hashtage_cnt3[0], hashtage_cnt3[1], hashtage_cnt3[2],
 		        number_photos_associated_with_keywords3[0], number_photos_associated_with_keywords3[1], number_photos_associated_with_keywords3[2],
@@ -200,6 +199,7 @@ class EventFeature(Event):
 		print '@attribute AvgPhotoDis real'
 		print '@attribute AvgPhotoDisbyCap real'
 		print '@attribute CaptionPercentage real'
+		print '@attribute NumberOfPeopleInUnitTime real'
 #		print '@attribute PeopleNumber real'
 #		print '@attribute Duration real'
 #		print '@attribute PercentageOfStopwordsFromTopWords real'
@@ -208,9 +208,9 @@ class EventFeature(Event):
 		print '@attribute Zscore real'
 		print '@attribute Entropy real'
 		print '@attribute TheRatioOfPeopleToPhoto real'
-#		print '@attribute diff_AvgPhotoDis real'
-#		print '@attribute diff_TopWordPopularity real'
-#		print '@attribute diff_Entropy real'
+		print '@attribute diff_AvgPhotoDis real'
+		print '@attribute diff_TopWordPopularity real'
+		print '@attribute diff_Entropy real'
 
 		print '@attribute tfidf1 real'	
 		print '@attribute tfidf2 real'	
