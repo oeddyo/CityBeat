@@ -180,9 +180,9 @@ class EventFeature(Event):
 		print '@attribute TopWordPopularity real'
 		print '@attribute Zscore real'
 		print '@attribute Entropy real'
-		print '@attribute diff_AvgPhotoDis real'
-		print '@attribute diff_TopWordPopularity real'
-		print '@attribute diff_Entropy real'
+#		print '@attribute diff_AvgPhotoDis real'
+#		print '@attribute diff_TopWordPopularity real'
+#		print '@attribute diff_Entropy real'
 
 		print '@attribute tfidf1 real'	
 		print '@attribute tfidf2 real'	
