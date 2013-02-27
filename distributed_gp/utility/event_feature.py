@@ -34,8 +34,8 @@ class EventFeature(Event):
 	
 	
 	def preprocess(self):
-#		self.selectOnePhotoForOneUser()
-		self.selectRelaventPhotos()
+		self.selectOnePhotoForOneUser()
+#		self.selectRelaventPhotos()
 	
 	def selectRelaventPhotos(self, k=10):
 		photos = self._representor.getRepresentivePhotos(self.toJSON())
