@@ -164,7 +164,7 @@ def getCorpusWordList(rep, event_list):
 				word_list.append(word)
 	return word_index, word_list
 
-def generateData(use_all_event=True):
+def generateData(use_all_event=False, sparse=False):
 	rep = Representor()
 #	rep = None
 	corpus = Corpus()
@@ -178,27 +178,34 @@ def generateData(use_all_event=True):
 	else:
 		true_event_list, false_event_list = readFromArff()
 	
-	word_index, word_list = getCorpusWordList(rep, true_event_list + false_event_list)
-#	EventFeatureSparse(None).GenerateArffFileHeader(word_list)
-
-	EventFeature(None).GenerateArffFileHeader()
+	if sparse:
+		word_index, word_list = getCorpusWordList(rep, true_event_list + false_event_list)
+		EventFeatureSparse(None).GenerateArffFileHeader(word_list)
+	else:
+		EventFeature(None).GenerateArffFileHeader()
+		
 	for event in true_event_list:
-		EventFeature(event, corpus, rep).printFeatures()
-#		EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
+		if not sparse:
+			EventFeature(event, corpus, rep).printFeatures()
+		else:
+			EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
 		
 	random.shuffle(false_event_list)
 	
 	for event in false_event_list:
-		EventFeature(event, corpus, rep).printFeatures()
-#		EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
-		
+		if not sparse:
+			EventFeature(event, corpus, rep).printFeatures()
+		else:
+			EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
 		
 def main():
-	if len(sys.argv) > 1 and sys.argv[1] == 'unbalanced':
-		generateData()
-	else:
-		assert sys.argv[1] == 'balanced'
-		generateData(False)
+	assert len(sys.argv) == 3
+	assert sys.argv[1] == 'balanced' or sys.argv[1] == 'unbalanced'
+	assert sys.argv[2] == 'unsparse' or sys.argv[2] == 'sparse'
+	
+	balanced = sys.argv[1] == 'balanced'
+	sparse = sys.argv[2] == 'sparse'
+	generateData(balanced, sparse)
 
 if __name__=='__main__':
 	main()

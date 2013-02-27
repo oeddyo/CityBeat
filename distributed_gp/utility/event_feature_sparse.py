@@ -60,7 +60,7 @@ class EventFeatureSparse(EventFeature):
 
 		for word in word_list:
 			print '@attribute tfidf_' + word.encode('utf8') + ' real'
-			
+		
 		print '@attribute AvgCaptionLen real'
 		print '@attribute AvgPhotoDis real'
 		print '@attribute AvgPhotoDisbyCap real'
@@ -72,7 +72,7 @@ class EventFeatureSparse(EventFeature):
 		print '@attribute TopWordPopularity real'
 		print '@attribute Zscore real'
 		print '@attribute Entropy real'
-		print '@attribute TheRatioOfPeopleToPhoto real'
+#		print '@attribute TheRatioOfPeopleToPhoto real'
 #		print '@attribute diff_AvgPhotoDis real'
 #		print '@attribute diff_TopWordPopularity real'
 #		print '@attribute diff_Entropy real'
