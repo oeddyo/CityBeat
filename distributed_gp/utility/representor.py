@@ -79,9 +79,9 @@ class Representor():
         #print most_related_pics
         photos_to_return = []
         #print type(cosine_similarities)
-        print event['_id']
+        #print event['_id']
         for idx in most_related_pics:
-            print cosine_similarities[idx], event['photos'][idx]['link']
+            #print cosine_similarities[idx], event['photos'][idx]['link']
             photos_to_return.append( event['photos'][idx] )
 
         photos_to_return.reverse() 
