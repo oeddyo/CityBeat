@@ -34,8 +34,8 @@ class EventFeature(Event):
 	
 	
 	def preprocess(self):
-		self.selectOnePhotoForOneUser()
-#		self._selectRelaventPhotos()
+#		self.selectOnePhotoForOneUser()
+		self.selectRelaventPhotos()
 	
 	def selectRelaventPhotos(self, k=10):
 		photos = self._representor.getRepresentivePhotos(self.toJSON())
@@ -122,7 +122,7 @@ class EventFeature(Event):
 	
 	def extractFeatures(self, entropy_para=3, k_topwords=3):
 		# it outputs the feature vector
-#		self.preprocess()
+		self.preprocess()
 		avg_cap_len = self.getAvgCaptionLen()
 		avg_photo_dis = self.getAvgPhotoDis()
 		avg_photo_dis_cap = self.getAvgPhotoDisByCaption()
