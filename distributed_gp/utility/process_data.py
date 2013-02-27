@@ -205,7 +205,7 @@ def main():
 	
 	balanced = sys.argv[1] == 'balanced'
 	sparse = sys.argv[2] == 'sparse'
-	generateData(balanced, sparse)
+	generateData(not balanced, sparse)
 
 if __name__=='__main__':
 	main()
