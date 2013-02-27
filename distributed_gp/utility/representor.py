@@ -51,7 +51,6 @@ class Representor():
         """For a given event, return the captions as a list. Note for photo without caption,
         use a None to hold the place"""
         event_captions = []
-        print len(event['photos']),'photos!!!'
         for p in event['photos']:
             try:
                 if self._is_ascii(p['caption']['text']):
@@ -67,7 +66,6 @@ class Representor():
     def getRepresentivePhotos(self, event):
         
         event_captions = self._getEventCaptions(event)
-        print 'i have ',len(event_captions),'event captions but ',len(event['photos']),'photos'
         event_tfidf = self.vectorizer.transform(event_captions)
         
         centroid = event_tfidf.mean(axis=0)
@@ -82,7 +80,7 @@ class Representor():
         photos_to_return = []
         #print type(cosine_similarities)
         for idx in most_related_pics:
-            print cosine_similarities[idx], event['photos'][idx]['link']
+            #print cosine_similarities[idx], event['photos'][idx]['link']
             photos_to_return.append( event['photos'][idx] )
 
         photos_to_return.reverse() 
