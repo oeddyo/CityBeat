@@ -25,7 +25,7 @@ class Representor():
         self._captions = self._getAllCaptions()
         
         if vectorizer is None:
-            self.vectorizer = TfidfVectorizer( max_df=0.3, min_df = 2, strip_accents='ascii', smooth_idf=True, preprocessor = self._preProcessor, sublinear_tf=True, norm = 'l1')
+            self.vectorizer = TfidfVectorizer( max_df=0.7, min_df = 5, strip_accents='ascii', smooth_idf=True, preprocessor = self._preProcessor, sublinear_tf=True, norm = 'l2')
         else:
             self.vectorizer = vectorizer
         self.vectorizer.fit_transform(self._captions)
@@ -69,8 +69,9 @@ class Representor():
 
         most_related_pics = cosine_similarities.argsort()
         photos_to_return = []
-
+        
         for idx in most_related_pics:
+            print cosine_similarities[idx], event['photos'][idx]['link']
             photos_to_return.append( event['photos'][idx] )
 
         photos_to_return.reverse() 
@@ -131,6 +132,7 @@ def main():
             if id == str(e['_id']):
                 for p in rep.getRepresentivePhotos(e)[:10]:
                     print p['link']
+                print rep.getTfidfVector(e)
                 print '\n'
 
 if __name__ == '__main__':
