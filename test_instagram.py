@@ -9,7 +9,7 @@ for line in clients:
     t = line.split()
     client = InstagramAPI( t[0], t[1])
     try:
-        result = client.media_search(lat = 40.763381, lng = -73.954639 ,count=50, return_json = True, max_timestamp = 1356193630, min_timestamp=1356193630-600 )
+        result = client.media_search(lat = 40.763381, lng = -73.954639 ,count=50, return_json = True, max_timestamp = 1361989315, min_timestamp=1361989315-600 )
     except Exception as e:
         print e
         print 'bad ',count
