@@ -17,6 +17,8 @@ import types
 import random
 import math
 
+import sys
+
 def readCrowdFlowerData2():
 	
 	# load modified 
@@ -162,8 +164,7 @@ def getCorpusWordList(rep, event_list):
 				word_list.append(word)
 	return word_index, word_list
 
-def generateData(use_all_event=True):
-	
+def generateData(use_all_event=False, sparse=False):
 	rep = Representor()
 #	rep = None
 	corpus = Corpus()
@@ -171,22 +172,40 @@ def generateData(use_all_event=True):
 	
 #	true_event_list, false_event_list = readCrowdFlowerData()
 #	true_event_list, false_event_list = readFromArff()
-	true_event_list, false_event_list = readCrowdFlowerData2()
+#	true_event_list, false_event_list = readCrowdFlowerData2()
+	if use_all_event:
+		true_event_list, false_event_list = readCrowdFlowerData2()
+	else:
+		true_event_list, false_event_list = readFromArff()
 	
-	word_index, word_list = getCorpusWordList(rep, true_event_list + false_event_list)
-	EventFeatureSparse(None).GenerateArffFileHeader(word_list)
-
+	if sparse:
+		word_index, word_list = getCorpusWordList(rep, true_event_list + false_event_list)
+		EventFeatureSparse(None).GenerateArffFileHeader(word_list)
+	else:
+		EventFeature(None).GenerateArffFileHeader()
+		
 	for event in true_event_list:
-		EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
+		if not sparse:
+			EventFeature(event, corpus, rep).printFeatures()
+		else:
+			EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
 		
 	random.shuffle(false_event_list)
-	j = 0
+	
 	for event in false_event_list:
-		EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
-		j += 1
-		if not use_all_event and j == len(true_events):
-			break
+		if not sparse:
+			EventFeature(event, corpus, rep).printFeatures()
+		else:
+			EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
+		
+def main():
+	assert len(sys.argv) == 3
+	assert sys.argv[1] == 'balanced' or sys.argv[1] == 'unbalanced'
+	assert sys.argv[2] == 'unsparse' or sys.argv[2] == 'sparse'
+	
+	balanced = sys.argv[1] == 'balanced'
+	sparse = sys.argv[2] == 'sparse'
+	generateData(balanced, sparse)
 
 if __name__=='__main__':
-	generateData()
-	#readFromArff()
+	main()
