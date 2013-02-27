@@ -152,7 +152,7 @@ class EventFeature(Event):
 		historic_features = self.getHistoricFeatures(entropy_para)
 		diff_avg_photo_dis = avg_photo_dis - historic_features[0]
 		diff_top_word_pop = historic_features[1]
-		
+		diff_entropy = historic_features[2]
 		
 		location_name_similarity = self.getTopPhotosLocationSimilarity()
 		location_name_same = self.checkIfTopPhotoLocationSame()
