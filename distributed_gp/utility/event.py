@@ -15,6 +15,9 @@ class Event(object):
 				self._event = event
 			else:
 				self._event = event.toJSON()
+				
+			# preprocess, to correct the data
+			self.setActualValue(self._getActualValueByCounting())
 		else:
 			# create a new event
 			self._event = {'photos':[], 'label':'unlabeled'}
@@ -34,7 +37,7 @@ class Event(object):
 	def getActualValue(self):
 		return self._event['actual_value']
 	
-	def getActualValueByCounting(self):
+	def _getActualValueByCounting(self):
 		user_ids = set()
 		for photo in self._event['photos']:
 			user_ids.add(int(photo['user']['id']))
@@ -44,6 +47,19 @@ class Event(object):
 	def getRegion(self):
 		return self._event['region']
 		
+	def selectOnePhotoForOneUser(self):
+		# a strong filter
+		user_ids = set()
+		photos = self._event['photos']
+		new_photos = []
+		for photo in photos:
+			user_id = photo['user']['id']
+			if user_id in user_ids:
+				continue
+			user_ids.add(user_id)
+			new_photos.append(photo)
+		self._event['photos'] = new_photos
+	
 	def removeDuplicatePhotos(self):
 		# this method is not good, just for tempory use
 		# by judging if the caption is duplicate

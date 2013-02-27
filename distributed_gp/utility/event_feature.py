@@ -34,27 +34,15 @@ class EventFeature(Event):
 	
 	
 	def preprocess(self):
-		self._selectOnePhotoForOneUser()
+		self.selectOnePhotoForOneUser()
 #		self._selectRelaventPhotos()
 	
-	def _selectRelaventPhotos(self, k=10):
+	def selectRelaventPhotos(self, k=10):
 		photos = self._representor.getRepresentivePhotos(self.toJSON())
 		# choose first 30%
 #		k = max(k, 0.3*len(photos))
 #		k = int(k + 0.5)
 		self.setPhotos(photos[0:min(k, len(photos))])
-		
-	def _selectOnePhotoForOneUser(self):
-		user_ids = set()
-		photos = self._event['photos']
-		new_photos = []
-		for photo in photos:
-			user_id = photo['user']['id']
-			if user_id in user_ids:
-				continue
-			user_ids.add(user_id)
-			new_photos.append(photo)
-		self._event['photos'] = new_photos
 	
 	def countHashtagsFromPhotosContainingTopKeywords(self, k=3):
 		# count the number of hashtags of photos that associated with topwords
@@ -141,13 +129,14 @@ class EventFeature(Event):
 		cap_per = self.getCaptionPercentage()
 #		people_num = self.getActualValueByCounting()
 #		duration = self.getDuration()
-		people_num_unit = self.getActualValueByCounting() * 1.0 * 60 * 15 / self.getDuration()
+#		people_num_unit = self.getActualValue() * 1.0 * 60 * 15 / self.getDuration()
 #		stop_word_per = self.getPercentageOfStopwordsFromTopWords()
 		std = self.getPredictedStd()
 		top_word_pop = self.getTopWordPopularity(k_topwords)
 		zscore = self.getZscore()
 		entropy = self.getEntropy(entropy_para)
-		ratio = self.getRatioOfPeopleToPhoto()
+		# this value fixes to 1
+#		ratio = self.getRatioOfPeopleToPhoto()
 		
 		label = int(self.getLabel())
 		event_id = str(self._event['_id'])
@@ -175,7 +164,7 @@ class EventFeature(Event):
 		
 		return [avg_cap_len, avg_photo_dis, avg_photo_dis_cap, cap_per, #people_num, #duration,
 						people_num_unit,
-		        std, top_word_pop, zscore, entropy, ratio,
+		        std, top_word_pop, zscore, entropy, #ratio,
 		        diff_avg_photo_dis, diff_top_word_pop, diff_entropy,
 		        tfidf_top3[0], tfidf_top3[1], tfidf_top3[2], 
 		        hashtage_cnt3[0], hashtage_cnt3[1], hashtage_cnt3[2],
