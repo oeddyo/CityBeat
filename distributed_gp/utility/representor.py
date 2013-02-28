@@ -79,11 +79,11 @@ class Representor():
         #print most_related_pics
         photos_to_return = []
         #print type(cosine_similarities)
-        #print event['_id']
-        for idx in most_related_pics:
-            #print cosine_similarities[idx], event['photos'][idx]['link']
+        print event['_id']
+        for idx in most_related_pics[-10:-1]:
+            print cosine_similarities[idx], event['photos'][idx]['link']
             photos_to_return.append( event['photos'][idx] )
-
+        print '\n\n'
         photos_to_return.reverse() 
 
         return photos_to_return 
@@ -137,7 +137,7 @@ def main():
     #    print rep.getTfidfVector(event),'\n'
     
     
-    for id in negative:
+    for id in positive:
         for e in rep.events:
             if id == str(e['_id']):
                 for p in rep.getRepresentivePhotos(e)[:10]:
