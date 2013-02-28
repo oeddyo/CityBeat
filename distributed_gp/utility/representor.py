@@ -62,7 +62,18 @@ class Representor():
         return event_captions 
     def _cosine_sim(self, a, b):
         return a*b.T
-
+    
+    def _getTimeDistribution(self, photo):
+        """for a single photo, print its comment distribution and like distribution
+        
+        """
+        shoot_time = int(photo['created_time'])
+        try:
+            for comment in photo['comments']['data'][:3]:
+                print int(comment['created_time'])-shoot_time,
+        except:
+            pass
+        print '\n'
     def getRepresentivePhotos(self, event):
         
         event_captions = self._getEventCaptions(event)
@@ -80,8 +91,9 @@ class Representor():
         photos_to_return = []
         #print type(cosine_similarities)
         print event['_id']
-        for idx in most_related_pics[-10:-1]:
+        for idx in most_related_pics[-3:-1]:
             print cosine_similarities[idx], event['photos'][idx]['link']
+            self._getEventCaptions(event['photos'][idx])
             photos_to_return.append( event['photos'][idx] )
         print '\n\n'
         photos_to_return.reverse() 
