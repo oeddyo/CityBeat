@@ -18,14 +18,14 @@ class Representor():
         """
 
         self.ei = EventInterface()
-        self.ei.setDB('citybeat')
+        self.ei.setDB('AmazonMT')
         self.ei.setCollection('candidate_event_25by25_merged')
 
         self.events = [e for e in self.ei.getAllDocuments()]
         self._captions = self._getAllCaptions()
         
         if vectorizer is None:
-            self.vectorizer = TfidfVectorizer( max_df=0.1, min_df = 1, strip_accents='ascii', smooth_idf=True, preprocessor = self._preProcessor, sublinear_tf=True, norm = 'l2', analyzer='char_wb', ngram_range=(4,4), stop_words = 'english')
+            self.vectorizer = TfidfVectorizer( max_df=0.7, min_df = 1, strip_accents='ascii', smooth_idf=True, preprocessor = self._preProcessor, sublinear_tf=True, norm = 'l2', analyzer='char_wb', ngram_range=(4,4), stop_words = 'english')
         else:
             self.vectorizer = vectorizer
         self.vectorizer.fit_transform(self._captions)
@@ -63,27 +63,6 @@ class Representor():
     def _cosine_sim(self, a, b):
         return a*b.T
     
-    def _getTimeDistribution(self, photo):
-        """for a single photo, print its comment distribution and like distribution
-        
-        """
-        shoot_time = int(photo['created_time'])
-        time_list = []
-        try:
-<<<<<<< HEAD
-            for comment in photo['comments']['data'][:3]:
-                time_list.append(int(comment['created_time'])-shoot_time)
-        except:
-            pass
-        time_list.sort()
-        return time_list
-=======
-#            for comment in photo['comments']['data'][:3]:
-#                print int(comment['created_time'])-shoot_time,
-        except:
-            pass
-#        print '\n'
->>>>>>> 4eed29d919265749fef1b5d576fffe0075f36a11
     def getRepresentivePhotos(self, event):
         
         event_captions = self._getEventCaptions(event)
@@ -91,42 +70,21 @@ class Representor():
         
         centroid = event_tfidf.mean(axis=0)
         #cosine_similarities = linear_kernel(centroid, event_tfidf).flatten()
-        #print 'this type is ',type(cosine_similarities)
-        #print centroid.shape, event_tfidf.shape
         cosine_similarities = np.asarray(self._cosine_sim(centroid, event_tfidf)).flatten()
-        #print 'cosine type is ',type(cosine_similarities)
 
         most_related_pics = cosine_similarities.argsort()
-        #print most_related_pics
         photos_to_return = []
-        #print type(cosine_similarities)
-<<<<<<< HEAD
         #print event['_id']
-        for idx in most_related_pics[-10:-1]:
+        for idx in most_related_pics:
             #print cosine_similarities[idx], event['photos'][idx]['link']
             photos_to_return.append( event['photos'][idx] )
-=======
-        print event['_id']
-        for idx in most_related_pics[-3:-1]:
-#            print cosine_similarities[idx], event['photos'][idx]['link']
-            self._getEventCaptions(event['photos'][idx])
-            photos_to_return.append( event['photos'][idx] )
-#        print '\n\n'
->>>>>>> 4eed29d919265749fef1b5d576fffe0075f36a11
         photos_to_return.reverse() 
 
         return photos_to_return 
 
     def getTfidfVector(self, event):
-#        print 'the idx is ',self.vectorizer.get_feature_names()
-#        print self.vectorizer.transform(self._getEventCaptions(event)).mean(axis=0)
         voc = self.vectorizer.get_feature_names()
         tf_vec = self.vectorizer.transform(self._getEventCaptions(event)).mean(axis=0)
-
-#        print 'lens are ',len(voc),   tf_vec[0].shape
-
-#        print 'words none-zero'
-#        print self._getEventCaptions(event)
 
         nonzeros = np.nonzero(tf_vec)[1]
         res_list = nonzeros.ravel().tolist()[0] 
@@ -137,8 +95,6 @@ class Representor():
             words.append( voc[n] )
             values.append( tf_vec[0,n] )
 
-#        print words
-#        print values
         return res_list, words, values
 
     def getCorpusWordsVector(self):
