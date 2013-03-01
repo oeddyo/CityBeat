@@ -69,11 +69,11 @@ class Representor():
         """
         shoot_time = int(photo['created_time'])
         try:
-            for comment in photo['comments']['data'][:3]:
-                print int(comment['created_time'])-shoot_time,
+#            for comment in photo['comments']['data'][:3]:
+#                print int(comment['created_time'])-shoot_time,
         except:
             pass
-        print '\n'
+#        print '\n'
     def getRepresentivePhotos(self, event):
         
         event_captions = self._getEventCaptions(event)
@@ -92,10 +92,10 @@ class Representor():
         #print type(cosine_similarities)
         print event['_id']
         for idx in most_related_pics[-3:-1]:
-            print cosine_similarities[idx], event['photos'][idx]['link']
+#            print cosine_similarities[idx], event['photos'][idx]['link']
             self._getEventCaptions(event['photos'][idx])
             photos_to_return.append( event['photos'][idx] )
-        print '\n\n'
+#        print '\n\n'
         photos_to_return.reverse() 
 
         return photos_to_return 
@@ -140,13 +140,13 @@ def main():
         elif t[1]=='-1':
             negative.append(t[0])
     rep = Representor()
-    #print rep.getCorpusWordsVector()
+    print rep.getCorpusWordsVector()
 
 
  
-    #for event in rep.events:
-        #print len(rep.getRepresentivePhotos( event ))
-    #    print rep.getTfidfVector(event),'\n'
+    for event in rep.events:
+        print len(rep.getRepresentivePhotos( event ))
+        print rep.getTfidfVector(event),'\n'
     
     
     for id in positive:
