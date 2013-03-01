@@ -70,12 +70,20 @@ class Representor():
         shoot_time = int(photo['created_time'])
         time_list = []
         try:
+<<<<<<< HEAD
             for comment in photo['comments']['data'][:3]:
                 time_list.append(int(comment['created_time'])-shoot_time)
         except:
             pass
         time_list.sort()
         return time_list
+=======
+#            for comment in photo['comments']['data'][:3]:
+#                print int(comment['created_time'])-shoot_time,
+        except:
+            pass
+#        print '\n'
+>>>>>>> 4eed29d919265749fef1b5d576fffe0075f36a11
     def getRepresentivePhotos(self, event):
         
         event_captions = self._getEventCaptions(event)
@@ -92,10 +100,19 @@ class Representor():
         #print most_related_pics
         photos_to_return = []
         #print type(cosine_similarities)
+<<<<<<< HEAD
         #print event['_id']
         for idx in most_related_pics[-10:-1]:
             #print cosine_similarities[idx], event['photos'][idx]['link']
             photos_to_return.append( event['photos'][idx] )
+=======
+        print event['_id']
+        for idx in most_related_pics[-3:-1]:
+#            print cosine_similarities[idx], event['photos'][idx]['link']
+            self._getEventCaptions(event['photos'][idx])
+            photos_to_return.append( event['photos'][idx] )
+#        print '\n\n'
+>>>>>>> 4eed29d919265749fef1b5d576fffe0075f36a11
         photos_to_return.reverse() 
 
         return photos_to_return 
@@ -140,13 +157,13 @@ def main():
         elif t[1]=='-1':
             negative.append(t[0])
     rep = Representor()
-    #print rep.getCorpusWordsVector()
+    print rep.getCorpusWordsVector()
 
 
  
-    #for event in rep.events:
-        #print len(rep.getRepresentivePhotos( event ))
-    #    print rep.getTfidfVector(event),'\n'
+    for event in rep.events:
+        print len(rep.getRepresentivePhotos( event ))
+        print rep.getTfidfVector(event),'\n'
     
     
     for id in positive:
