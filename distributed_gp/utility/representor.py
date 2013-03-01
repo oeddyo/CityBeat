@@ -25,7 +25,7 @@ class Representor():
         self._captions = self._getAllCaptions()
         
         if vectorizer is None:
-            self.vectorizer = TfidfVectorizer( max_df=0.7, min_df = 1, strip_accents='ascii', smooth_idf=True, preprocessor = self._preProcessor, sublinear_tf=True, norm = 'l2', analyzer='char_wb', ngram_range=(4,4))
+            self.vectorizer = TfidfVectorizer( max_df=0.1, min_df = 1, strip_accents='ascii', smooth_idf=True, preprocessor = self._preProcessor, sublinear_tf=True, norm = 'l2', analyzer='char_wb', ngram_range=(4,4), stop_words = 'english')
         else:
             self.vectorizer = vectorizer
         self.vectorizer.fit_transform(self._captions)
@@ -68,12 +68,14 @@ class Representor():
         
         """
         shoot_time = int(photo['created_time'])
+        time_list = []
         try:
             for comment in photo['comments']['data'][:3]:
-                print int(comment['created_time'])-shoot_time,
+                time_list.append(int(comment['created_time'])-shoot_time)
         except:
             pass
-        print '\n'
+        time_list.sort()
+        return time_list
     def getRepresentivePhotos(self, event):
         
         event_captions = self._getEventCaptions(event)
@@ -90,12 +92,10 @@ class Representor():
         #print most_related_pics
         photos_to_return = []
         #print type(cosine_similarities)
-        print event['_id']
-        for idx in most_related_pics[-3:-1]:
-            print cosine_similarities[idx], event['photos'][idx]['link']
-            self._getEventCaptions(event['photos'][idx])
+        #print event['_id']
+        for idx in most_related_pics[-10:-1]:
+            #print cosine_similarities[idx], event['photos'][idx]['link']
             photos_to_return.append( event['photos'][idx] )
-        print '\n\n'
         photos_to_return.reverse() 
 
         return photos_to_return 
