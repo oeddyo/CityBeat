@@ -19,7 +19,7 @@ import math
 
 import sys
 
-def readCrowdFlowerData2():
+def loadUnbalancedData():
 	
 	# load modified 
 	
@@ -74,7 +74,7 @@ def readCrowdFlowerData2():
 	fid.close()
 	return true_events, false_events
 	
-def readCrowdFlowerData():
+def loadRawLabeledData():
 	
 	ei = EventInterface()
 	ei.setDB('citybeat')
@@ -111,11 +111,11 @@ def readCrowdFlowerData():
 	fid.close()
 	return true_events, false_events
 
-def readFromArff():
+def loadBalancedData():
 	ei = EventInterface()
 	ei.setDB('citybeat')
 	ei.setCollection('candidate_event_25by25_merged')
-	fid1 = open('labeled_data_cf/balanced_data_Res.arff', 'r')
+	fid1 = open('labeled_data_cf/balanced_data_with_true_label.txt', 'r')
 	fid2 = open('labeled_data_cf/modified_event_labels.txt', 'r')
 	true_events = []
 	false_events = []
@@ -127,8 +127,8 @@ def readFromArff():
 	
 	for line in fid1:
 		t = line.split(',')
-		ID = str(t[13])
-		label = int(t[15])
+		ID = str(t[0])
+		label = int(t[1])
 		event = ei.getDocument({'_id':ObjectId(ID)})
 		event['label'] = label
 		if modified_events.has_key(ID):
@@ -170,13 +170,13 @@ def generateData(use_all_event=False, sparse=False):
 	corpus = Corpus()
 	corpus.buildCorpusOnDB('citybeat', 'candidate_event_25by25_merged')
 	
-#	true_event_list, false_event_list = readCrowdFlowerData()
-#	true_event_list, false_event_list = readFromArff()
-#	true_event_list, false_event_list = readCrowdFlowerData2()
+#	true_event_list, false_event_list = loadRawLabeledData()
+#	true_event_list, false_event_list = loadBalancedData()
+#	true_event_list, false_event_list = loadUnbalancedData()
 	if use_all_event:
-		true_event_list, false_event_list = readCrowdFlowerData2()
+		true_event_list, false_event_list = loadUnbalancedData()
 	else:
-		true_event_list, false_event_list = readFromArff()
+		true_event_list, false_event_list = loadBalancedData()
 	
 	if sparse:
 		word_index, word_list = getCorpusWordList(rep, true_event_list + false_event_list)
