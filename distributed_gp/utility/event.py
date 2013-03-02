@@ -155,7 +155,7 @@ class Event(object):
 		
 		self._event['photos'] = new_photo_list
 		# update actual value
-		self.setActualValue(self.getActualValueByCounting())
+		self.setActualValue(self._getActualValueByCounting())
 		
 		# do not change the order of the following code
 		actual_value_1 = self._event['actual_value']

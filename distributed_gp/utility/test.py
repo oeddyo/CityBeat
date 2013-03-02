@@ -15,32 +15,25 @@ import random
 import math
 
 
-def writeFile():
+		
+def main():
 	ei = EventInterface()
 	ei.setDB('citybeat')
 	ei.setCollection('candidate_event_25by25_merged')
-	fid1 = open('labeled_data_cf/balanced_data_with_true_label.txt', 'r')
-	fid2 = open('labeled_data_cf/modified_event_labels.txt', 'r')
-	true_events = []
-	false_events = []
 	
-	modified_events = {}
-	for line in fid2:
-		t = line.split()
-		modified_events[str(t[0])] = int(t[1])
-	
-	for line in fid1:
-		t = line.split(',')
-		ID = str(t[0])
-		label = int(t[1])
-		print ID+','+str(label)
-	
-	fid1.close()
-	fid2.close()
-		
-def main():
-	writeFile()
-	
+	ei2 = EventInterface()
+	ei2.setDB('citybeat')
+	ei2.setCollection('online_candidate')
+	ids = ['51148288c2a3754cfe668edd', '51147952c2a3754cfe6684ee', '51148d89c2a3754cfe669eb4', '51147967c2a3754cfe668503']
+	ids += ['51147b20c2a3754cfe668697', '51148a7ec2a3754cfe669977', '51147ad8c2a3754cfe668670', '51148ba7c2a3754cfe669b75']
+
+#511477ffc2a3754cfe668450 1
+#511497d3c2a3754cfe66ac3f 1
+#5114a199c2a3754cfe66b7ba 1
+#51147c8cc2a3754cfe6687ea 1]
+	for my_id in ids:
+		event = ei.getDocument({'_id':ObjectId(my_id)})
+		ei2.addEvent(event)
 	
 if __name__=='__main__':
 	main()
