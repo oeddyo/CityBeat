@@ -2189,3 +2189,61 @@ Request Headers:
 [01/Mar/2013:22:54:37] ENGINE Bus EXITED
 [01/Mar/2013:22:54:37] ENGINE Waiting for child threads to terminate...
 [01/Mar/2013:22:54:37] ENGINE Re-spawning event_server.py
+[01/Mar/2013:22:55:07] ENGINE Listening for SIGHUP.
+[01/Mar/2013:22:55:07] ENGINE Listening for SIGTERM.
+[01/Mar/2013:22:55:07] ENGINE Listening for SIGUSR1.
+[01/Mar/2013:22:55:07] ENGINE Bus STARTING
+[01/Mar/2013:22:55:07] ENGINE Started monitor thread '_TimeoutMonitor'.
+[01/Mar/2013:22:55:07] ENGINE Started monitor thread 'Autoreloader'.
+[01/Mar/2013:22:55:07] ENGINE Serving on 0.0.0.0:7887
+[01/Mar/2013:22:55:07] ENGINE Bus STARTED
+[01/Mar/2013:22:55:27] HTTP Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/cherrypy/_cprequest.py", line 656, in respond
+    response.body = self.handler()
+  File "/usr/local/lib/python2.7/dist-packages/cherrypy/lib/encoding.py", line 188, in __call__
+    self.body = self.oldhandler(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/cherrypy/_cpdispatch.py", line 34, in __call__
+    return self.callable(*self.args, **self.kwargs)
+  File "event_server.py", line 155, in getEventByID
+    e.selectOnePhotoForOneUser()
+NameError: global name 'e' is not defined
+
+[01/Mar/2013:22:55:27] HTTP 
+Request Headers:
+  X-FORWARDED-SERVER: ip-10-85-130-224.localdomain
+  HOST: ec2-23-22-67-45.compute-1.amazonaws.com
+  CONNECTION: Keep-Alive
+  Remote-Addr: 127.0.0.1
+  X-FORWARDED-HOST: ec2-23-22-67-45.compute-1.amazonaws.com
+  X-FORWARDED-FOR: 10.85.130.224
+127.0.0.1 - - [01/Mar/2013:22:55:27] "GET /getEventByID?event_id=51148976c2a3754cfe66981e HTTP/1.1" 500 1386 "" ""
+[01/Mar/2013:22:55:29] HTTP Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/cherrypy/_cprequest.py", line 656, in respond
+    response.body = self.handler()
+  File "/usr/local/lib/python2.7/dist-packages/cherrypy/lib/encoding.py", line 188, in __call__
+    self.body = self.oldhandler(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/cherrypy/_cpdispatch.py", line 34, in __call__
+    return self.callable(*self.args, **self.kwargs)
+  File "event_server.py", line 155, in getEventByID
+    e.selectOnePhotoForOneUser()
+NameError: global name 'e' is not defined
+
+[01/Mar/2013:22:55:29] HTTP 
+Request Headers:
+  X-FORWARDED-SERVER: ip-10-85-130-224.localdomain
+  HOST: ec2-23-22-67-45.compute-1.amazonaws.com
+  CONNECTION: Keep-Alive
+  Remote-Addr: 127.0.0.1
+  X-FORWARDED-HOST: ec2-23-22-67-45.compute-1.amazonaws.com
+  X-FORWARDED-FOR: 10.85.130.224
+127.0.0.1 - - [01/Mar/2013:22:55:29] "GET /getEventByID?event_id=51148976c2a3754cfe66981e HTTP/1.1" 500 1386 "" ""
+[01/Mar/2013:22:55:52] ENGINE Restarting because /home/eddie/citybeat/CityBeat/distributed_gp/event_server.py changed.
+[01/Mar/2013:22:55:52] ENGINE Stopped thread 'Autoreloader'.
+[01/Mar/2013:22:55:52] ENGINE Bus STOPPING
+[01/Mar/2013:22:55:52] ENGINE HTTP Server cherrypy._cpwsgi_server.CPWSGIServer(('0.0.0.0', 7887)) shut down
+[01/Mar/2013:22:55:52] ENGINE Stopped thread '_TimeoutMonitor'.
+[01/Mar/2013:22:55:52] ENGINE Bus STOPPED
+[01/Mar/2013:22:55:52] ENGINE Bus EXITING
+[01/Mar/2013:22:55:52] ENGINE Bus EXITED
+[01/Mar/2013:22:55:52] ENGINE Waiting for child threads to terminate...
+[01/Mar/2013:22:55:52] ENGINE Re-spawning event_server.py

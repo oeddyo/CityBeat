@@ -151,8 +151,8 @@ class Root:
 
     def getEventByID(self, event_id):
         event = self.ei.getEventByID(event_id)
+        event.selectOnePhotoForOneUser()
         event['_id'] = str(event['_id'])
-        e.selectOnePhotoForOneUser()
         return json.dumps(event)
     getEventByID.exposed = True
     
