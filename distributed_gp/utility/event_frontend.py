@@ -19,6 +19,7 @@ class EventFrontend(EventFeature):
 	def __init__(self, event, corpus):
 		super(EventFrontend, self).__init__(event)
 		self._corpus = corpus
+		self.selectOnePhotoForOneUser()
 				
 	def _getTopKeywordsWithoutStopwords(self, k):
 		# this method will return topwords without stopwords
