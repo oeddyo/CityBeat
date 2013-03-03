@@ -134,7 +134,6 @@ def loadBalancedData():
 				true_events.append(event)
 	
 	fid1.close()
-	fid2.close()
 	return true_events, false_events
 
 
@@ -189,12 +188,13 @@ def generateData(use_all_event=False, sparse=False):
 			EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
 		
 def main():
-	assert len(sys.argv) == 3
+	assert len(sys.argv) >= 2
 	assert sys.argv[1] == 'balanced' or sys.argv[1] == 'unbalanced'
-	assert sys.argv[2] == 'unsparse' or sys.argv[2] == 'sparse'
+#	assert sys.argv[2] == 'unsparse' or sys.argv[2] == 'sparse'
 	
 	balanced = sys.argv[1] == 'balanced'
-	sparse = sys.argv[2] == 'sparse'
+	sparse = False
+#	sparse = sys.argv[2] == 'sparse'
 	generateData(not balanced, sparse)
 
 if __name__=='__main__':
