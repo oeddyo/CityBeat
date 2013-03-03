@@ -58,16 +58,16 @@ def loadUnbalancedData():
 		event['label'] = label
 		if modified_events.has_key(event_id):
 			event['label'] = modified_events[event_id]
-			
+		
 		e = Event(event)
-		if e.getActualValue() < 8:
+		if e.getActualValue() < 8 or event['label'] == 0:
 #			print 'bad event ' + id
 			continue
-		if event['label'] == -1:
-			false_events.append(event)
+		if event['label'] == 1:
+			true_events.append(event)
 		else:
-			if event['label'] == 1:
-				true_events.append(event)
+			if event['label'] == -1 and confidence == 1:
+				false_events.append(event)
 			
 	fid.close()
 	return true_events, false_events
