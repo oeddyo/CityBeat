@@ -14,24 +14,52 @@ import types
 import random
 import math
 
-
-		
-def main():
+def generateTrueLabelFile():
 	ei = EventInterface()
 	ei.setDB('citybeat')
 	ei.setCollection('candidate_event_25by25_merged')
 	
-	event = ei.getEventByID('511486b7c2a3754cfe6694e2')
+	events = {}
+	fid1 = open('labeled_data_cf/balanced_data_with_true_label.txt', 'r')
+	fid2 = open('labeled_data_cf/modified_event_labels.txt', 'r')
+	true_events = []
+	false_events = []
+	unknown_events = []
 	
-	e = Event(event)
+	for line in fid1:
+		t = line.split(',')
+		id = str(t[0])
+		label = int(t[1])
+		events[id] = label
+		
+	fid1.close()
 	
-	print len(event['photos'])
-	print e._getActualValueByCounting()
-	e.selectOnePhotoForOneUser()
-	ee = e.toJSON()
-	print len(ee['photos'])
+	for line in fid2:
+		t = line.split()
+#		print str(t[0])
+		events[str(t[0])] = int(t[1])
+		
+	fid2.close()
 	
+	for id, label in events.items():
+		event = ei.getDocument({'_id':ObjectId(id)})
+		event['label'] = label
+		e = Event(event)
+		if e.getActualValue() < 8:
+#			print 'bad event ' + id
+			continue
+		if event['label'] == -1:
+			false_events.append(event)
+		else:
+			if event['label'] == 1:
+				true_events.append(event)
+			else:
+				unknown_events.append(event)
+	
+	
+	for event in true_events + false_events + unknown_events:
+		print str(event['_id'])+','+str(event['label'])
 	
 if __name__=='__main__':
-	main()
+	generateTrueLabelFile()
 

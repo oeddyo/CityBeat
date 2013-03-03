@@ -30,7 +30,7 @@ def loadUnbalancedData():
 	true_events = []
 	false_events = []
 	
-	fid2 = open('labeled_data_cf/modified_event_labels.txt', 'r')
+	fid2 = open('labeled_data_cf/true_label.txt', 'r')
 	modified_events = {}
 	for line in fid2:
 		t = line.split()
@@ -59,17 +59,15 @@ def loadUnbalancedData():
 		if modified_events.has_key(event_id):
 			event['label'] = modified_events[event_id]
 			
-		if event['label'] == 0:
+		e = Event(event)
+		if e.getActualValue() < 8:
+#			print 'bad event ' + id
 			continue
-		
-		if event['actual_value'] < 8:
-			continue
-		
-		if event['label'] == 1:
-			 true_events.append(event)
+		if event['label'] == -1:
+			false_events.append(event)
 		else:
-			if confidence == 1:
-				false_events.append(event)
+			if event['label'] == 1:
+				true_events.append(event)
 			
 	fid.close()
 	return true_events, false_events
@@ -115,15 +113,9 @@ def loadBalancedData():
 	ei = EventInterface()
 	ei.setDB('citybeat')
 	ei.setCollection('candidate_event_25by25_merged')
-	fid1 = open('labeled_data_cf/balanced_data_with_true_label.txt', 'r')
-	fid2 = open('labeled_data_cf/modified_event_labels.txt', 'r')
+	fid1 = open('labeled_data_cf/true_label.txt', 'r')
 	true_events = []
 	false_events = []
-	
-	modified_events = {}
-	for line in fid2:
-		t = line.split()
-		modified_events[str(t[0])] = int(t[1])
 	
 	for line in fid1:
 		t = line.split(',')
@@ -131,12 +123,10 @@ def loadBalancedData():
 		label = int(t[1])
 		event = ei.getDocument({'_id':ObjectId(ID)})
 		event['label'] = label
-		if modified_events.has_key(ID):
-			event['label'] = modified_events[ID]
-		
-		if event['actual_value'] < 8:
+		e = Event(event)
+		if e.getActualValue() < 8:
+#			print 'bad event ' + id
 			continue
-		
 		if event['label'] == -1:
 			false_events.append(event)
 		else:
