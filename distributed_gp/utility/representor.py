@@ -20,8 +20,13 @@ class Representor():
         self.ei = EventInterface()
         self.ei.setDB('AmazonMT')
         self.ei.setCollection('candidate_event_25by25_merged')
-
-        self.events = [e for e in self.ei.getAllDocuments()]
+        self.events = []
+        for e in self.ei.getAllDocuments():
+            event = Event(e)
+            event.selectOnePhotoForOneUser()
+            e = event.toJSON()
+            self.events.append(e)
+        #self.events = [e for e in self.ei.getAllDocuments()]
         self._captions = self._getAllCaptions()
         
         if vectorizer is None:
