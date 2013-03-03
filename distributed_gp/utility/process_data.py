@@ -33,7 +33,7 @@ def loadUnbalancedData():
 	fid2 = open('labeled_data_cf/true_label.txt', 'r')
 	modified_events = {}
 	for line in fid2:
-		t = line.split()
+		t = line.split(',')
 		modified_events[str(t[0])] = int(t[1])
 	fid2.close()
 		
