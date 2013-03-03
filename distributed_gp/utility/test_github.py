@@ -1,1 +1,0 @@
-print 'bee46ae3e5ae6ad27000f73c25e099de'
