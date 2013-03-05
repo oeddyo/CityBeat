@@ -28,7 +28,7 @@ def insertEvents():
 	
 	for id in ids:
 		event = ei.getDocument({'_id':ObjectId(id)})
-		ei.addEvent(event)	
+		ei2.addEvent(event)	
 	
 if __name__=='__main__':
 	insertEvents()
