@@ -282,7 +282,7 @@ class EventFeature(Event):
 			lon += float(photo['location']['longitude'])
 		return lat/len(self._event['photos']), lon/len(self._event['photos'])
 	
-	def _computeSimpleStatistic(my_values):
+	def _computeSimpleStatistic(self, my_values):
 		return [numpy.min(my_values), numpy.max(my_values), numpy.std(my_values),
 		        numpy.mean(my_values), numpy.median(my_values)]	
 	
