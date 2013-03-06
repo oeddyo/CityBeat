@@ -33,13 +33,6 @@ def generateTrueLabelFile():
 		
 	fid1.close()
 	
-	for line in fid2:
-		t = line.split()
-#		print str(t[0])
-		events[str(t[0])] = int(t[1])
-		
-	fid2.close()
-	
 	for id, label in events.items():
 		event = ei.getDocument({'_id':ObjectId(id)})
 		event['label'] = label
