@@ -1,4 +1,5 @@
 from event_interface import EventInterface
+from event import Event
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from math import sqrt
@@ -79,9 +80,9 @@ class Representor():
 
         most_related_pics = cosine_similarities.argsort()
         photos_to_return = []
-        print event['_id']
+        #print event['_id']
         for idx in most_related_pics:
-            print cosine_similarities[idx], event['photos'][idx]['link']
+            #print cosine_similarities[idx], event['photos'][idx]['link']
             photos_to_return.append( event['photos'][idx] )
         photos_to_return.reverse() 
 

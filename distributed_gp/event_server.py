@@ -41,12 +41,14 @@ class Root:
         tmp_events = [e for e in event_cursor]
         for e in tmp_events:
             if len(e['photos'])>3:
-                if random.random()>0.5:
+                if random.random()>0.1:
                     e['_id'] = str(e['_id'])
                     e['urgency'] = 58
                     e['volume'] = 99
                     e['stats'] = {'photos':50, 'tweets':0, 'checkins':0}
-                    events.append( e )
+                    rep_photos = self.representor.getRepresentivePhotos(e)
+                    e['photos'] = rep_photos[:min(5,len(rep_photos))]
+                    events.append(e)
         return json.dumps(events)
     getAllEvents.exposed = True 
     
@@ -93,7 +95,7 @@ class Root:
         return photo
 
     def getPhotosByID(self, event_id):
-        event = self.ei.getEventByID(event_id)
+        event = json.loads(self.getEventByID(event_id))
         #event = EventFrontend(event, self.c)
             
         #top_words_list = event.getTopKeywordsAndPhotos(20,5)
@@ -105,6 +107,7 @@ class Root:
         all_photos = []
         top10_photos = []
         all_photos.append('all_photos')
+        #print event['photos']
         all_photos.append(len(event['photos']))
         all_photos.append( event['photos'])
 
@@ -153,9 +156,9 @@ class Root:
         event = self.ei.getEventByID(event_id)
         event = Event(event)
         event.selectOnePhotoForOneUser()
-        event = event.toJSON()
-        event['_id'] = str(event['_id'])
-        return json.dumps(event)
+        event_dic = event.toJSON()
+        event_dic['_id'] = str(event_dic['_id'])
+        return json.dumps(event_dic)
     getEventByID.exposed = True
     
     def getTopKeywords(self, event_id):
