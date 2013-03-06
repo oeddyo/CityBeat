@@ -33,7 +33,7 @@ def loadUnbalancedData(dataEdition):
 	if dataEdition == 'old':
 		fid2 = open('labeled_data_cf/true_label.txt', 'r')
 	else:
-		fid2 = open('labeled_data_cf/true_labe2.txt', 'r')
+		fid2 = open('labeled_data_cf/true_label2.txt', 'r')
 		
 	modified_events = {}
 	
@@ -121,7 +121,7 @@ def loadBalancedData(dataEdition):
 	if dataEdition == 'old':
 		fid1 = open('labeled_data_cf/true_label.txt', 'r')
 	else:
-		fid1 = open('labeled_data_cf/true_labe2.txt', 'r')
+		fid1 = open('labeled_data_cf/true_label2.txt', 'r')
 		
 	true_events = []
 	false_events = []
