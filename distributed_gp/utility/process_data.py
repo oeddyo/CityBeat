@@ -19,7 +19,7 @@ import math
 
 import sys
 
-def loadUnbalancedData():
+def loadUnbalancedData(dataEdition):
 	
 	# load modified 
 	
@@ -30,8 +30,13 @@ def loadUnbalancedData():
 	true_events = []
 	false_events = []
 	
-	fid2 = open('labeled_data_cf/true_label.txt', 'r')
+	if dataEdition == 'old':
+		fid2 = open('labeled_data_cf/true_label.txt', 'r')
+	else:
+		fid2 = open('labeled_data_cf/true_labe2.txt', 'r')
+		
 	modified_events = {}
+	
 	for line in fid2:
 		t = line.split(',')
 		modified_events[str(t[0])] = int(t[1])
@@ -109,11 +114,15 @@ def loadRawLabeledData():
 	fid.close()
 	return true_events, false_events
 
-def loadBalancedData():
+def loadBalancedData(dataEdition):
 	ei = EventInterface()
 	ei.setDB('citybeat')
 	ei.setCollection('candidate_event_25by25_merged')
-	fid1 = open('labeled_data_cf/true_label.txt', 'r')
+	if dataEdition == 'old':
+		fid1 = open('labeled_data_cf/true_label.txt', 'r')
+	else:
+		fid1 = open('labeled_data_cf/true_labe2.txt', 'r')
+		
 	true_events = []
 	false_events = []
 	
@@ -153,7 +162,7 @@ def getCorpusWordList(rep, event_list):
 				word_list.append(word)
 	return word_index, word_list
 
-def generateData(use_all_event=False, sparse=False):
+def generateData(use_all_event=False, sparse=False, dataEdition='new'):
 	rep = Representor()
 #	rep = None
 	corpus = Corpus()
@@ -163,9 +172,9 @@ def generateData(use_all_event=False, sparse=False):
 #	true_event_list, false_event_list = loadBalancedData()
 #	true_event_list, false_event_list = loadUnbalancedData()
 	if use_all_event:
-		true_event_list, false_event_list = loadUnbalancedData()
+		true_event_list, false_event_list = loadUnbalancedData(dataEdition)
 	else:
-		true_event_list, false_event_list = loadBalancedData()
+		true_event_list, false_event_list = loadBalancedData(dataEdition)
 	
 	if sparse:
 		word_index, word_list = getCorpusWordList(rep, true_event_list + false_event_list)
@@ -188,14 +197,16 @@ def generateData(use_all_event=False, sparse=False):
 			EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
 		
 def main():
-	assert len(sys.argv) >= 2
+	assert len(sys.argv) == 3
 	assert sys.argv[1] == 'balanced' or sys.argv[1] == 'unbalanced'
+	assert sys.argv[2] == 'old' or sys.argv[2] == 'new'
 #	assert sys.argv[2] == 'unsparse' or sys.argv[2] == 'sparse'
 	
 	balanced = sys.argv[1] == 'balanced'
+	dataEdition = sys.argv[2]
 	sparse = False
 #	sparse = sys.argv[2] == 'sparse'
-	generateData(not balanced, sparse)
+	generateData(not balanced, sparse, dataEdition)
 
 if __name__=='__main__':
 	main()
