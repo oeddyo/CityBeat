@@ -31,7 +31,7 @@ def loadUnbalancedData(dataEdition):
 	false_events = []
 	
 	if dataEdition == 'old':
-		fid2 = open('labeled_data_cf/true_label.txt', 'r')
+		fid2 = open('labeled_data_cf/true_label3_xia.txt', 'r')
 	else:
 		fid2 = open('labeled_data_cf/true_label2.txt', 'r')
 		
@@ -77,49 +77,12 @@ def loadUnbalancedData(dataEdition):
 	fid.close()
 	return true_events, false_events
 	
-def loadRawLabeledData():
-	
-	ei = EventInterface()
-	ei.setDB('citybeat')
-	ei.setCollection('candidate_event_25by25_merged')
-	
-	true_events = []
-	false_events = []
-	
-	# put the data into a text file first
-	fid = open('labeled_data_cf/data2.txt','r')
-	np = 0
-	nn = 0
-	for line in fid:
-		if len(line.strip()) == 0:
-			continue
-		t = line.split()
-		if not len(t) == 3:
-			continue
-		label = t[0].lower()
-		confidence = float(t[1])
-		event_id = t[2].split('/')[-1]
-		if label == 'yes':
-			event = ei.getDocument({'_id':ObjectId(event_id)})
-			event['label'] = 1
-			true_events.append(event)
-		if label == 'no':
-			if confidence < 1:
-				continue
-			event = ei.getDocument({'_id':ObjectId(event_id)})
-			event['label'] = -1
-			if event['actual_value'] < 8:
-				continue
-			false_events.append(event)
-	fid.close()
-	return true_events, false_events
-
 def loadBalancedData(dataEdition):
 	ei = EventInterface()
 	ei.setDB('citybeat')
 	ei.setCollection('candidate_event_25by25_merged')
 	if dataEdition == 'old':
-		fid1 = open('labeled_data_cf/true_label.txt', 'r')
+		fid1 = open('labeled_data_cf/true_label3_xia.txt', 'r')
 	else:
 		fid1 = open('labeled_data_cf/true_label2.txt', 'r')
 		
@@ -210,3 +173,52 @@ def main():
 
 if __name__=='__main__':
 	main()
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+#def loadRawLabeledData():
+#	
+#	ei = EventInterface()
+#	ei.setDB('citybeat')
+#	ei.setCollection('candidate_event_25by25_merged')
+#	
+#	true_events = []
+#	false_events = []
+#	
+#	# put the data into a text file first
+#	fid = open('labeled_data_cf/data2.txt','r')
+#	np = 0
+#	nn = 0
+#	for line in fid:
+#		if len(line.strip()) == 0:
+#			continue
+#		t = line.split()
+#		if not len(t) == 3:
+#			continue
+#		label = t[0].lower()
+#		confidence = float(t[1])
+#		event_id = t[2].split('/')[-1]
+#		if label == 'yes':
+#			event = ei.getDocument({'_id':ObjectId(event_id)})
+#			event['label'] = 1
+#			true_events.append(event)
+#		if label == 'no':
+#			if confidence < 1:
+#				continue
+#			event = ei.getDocument({'_id':ObjectId(event_id)})
+#			event['label'] = -1
+#			if event['actual_value'] < 8:
+#				continue
+#			false_events.append(event)
+#	fid.close()
+#	return true_events, false_events
