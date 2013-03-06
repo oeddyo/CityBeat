@@ -8,6 +8,8 @@ from stopwords import Stopwords
 from corpus import Corpus
 from _kl_divergence import kldiv
 
+
+
 import kl_divergence as KLDivergence
 
 import operator
@@ -15,6 +17,7 @@ import string
 import types
 import random
 import math
+import numpy
 
 class EventFeature(Event):
 	# this class is the extension of class Event, especially for feature extraction
@@ -124,8 +127,18 @@ class EventFeature(Event):
 		# it outputs the feature vector
 		self.preprocess()
 		avg_cap_len = self.getAvgCaptionLen()
-		avg_photo_dis = self.getAvgPhotoDis()
-		avg_photo_dis_cap = self.getAvgPhotoDisByCaption()
+		dis_feautures = self.getPhotoDisFeatures()
+		min_photo_dis = dis_feautures[0]
+		max_photo_dis = dis_feautures[1]
+		std_photo_dis = dis_feautures[2]
+		avg_photo_dis = dis_feautures[3]
+		median_photo_dis = dis_feautures[4]
+		cap_dis_features = self.getPhotoCaptionDisFeatures()
+		min_photo_dis_cap = cap_dis_features[0]
+		max_photo_dis_cap = cap_dis_features[1]
+		std_photo_dis_cap = cap_dis_features[2]
+		mean_photo_dis_cap = cap_dis_features[3]
+		median_photo_dis_cap = cap_dis_features[4]
 		cap_per = self.getCaptionPercentage()
 		std = self.getPredictedStd()
 		top_word_pop = self.getTopWordPopularity(k_topwords)
@@ -151,7 +164,11 @@ class EventFeature(Event):
 		location_name_similarity = self.getTopPhotosLocationSimilarity()
 		location_name_same = self.checkIfTopPhotoLocationSame()
 		
-		return [avg_cap_len, avg_photo_dis, avg_photo_dis_cap, cap_per,
+		return [avg_cap_len,
+		        min_photo_dis, max_photo_dis, std_photo_dis, avg_photo_dis, median_photo_dis,
+		        min_photo_dis_cap, max_photo_dis_cap,	std_photo_dis_cap,
+		        mean_photo_dis_cap, median_photo_dis_cap,
+		        cap_per,
 		        std, top_word_pop, zscore, entropy, #ratio,
 		        diff_avg_photo_dis, diff_top_word_pop, diff_entropy,
 		        tfidf_top3[0], tfidf_top3[1], tfidf_top3[2], 
@@ -173,8 +190,16 @@ class EventFeature(Event):
 	def GenerateArffFileHeader(self):
 		print '@relation CityBeatEvents'
 		print '@attribute AvgCaptionLen real'
+		print '@attribute MinPhotoDis real'
+		print '@attribute MaxPhotoDis real'
+		print '@attribute StdPhotoDis real'
 		print '@attribute AvgPhotoDis real'
-		print '@attribute AvgPhotoDisbyCap real'
+		print '@attribute MedianPhotoDis real'
+		print '@attribute MinPhotoDisbyCap real'
+		print '@attribute MaxPhotoDisbyCap real'
+		print '@attribute StdPhotoDisbyCap real'
+		print '@attribute MeanPhotoDisbyCap real'
+		print '@attribute MedianPhotoDisbyCap real'
 		print '@attribute CaptionPercentage real'
 		print '@attribute PredictedStd real'
 		print '@attribute TopWordPopularity real'
@@ -203,7 +228,7 @@ class EventFeature(Event):
 		print '@attribute label {1,-1}'
 		print '@data'
 		
-	def getAvgPhotoDisByCaption(self):
+	def getPhotoCaptionDisFeatures(self):
 		# one feauture, compute the average photo-to-photo textual distance (similarity, KL divergence) 
 		
 		def PhotoDistanceByCaption(photo1, photo2):
@@ -230,22 +255,38 @@ class EventFeature(Event):
 			return kldiv(word_dict1, word_dict2)
 			
 		photos = self._event['photos']
-		n = 0
-		avgDis = 0
+		diss = []
 		for i in xrange(0, len(photos)):
+			avgDis = 0
+			avail = 0
 			for j in xrange(0, len(photos)):
 				if i == j:
 					continue
 				val = PhotoDistanceByCaption(photos[i], photos[j])
 				if val is None:
 					continue
-				n += 1
+				avail += 1
 				avgDis += val
-		if n == 0:
-			return 999.999
-		return avgDis
+			if avail > 0:
+				diss.append(1.0*avgDis / avail)
+			else:
+				diss.append(10.0)
+		return self._computeSimpleStatistic(diss)
 	
-	def getAvgPhotoDis(self):
+	
+	def _computeGeolocationCenter(self):
+		lat = 0
+		lon = 0
+		for photo in self._event['photos']:
+			lat += float(photo['location']['latitude'])
+			lon += float(photo['location']['longitude'])
+		return lat/len(self._event['photos']), lon/len(self._event['photos'])
+	
+	def _computeSimpleStatistic(my_values):
+		return [numpy.min(my_values), numpy.max(my_values), numpy.std(my_values),
+		        numpy.mean(my_values), numpy.median(my_values)]	
+	
+	def getPhotoDisFeatures(self):
 		#average photo-to-photo geolocation distance
 		
 		def photoDistance(photo1, photo2):
@@ -258,20 +299,27 @@ class EventFeature(Event):
 			
 		photos = self._event['photos']
 		n = len(photos)
+		assert n >= 8
 		
-		if n < 2:
-			return 0.02
-			
-		avgDis = 0
+		# add three features
+		# how much percentage of photos in one sigma
+		# how much percentage of photos in two sigma
+		# how much percentage of photos in 3 sigma 
+		# 3 closest photos are within how many sigma, maybe a good feature
+		
+		
+		diss = []
 		
 		for i in xrange(0, n):
 			dis_to_other_photo = 0
 			for j in xrange(0, n):
 				if not i == j:
-					dis_to_other_photo += photoDistance(photos[i], photos[j])
-			avgDis += dis_to_other_photo / (n - 1)
-			
-		return avgDis / n
+					pairwiseDis = photoDistance(photos[i], photos[j])
+					dis_to_other_photo += pairwiseDis
+			dis_to_other_photo = dis_to_other_photo / (n-1)
+			diss.append(dis_to_other_photo)
+		
+		return self._computeSimpleStatistic(diss)
 	
 	def getAvgCaptionLen(self):
 		# not a good feature
