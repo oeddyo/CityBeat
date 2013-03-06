@@ -20,8 +20,7 @@ def generateTrueLabelFile():
 	ei.setCollection('candidate_event_25by25_merged')
 	
 	events = {}
-	fid1 = open('labeled_data_cf/balanced_data_with_true_label.txt', 'r')
-	fid2 = open('labeled_data_cf/modified_event_labels.txt', 'r')
+	fid1 = open('labeled_data_cf/true_label.txt', 'r')
 	true_events = []
 	false_events = []
 	unknown_events = []
