@@ -190,16 +190,16 @@ class EventFeature(Event):
 	def GenerateArffFileHeader(self):
 		print '@relation CityBeatEvents'
 		print '@attribute AvgCaptionLen real'
-		print '@attribute MinPhotoDis real'
-		print '@attribute MaxPhotoDis real'
-		print '@attribute StdPhotoDis real'
+		print '@attribute stat_MinPhotoDis real'
+		print '@attribute stat_MaxPhotoDis real'
+		print '@attribute stat_StdPhotoDis real'
 		print '@attribute AvgPhotoDis real'
-		print '@attribute MedianPhotoDis real'
-		print '@attribute MinPhotoDisbyCap real'
-		print '@attribute MaxPhotoDisbyCap real'
-		print '@attribute StdPhotoDisbyCap real'
+		print '@attribute stat_MedianPhotoDis real'
+		print '@attribute stat_MinPhotoDisbyCap real'
+		print '@attribute stat_MaxPhotoDisbyCap real'
+		print '@attribute stat_StdPhotoDisbyCap real'
 		print '@attribute MeanPhotoDisbyCap real'
-		print '@attribute MedianPhotoDisbyCap real'
+		print '@attribute stat_MedianPhotoDisbyCap real'
 		print '@attribute CaptionPercentage real'
 		print '@attribute PredictedStd real'
 		print '@attribute TopWordPopularity real'
@@ -494,7 +494,9 @@ class EventFeature(Event):
 		
 		topic_divergence = KLDivergence.averageKLDivergence(freq1, freq2)
 		
-		return [event.getAvgPhotoDis(), topic_divergence,
+		
+		
+		return [event.getPhotoDisFeatures()[3], topic_divergence,
 #		        event.getEntropy(entropy_para),
 		        entropy_divergence]
 			
