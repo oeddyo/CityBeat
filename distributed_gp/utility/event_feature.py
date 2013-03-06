@@ -299,7 +299,9 @@ class EventFeature(Event):
 			
 		photos = self._event['photos']
 		n = len(photos)
-		assert n >= 8
+		# n would be very small when we compute the historical features
+		if n < 2:
+			return [2.0, 2.0, 0, 2.0, 2.0]
 		
 		# add three features
 		# how much percentage of photos in one sigma
