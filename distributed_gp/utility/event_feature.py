@@ -162,7 +162,7 @@ class EventFeature(Event):
 		diff_entropy = historic_features[2]
 		
 		location_name_similarity = self.getTopPhotosLocationSimilarity()
-		location_name_same = self.checkIfTopPhotoLocationSame()
+#		location_name_same = self.checkIfTopPhotoLocationSame()
 		
 		return [avg_cap_len,
 		        min_photo_dis, max_photo_dis, std_photo_dis, avg_photo_dis, median_photo_dis,
@@ -174,7 +174,8 @@ class EventFeature(Event):
 		        tfidf_top3[0], tfidf_top3[1], tfidf_top3[2], 
 		        hashtage_cnt3[0], hashtage_cnt3[1], hashtage_cnt3[2],
 		        number_photos_associated_with_keywords3[0], number_photos_associated_with_keywords3[1], number_photos_associated_with_keywords3[2],
-		        location_name_similarity, location_name_same,
+		        location_name_similarity, 
+#		        location_name_same,
 		        event_id,
 		        label]
 		        
@@ -222,7 +223,7 @@ class EventFeature(Event):
 		print '@attribute NumberOfPhotsoContaingTopWord3 real'
 		
 		print '@attribute Top10PhotoLocationNameFreq real'
-		print '@attribute Top3PhotoLocationNameSame real'
+#		print '@attribute Top3PhotoLocationNameSame real'
 								
 		print '@attribute ID string'
 		print '@attribute label {1,-1}'
