@@ -55,7 +55,7 @@ def run():
     alarm_region_size = 25
 
     regions = huge_region.divideRegions(alarm_region_size,alarm_region_size)
-    filtered_regions = huge_region.filterRegions( regions, test = True)
+    filtered_regions = huge_region.filterRegions( regions, test = True, m = 25, n = 25)
     # get the same regions as in db. Here it's 10 by 10
 
     regions = filtered_regions
