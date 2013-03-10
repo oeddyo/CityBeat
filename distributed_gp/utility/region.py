@@ -62,9 +62,10 @@ class Region:
 	
 	def filterRegions(self, region_list, percentage=InstagramConfig.region_percentage,test=False, n=10, m=10):
 		if test:
+			#n and m should be set if test is true
 			#this is only for test
 			new_region_list = []
-			folder = '/grad/users/kx19/CityBeat/distributed_gp/utility/region_cache/'
+			folder = '/res/users/kx19/Citybeat/CityBeat/distributed_gp/utility/region_cache/'
 			file_name = str(n)+'_'+str(m)+'.txt'
 			fid = open(folder + file_name)
 			for line in fid:
