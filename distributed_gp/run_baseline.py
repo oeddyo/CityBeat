@@ -11,8 +11,6 @@ from uuid import uuid4
 from utility.instagram_time_series import InstagramTimeSeries
 from utility.region import Region
 from utility.config import InstagramConfig
-from rq import Queue, Connection
-from redis import Redis
 from do_gp import Predict
 
 
@@ -38,7 +36,7 @@ class VarianceCompute():
     
     def _computeVariation(self):
         values = [0]*24
-        ts = InstagramTimeSeries(self.region, self.start_time, self,end_of_time)
+        ts = InstagramTimeSeries(self.region, self.start_time, self.end_of_time)
         instagram_ts = ts.buildTimeSeries()
 
         print instagram_ts

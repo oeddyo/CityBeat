@@ -13,11 +13,12 @@ class InstagramConfig:
     event_db = 'citybeat'
 
     #experiment setting as follow (uncomment them)
-    #photo_collection = 'photos_no_duplicate'
+    photo_collection = 'photos_no_duplicate'
     #event_collection = 'next_week_candidate_event_25by25'
+    event_collection = 'baseline_candidate_events'
     #online setting
-    photo_collection = 'photos'
-    event_collection = 'online_candidate'
+    #photo_collection = 'photos'
+    #event_collection = 'online_candidate'
     prediction_db = 'citybeat'
     #prediction_collection = 'next_week_prediction_25by25'
     prediction_collection = 'online_prediction'

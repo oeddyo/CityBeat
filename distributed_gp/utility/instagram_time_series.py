@@ -81,7 +81,6 @@ class InstagramTimeSeries(TimeSeries):
         
         counts.append(1)        # VERY IMPORTANT, FIX THE SIZE OF TIMESERIES IN PANDAS
         dates.append( datetime.utcfromtimestamp(float(self.end_timestamp) - 1) )
-
         self.series = Series(counts, index = dates)
         try:
             self.series = self.series.resample(self.freq, how='sum', label='right')
