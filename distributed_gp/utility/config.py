@@ -16,7 +16,7 @@ class InstagramConfig:
     #photo_collection = 'photos_no_duplicate'
     #event_collection = 'next_week_candidate_event_25by25'
     #online setting
-    photo_collection = 'photos'
+    photo_collection = 'photos_no_duplicate'
     event_collection = 'online_candidate'
     prediction_db = 'citybeat'
     #prediction_collection = 'next_week_prediction_25by25'
