@@ -87,13 +87,20 @@ class EventInterface(MongoDBInterface):
 		print 'create a new event'
 		super(EventInterface, self).saveDocument(new_event)
 		
+	def getPhotoDistributionArray(self):
+		events = self.getAllDocuments()
+		photoNumbers = []
+		for event in events:
+			photoNumbers.append(len(event['photos']))
+		return photoNumbers
+		
 			
 if __name__=='__main__':
 	
 	ei = EventInterface()
-	ei.setDB('historic_alarm')
-	ei.setCollection('labeled_event')
-	print ei.getEventByID('5100c1fec2a3754648f03b60')['created_time']
+	ei.setDB('citybeat')
+	ei.setCollection('candidate_event_25by25')
+	print ei.getPhotoDistributionArray()
 	
 			
 #def getPhotoFromInstagram(cnt):
