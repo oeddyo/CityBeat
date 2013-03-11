@@ -88,7 +88,7 @@ class EventInterface(MongoDBInterface):
 		super(EventInterface, self).saveDocument(new_event)
 	
 	
-	def getPhotoDistributionArray():
+	def getPhotoDistributionArray(self):
 		events = self.getAllDocuments()
 		photoNumbers = []
 		for event in events:
