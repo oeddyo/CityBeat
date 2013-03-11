@@ -99,7 +99,7 @@ if __name__=='__main__':
 	
 	ei = EventInterface()
 	ei.setDB('citybeat')
-	ei.setCollection('candidate_event_25by25')
+	ei.setCollection('candidate_event_25by25_merged')
 	print ei.getPhotoDistributionArray()
 	
 			
