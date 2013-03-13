@@ -37,7 +37,7 @@ def loadNextWeekData():
 		id = str(t[0])
 		label = int(t[1])
 		
-		event = ei.getDocument({'_id':ObjectId(event_id)})
+		event = ei.getDocument({'_id':ObjectId(id)})
 		event['label'] = label
 		e = Event(event)
 		if e.getActualValue() < 8 or event['label'] == 0:
