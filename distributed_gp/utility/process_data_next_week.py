@@ -62,7 +62,6 @@ def generateData():
 
 		
 def main():
-	
 	generateData()
 
 if __name__=='__main__':
