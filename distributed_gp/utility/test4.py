@@ -29,7 +29,7 @@ def main():
 		event_list.append(event)
 	random.shuffle(event_list)
 	for event in event_list[0:200]:
-		print event['id']
+		print event['_id']
 
 
 if __name__=='__main__':
