@@ -21,28 +21,15 @@ import sys
 
 
 def main():
-	my_region = {'min_lat': 40.75419436, 'max_lng': -73.9780882, 'min_lng': -73.98609448, 'max_lat': 40.75949964}
-	pi = PhotoInterface()
-	pi.setDB('citybeat')
-	pi.setCollection('photos')
-	photos1 = pi.rangeQuery(my_region, ['1354319474', '1354320288'])
-	pi.setCollection('photos_no_duplicate')
-	photos2 = pi.rangeQuery(my_region, ['1354319474', '1354320288'])
-	
-	print photos1.count()
-	print photos2.count()
-	
-	dict1 = {}
-	for photo in photos1:
-		dict1[photo['id']] = 1
-	
-	print len(dict1)
-	
-	dict2 = {}
-	for photo in photos2:
-		dict2[photo['id']] = 1
-	
-	print len(dict2)
+	ei = EventInterface()
+	ei.setCollection('next_week_candidate_event_25by25_merged')
+	event_cur = ei.getAllDocuments()
+	event_list = []
+	for event in event_cur:
+		event_list.append(event)
+	random.shuffle(event_list)
+	for event in event_list[0:200]:
+		print event['id']
 
 
 if __name__=='__main__':

@@ -45,7 +45,7 @@ def main():
 		dict1[line[0]]=int(line[1])
 	fid1.close()
 	
-	fid2 = open('labeled_data_cf/true_label2.txt', 'r')
+	fid2 = open('labeled_data_cf/kappa_xie.txt', 'r')
 	for line in fid2:
 		line = line.split(',')
 		dict2[line[0]]=int(line[1])
