@@ -22,14 +22,24 @@ import sys
 
 def main():
 	ei = EventInterface()
-	ei.setCollection('next_week_candidate_event_25by25_merged')
+	ei.setCollection('next_week_candidate_event_25by25')
 	event_cur = ei.getAllDocuments()
-	event_list = []
+	
+	ei2 = EventInterface()
+	ei2.setCollection('next_week_candidate_event_25by25_merged')
+	
 	for event in event_cur:
-		event_list.append(event)
-	random.shuffle(event_list)
-	for event in event_list[0:200]:
-		print event['_id']
+		e = Event(event)
+		if e.getActualValue() < 8:
+			continue
+		ei2.addEvent(event)
+		
+#	event_list = []
+#	for event in event_cur:
+#		event_list.append(event)
+#	random.shuffle(event_list)
+#	for event in event_list[0:200]:
+#		print event['_id']
 
 
 if __name__=='__main__':
