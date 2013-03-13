@@ -22,7 +22,7 @@ import sys
 
 def main():
 	ei = EventInterface()
-	ei.setCollection('next_week_candidate_event_25by25')
+	ei.setCollection('next_week_candidate_event_25by25_merged')
 	event_cur = ei.getAllDocuments()
 	
 #	ei2 = EventInterface()
