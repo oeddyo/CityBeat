@@ -31,7 +31,10 @@ def main():
 	ti = TweetInterface()
 	tweet = ti.getDocument()
 	for key, value in tweet.items():
-		print key, value
+		print key
+		print value
+		print
+		print 
 			
 if __name__ == '__main__':
 	main()
