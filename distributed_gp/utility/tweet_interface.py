@@ -7,7 +7,7 @@
 
 from mongodb_interface import MongoDBInterface
 from event import Event
-from config import InstagramConfig
+from config import TwitterConfig
 from datetime import datetime
 from bson.objectid import ObjectId
 
@@ -16,6 +16,7 @@ import time
 import logging
 import string
 import types
+import json
 
 class TweetInterface(MongoDBInterface):
 	def __init__(self, db=TwitterConfig.tweet_db,  
@@ -27,7 +28,15 @@ class TweetInterface(MongoDBInterface):
 	  
 	  
 def main():
-	pass
-	
+	ti = TweetInterface()
+	fid = open('nyc_tweets.txt')
+	i = 1
+	for line in fid:
+		if i % 100 == 0:
+			print i
+		i += 1
+		dict1 = json.loads(line)
+		ti.saveDocument(dict1)
+			
 if __name__ == '__main__':
 	main()
