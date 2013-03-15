@@ -18,16 +18,12 @@ import string
 import types
 
 class TweetInterface(MongoDBInterface):
-	def __init__(self, db=InstagramConfig.event_db,  
-	             collection=InstagramConfig.event_collection):
+	def __init__(self, db=TwitterConfig.tweet_db,  
+	             collection=TwitterConfig.tweet_collection):
 	  # initialize an interface for accessing event from mongodb
-	  super(EventInterface, self).__init__()
+	  super(TweetInterface, self).__init__()
 	  self.setDB(db)
 	  self.setCollection(collection)
-	
-	def saveDocument(self, raw_event):
-		#rewrite the method
-		self.addEvent(raw_event)
 		
 	def getEventByID(self, ID):
 		return self.getDocument({'_id':ObjectId(str(ID))})

@@ -6,4 +6,4 @@ mongodb_port = 27017
 
 class TwitterConfig:
 	tweet_db = 'citybeat'
-	collection = 'tweets'
+	tweet_collection = 'tweets'
