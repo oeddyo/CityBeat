@@ -24,3 +24,10 @@ class TweetInterface(MongoDBInterface):
 	  super(TweetInterface, self).__init__()
 	  self.setDB(db)
 	  self.setCollection(collection)
+	  
+	  
+def main():
+	pass
+	
+if __name__ == '__main__':
+	main()
