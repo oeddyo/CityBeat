@@ -29,14 +29,9 @@ class TweetInterface(MongoDBInterface):
 	  
 def main():
 	ti = TweetInterface()
-	fid = open('nyc_tweets.txt')
-	i = 1
-	for line in fid:
-		if i % 100 == 0:
-			print i
-		i += 1
-		dict1 = json.loads(line)
-		ti.saveDocument(dict1)
+	tweet = ti.getDocument()
+	for key, value in tweet.items():
+		print key, value
 			
 if __name__ == '__main__':
 	main()
