@@ -12,6 +12,7 @@ from config import TwitterConfig
 from datetime import datetime
 from bson.objectid import ObjectId
 
+
 import config
 import time
 import logging
@@ -35,9 +36,12 @@ class TweetInterface(MongoDBInterface):
 			if 'geo' not in tweet.keys():
 				return
 			location = {}
-			location['latitude'] = tweet['geo']['coordinates'][1]
-			location['longitude'] = tweet['geo']['coordinates'][0]
+			location['latitude'] = tweet['geo']['coordinates'][0]
+			location['longitude'] = tweet['geo']['coordinates'][1]
 			tweet['location'] = location
+		
+		tweet['created_time'] = Tweet(tweet).getCreatedUTCTimestamp()
+		
 		super(TweetInterface, self).saveDocument(tweet)
 	
 	def rangeQuery(self, region=None, period=None):
@@ -61,29 +65,33 @@ class TweetInterface(MongoDBInterface):
 		conditions = dict(region_conditions, **period_conditions)
 		
 		#returns a cursor
-		#sort the photo in chronologically decreasing order
+		#sort the tweet in chronologically decreasing order
 		return self.getAllDocuments(conditions).sort('created_time', -1)
 	  
 def main():
 	
-#	ti = TweetInterface()
-#	
-#	fid = open('nyc_tweets.txt')
-#	for line in fid:
-#		tweet = json.loads(line.strip())
-#		ti.saveDocument(tweet)
-#	fid.close()
-	
 	ti = TweetInterface()
-	tweets = ti.getAllDocuments()
-	for tweet in tweets:
-		tweet = Tweet(tweet)
-#		retweet = tweet.getRetweetFreq()
-#		if retweet > 0:
-#			print retweet
-		keywords = ['fire']
-		if tweet.findKeywords(keywords) == 1:
-			print tweet.getRawText()
+#	period = ['1353641910', '1355641910']
+#	region = {'min_lat':-74, 'max_lat':-73, 'min_lng':40, 'max_lng':41}
+#	print ti.rangeQuery(region=region, period=period).count()
+		
+	fid = open('nyc_tweets.txt')
+	for line in fid:
+		tweet = json.loads(line.strip())
+		ti.saveDocument(tweet)
+	fid.close()
+	
+#	ti = TweetInterface()
+#	tweet = ti.getDocument()
+#	for tweet in tweets:
+#		tweet = Tweet(tweet)
+##		retweet = tweet.getRetweetFreq()
+##		if retweet > 0:
+##			print retweet
+#		keywords = ['game', 'knicks']
+#		if tweet.findKeywords(keywords) == len(keywords):
+#			print tweet.getRawText().
+#			print 
 
 			
 if __name__ == '__main__':

@@ -159,6 +159,30 @@ def generateData(use_all_event=False, sparse=False, dataEdition='new'):
 		else:
 			EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
 		
+def generateData2(use_all_event=False, sparse=False, dataEdition='new'):
+	corpus = Corpus()
+#	corpus.buildCorpusOnDB('citybeat', 'candidate_event_25by25_merged')
+	
+	if use_all_event:
+		true_event_list, false_event_list = loadUnbalancedData(dataEdition)
+	else:
+		true_event_list, false_event_list = loadBalancedData(dataEdition)
+	
+	if sparse:
+		word_index, word_list = getCorpusWordList(rep, true_event_list + false_event_list)
+		EventFeatureSparse(None).GenerateArffFileHeader(word_list)
+	else:
+		EventFeature(None).GenerateArffFileHeader()
+		
+	random.shuffle(false_event_list)
+	
+	for event in true_event_list + false_event_list:
+		EventFeatureTwitter(event, corpus, None).extractFeatureFromTweet()
+#		if not sparse:
+#			EventFeature(event, corpus, rep).printFeatures()
+#		else:
+#			EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
+
 def main():
 	assert len(sys.argv) == 3
 	assert sys.argv[1] == 'balanced' or sys.argv[1] == 'unbalanced'
