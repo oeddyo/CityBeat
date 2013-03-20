@@ -128,13 +128,13 @@ class EventFeatureTwitter(EventFeature):
 		
 	def extractFeatureFromTweet(self, keyword_num=4):
 		tc = TweetCluster()
-		tc.setTweetClusterRegion(self._event['region'])
+		tc.setRegion(self._event['region'])
 		tc.setPeriod([str(self.getEarliestPhotoTime()), str(self.getLatestPhotoTime())])
 		tc.getTweetFromRangeQuery()
 		
 		keywords = self._getTopWords(keyword_num, stopword_removal=True)
-		per = tc.computePercentageOfTweetWithKeyword(keywords, 2)
-		diff_per = tc.computeDifferenceComparedWithHistoricPercentageOfTweetWithKeyword(keywords, 2)
+		per = tc.computePercentageOfTweetWithKeyword(keywords, 1)
+		diff_per = tc.computeDifferenceComparedWithHistoricPercentageOfTweetWithKeyword(keywords, 1)
 		print per, diff_per
 		return per, diff_per
 

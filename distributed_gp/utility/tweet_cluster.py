@@ -28,7 +28,7 @@ class TweetCluster(object):
 	def setTweetCluster(self, tweet_cluster):
 		self._tweet_cluster['tweets'] = tweet_cluster
 		
-	def setTweetClusterRegion(self, region):
+	def setRegion(self, region):
 		self._tweet_cluster['region'] = region
 		print region
 		
@@ -75,7 +75,12 @@ class TweetCluster(object):
 		return self._tweet_cluster	
 		
 def main():
-	pass
+	ti = TweetInterface()
+	period = ['1354910879', '1354918838']
+	region = {'min_lat':40.73297324, 'max_lat':40.73827852, 'min_lng':-73.99410076, 'max_lng':-73.98609447999999}
+	tc = TwitterCluster()
+	tc.setRegion(region)
+	tc.setPeriod(period)
 	
 if __name__ == '__main__':
 	main()

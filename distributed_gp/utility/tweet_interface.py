@@ -71,15 +71,15 @@ class TweetInterface(MongoDBInterface):
 def main():
 	
 	ti = TweetInterface()
-#	period = ['1353641910', '1355641910']
-#	region = {'min_lat':-74, 'max_lat':-73, 'min_lng':40, 'max_lng':41}
-#	print ti.rangeQuery(region=region, period=period).count()
+	period = ['1354910879', '1354918838']
+	region = {'min_lat':40.73297324, 'max_lat':40.73827852, 'min_lng':-73.99410076, 'max_lng':-73.98609447999999}
+	print ti.rangeQuery(region=region, period=period).count()
 		
-	fid = open('nyc_tweets.txt')
-	for line in fid:
-		tweet = json.loads(line.strip())
-		ti.saveDocument(tweet)
-	fid.close()
+#	fid = open('nyc_tweets.txt')
+#	for line in fid:
+#		tweet = json.loads(line.strip())
+#		ti.saveDocument(tweet)
+#	fid.close()
 	
 #	ti = TweetInterface()
 #	tweet = ti.getDocument()
