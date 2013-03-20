@@ -60,6 +60,8 @@ class EventFeatureTwitter(EventFeature):
 		
 		location_name_similarity = self.getTopPhotosLocationSimilarity()
 #		location_name_same = self.checkIfTopPhotoLocationSame()
+
+		twitter_features = self.extractFeatureFromTweet()
 		
 		return [avg_cap_len,
 		        min_photo_dis, max_photo_dis, std_photo_dis, avg_photo_dis, median_photo_dis,
@@ -73,6 +75,7 @@ class EventFeatureTwitter(EventFeature):
 		        number_photos_associated_with_keywords3[0], number_photos_associated_with_keywords3[1], number_photos_associated_with_keywords3[2],
 		        location_name_similarity, 
 #		        location_name_same,
+						twitter_features[0], twitter_features[1]
 		        event_id,
 		        label]
 		        
@@ -121,17 +124,19 @@ class EventFeatureTwitter(EventFeature):
 		
 		print '@attribute Top10PhotoLocationNameFreq real'
 #		print '@attribute Top3PhotoLocationNameSame real'
+
+		print '@attribute PercentageOfTweetsWithTopWords real'
+		print '@attribute diff_PercentageOfTweetsWithTopWords real'
 								
 		print '@attribute ID string'
 		print '@attribute label {1,-1}'
 		print '@data'
 		
-	def extractFeatureFromTweet(self, keyword_num=4):
+	def extractFeatureFromTweet(self, keyword_num=3):
 		tc = TweetCluster()
 		tc.setRegion(self._event['region'])
 		tc.setPeriod([str(self.getEarliestPhotoTime()), str(self.getLatestPhotoTime())])
 		tc.getTweetFromRangeQuery()
-		print 'number of tweets', tc.getNumberOfTweets()
 		
 		keywords_pop = self._getTopWords(keyword_num, stopword_removal=True)
 		keywords = []
@@ -140,7 +145,6 @@ class EventFeatureTwitter(EventFeature):
 			
 		per = tc.computePercentageOfTweetWithKeyword(keywords, 1)
 		diff_per = tc.computeDifferenceComparedWithHistoricPercentageOfTweetWithKeyword(keywords, 1)
-		print per, diff_per
 		return per, diff_per
 
 if __name__=='__main__':

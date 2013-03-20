@@ -160,10 +160,16 @@ def generateData(use_all_event=False, sparse=False, dataEdition='new'):
 		else:
 			EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
 		
+
 def generateData2(use_all_event=False, sparse=False, dataEdition='new'):
+	rep = Representor()
+#	rep = None
 	corpus = Corpus()
-#	corpus.buildCorpusOnDB('citybeat', 'candidate_event_25by25_merged')
+	corpus.buildCorpusOnDB('citybeat', 'candidate_event_25by25_merged')
 	
+#	true_event_list, false_event_list = loadRawLabeledData()
+#	true_event_list, false_event_list = loadBalancedData()
+#	true_event_list, false_event_list = loadUnbalancedData()
 	if use_all_event:
 		true_event_list, false_event_list = loadUnbalancedData(dataEdition)
 	else:
@@ -173,16 +179,21 @@ def generateData2(use_all_event=False, sparse=False, dataEdition='new'):
 		word_index, word_list = getCorpusWordList(rep, true_event_list + false_event_list)
 		EventFeatureSparse(None).GenerateArffFileHeader(word_list)
 	else:
-		EventFeature(None).GenerateArffFileHeader()
+		EventFeatureTwitter(None).GenerateArffFileHeader()
+		
+	for event in true_event_list:
+		if not sparse:
+			EventFeatureTwitter(event, corpus, rep).printFeatures()
+		else:
+			EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
 		
 	random.shuffle(false_event_list)
 	
-	for event in true_event_list + false_event_list:
-		EventFeatureTwitter(event, corpus, None).extractFeatureFromTweet()
-#		if not sparse:
-#			EventFeature(event, corpus, rep).printFeatures()
-#		else:
-#			EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
+	for event in false_event_list:
+		if not sparse:
+			EventFeatureTwitter(event, corpus, rep).printFeatures()
+		else:
+			EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
 
 def main():
 	assert len(sys.argv) == 3
