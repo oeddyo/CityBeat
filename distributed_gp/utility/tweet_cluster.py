@@ -36,7 +36,7 @@ class TweetCluster(object):
 		self._tweet_cluster['period'] = period
 		
 	def getNumberOfTweets(self):
-		return len(self._twitter_cluster['tweets'])
+		return len(self._tweet_cluster['tweets'])
 		
 	def getTweetFromRangeQuery(self):
 		ti = TweetInterface()
