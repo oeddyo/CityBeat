@@ -78,7 +78,12 @@ def main():
 	tweets = ti.getAllDocuments()
 	for tweet in tweets:
 		tweet = Tweet(tweet)
-		print tweet.getRetweetFreq()
+#		retweet = tweet.getRetweetFreq()
+#		if retweet > 0:
+#			print retweet
+		keywords = ['fire']
+		if tweet.findKeywords(keywords) == 1:
+			print tweet.getRawText()
 
 			
 if __name__ == '__main__':
