@@ -75,7 +75,8 @@ class EventFeatureTwitter(EventFeature):
 		        number_photos_associated_with_keywords3[0], number_photos_associated_with_keywords3[1], number_photos_associated_with_keywords3[2],
 		        location_name_similarity, 
 #		        location_name_same,
-						twitter_features[0], twitter_features[1],
+						twitter_features,
+#						twitter_features[0], twitter_features[1],
 		        event_id,
 		        label]
 		        
@@ -144,8 +145,9 @@ class EventFeatureTwitter(EventFeature):
 			keywords.append(word)
 			
 		per = tc.computePercentageOfTweetWithKeyword(keywords, 1)
-		diff_per = tc.computeDifferenceComparedWithHistoricPercentageOfTweetWithKeyword(keywords, 1)
-		return per, diff_per
+		return per
+#		diff_per = tc.computeDifferenceComparedWithHistoricPercentageOfTweetWithKeyword(keywords, 1)
+#		return per, diff_per
 
 if __name__=='__main__':
 	generateData()
