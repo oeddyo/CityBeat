@@ -30,12 +30,10 @@ class TweetCluster(object):
 		
 	def setRegion(self, region):
 		self._tweet_cluster['region'] = region
-		print region
 		
 	def setPeriod(self, period):
 		# period should be [begin_time, end time]
 		self._tweet_cluster['period'] = period
-		print period
 		
 	def getTweetFromRangeQuery(self):
 		ti = TweetInterface()
