@@ -28,7 +28,6 @@ class TweetCluster(object):
 		
 	def setPeriod(self, period):
 		# period should be [begin_time, end time]
-		print period[0], period[1] 
 		self._tweet_cluster['period'] = period
 		
 	def getNumberOfTweets(self):
@@ -51,7 +50,7 @@ class TweetCluster(object):
 			tweet = Tweet(tweet)
 			if tweet.findKeywords(keywords) >= k:
 				occ += 1
-		return 1.0*occ/len(self._tweet_cluster)
+		return 1.0*occ/len(self._tweet_cluster['tweets'])
 		
 	def computeDifferenceComparedWithHistoricPercentageOfTweetWithKeyword(self, keywords, k, days=7):
 		if self._tweet_cluster['period'] is None:

@@ -131,7 +131,7 @@ class EventFeatureTwitter(EventFeature):
 		tc.setRegion(self._event['region'])
 		tc.setPeriod([str(self.getEarliestPhotoTime()), str(self.getLatestPhotoTime())])
 		tc.getTweetFromRangeQuery()
-		print tc.getNumberOfTweets()
+		print 'number of tweets', tc.getNumberOfTweets()
 		
 		keywords_pop = self._getTopWords(keyword_num, stopword_removal=True)
 		keywords = []
