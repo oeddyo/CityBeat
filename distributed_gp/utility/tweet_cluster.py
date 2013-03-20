@@ -14,16 +14,11 @@ import time
 
 class TweetCluster(object):
 	
-	def __init__(self, tweet_cluster=None):
-		# the input argument event should be a json, dictionary
-		
-		if not tweet_cluster is None:
-			if type(tweet_cluster) is types.DictType:
-				self._tweet_cluster= tweet_cluster
-			else:
-				self._tweet_cluster= tweet_cluster.toJSON()
-		else:
-			self._tweet_cluster = {}
+	def __init__(self):
+		self._tweet_cluster = {}
+		self._tweet_cluster['period'] = None
+		self._tweet_cluster['region'] = None
+		self._tweet_cluster['tweets'] = []
 	
 	def setTweetCluster(self, tweet_cluster):
 		self._tweet_cluster['tweets'] = tweet_cluster
