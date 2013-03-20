@@ -132,7 +132,10 @@ class EventFeatureTwitter(EventFeature):
 		tc.setPeriod([str(self.getEarliestPhotoTime()), str(self.getLatestPhotoTime())])
 		tc.getTweetFromRangeQuery()
 		
-		keywords = self._getTopWords(keyword_num, stopword_removal=True)
+		keywords_pop = self._getTopWords(keyword_num, stopword_removal=True)
+		keywords = []
+		for word, freq in keywords_pop:
+			keywords.append(word)
 		print keywords
 		print tc.getNumberOfTweets()
 		per = tc.computePercentageOfTweetWithKeyword(keywords, 1)
