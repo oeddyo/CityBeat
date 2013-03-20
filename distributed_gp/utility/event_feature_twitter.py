@@ -133,8 +133,10 @@ class EventFeatureTwitter(EventFeature):
 		tc.getTweetFromRangeQuery()
 		
 		keywords = self._getTopWords(keyword_num, stopword_removal=True)
-		per = tc.computePercentageOfTweetWithKeyword(keywords, 0)
-		diff_per = tc.computeDifferenceComparedWithHistoricPercentageOfTweetWithKeyword(keywords, 0)
+		print keywords
+		print tc.getNumberOfTweets()
+		per = tc.computePercentageOfTweetWithKeyword(keywords, 1)
+		diff_per = tc.computeDifferenceComparedWithHistoricPercentageOfTweetWithKeyword(keywords, 1)
 		print per, diff_per
 		return per, diff_per
 

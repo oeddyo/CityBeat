@@ -35,6 +35,9 @@ class TweetCluster(object):
 		# period should be [begin_time, end time]
 		self._tweet_cluster['period'] = period
 		
+	def getNumberOfTweets(self):
+		return len(self._twitter_cluster['tweets'])
+		
 	def getTweetFromRangeQuery(self):
 		ti = TweetInterface()
 		tweets = ti.rangeQuery(self._tweet_cluster['region'], self._tweet_cluster['period'])
