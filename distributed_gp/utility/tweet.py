@@ -19,6 +19,7 @@ class Tweet(object):
 			if type(tweet) is types.DictType:
 				self._tweet = tweet
 			else:
+				print tweet
 				self._tweet = tweet.toJSON() 
 	
 	def getCreatedUTCTimestamp(self):

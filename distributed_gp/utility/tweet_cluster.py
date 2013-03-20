@@ -34,6 +34,13 @@ class TweetCluster(object):
 	def setPeriod(self, period):
 		# period should be [begin_time, end time]
 		self._tweet_cluster['period'] = period
+		
+	def getTweetFromRangeQuery(self):
+		ti = TweetInterface()
+		tweets = ti.rangeQuery(self._tweet_cluster['region'], self._tweet_cluster['period'])
+		self._tweet_cluster['tweets'] = []
+		for tweet in tweets:
+			self._tweet_cluster['tweets'].append(tweet)
 			
 	def computePercentageOfTweetWithKeyword(self, keywords, k):
 		# no tweet
@@ -41,7 +48,7 @@ class TweetCluster(object):
 			return 0
 		# compute the percentage of tweets with at least k keywords
 		occ = 0
-		for tweet in self._tweet_cluster:
+		for tweet in self._tweet_cluster['tweets']:
 			tweet = Tweet(tweet)
 			if tweet.findKeywords(keywords) >= k:
 				occ += 1
@@ -49,14 +56,13 @@ class TweetCluster(object):
 		
 	def computeDifferenceComparedWithHistoricPercentageOfTweetWithKeyword(self, keywords, k, days=7):
 		ti = TweetInterface()
-		freq = computePercentageOfTweetWithKeyword(keyword, k)
+		freq = self.computePercentageOfTweetWithKeyword(keywords, k)
 		tweets = []
 		for d in xrange(1, days+1):
 			et = int(self._tweet_cluster['period'][1]) + 24*3600*d
 			bt = int(self._tweet_cluster['period'][0]) + 24*3600*d
 			day_tweets = ti.rangeQuery(self._tweet_cluster['region'], [str(bt), str(et)])
 			for tweet in day_tweets:
-				print type(tweet)
 				tweets.append(tweet)
 		historic_tweet_cluster = TweetCluster(tweets)
 		return (self.computePercentageOfTweetWithKeyword(keywords, k) 
