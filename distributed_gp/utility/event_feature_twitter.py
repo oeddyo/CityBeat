@@ -75,7 +75,7 @@ class EventFeatureTwitter(EventFeature):
 		        number_photos_associated_with_keywords3[0], number_photos_associated_with_keywords3[1], number_photos_associated_with_keywords3[2],
 		        location_name_similarity, 
 #		        location_name_same,
-						twitter_features[0], twitter_features[1]
+						twitter_features[0], twitter_features[1],
 		        event_id,
 		        label]
 		        
