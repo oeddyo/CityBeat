@@ -28,6 +28,7 @@ class TweetCluster(object):
 		
 	def setPeriod(self, period):
 		# period should be [begin_time, end time]
+		assert period[0] <= period[1]
 		self._tweet_cluster['period'] = period
 		
 	def getNumberOfTweets(self):
@@ -42,7 +43,7 @@ class TweetCluster(object):
 			
 	def computePercentageOfTweetWithKeyword(self, keywords, k):
 		# no tweet
-		if len(self._tweet_cluster) == 0:
+		if len(self._tweet_cluster['tweets']) == 0:
 			return 0
 		# compute the percentage of tweets with at least k keywords
 		occ = 0
