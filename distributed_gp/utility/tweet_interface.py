@@ -19,6 +19,7 @@ import types
 import json
 
 class TweetInterface(MongoDBInterface):
+	
 	def __init__(self, db=TwitterConfig.tweet_db,  
 	             collection=TwitterConfig.tweet_collection):
 	  # initialize an interface for accessing event from mongodb
@@ -26,15 +27,52 @@ class TweetInterface(MongoDBInterface):
 	  self.setDB(db)
 	  self.setCollection(collection)
 	  
+	def saveDocument(self, tweet):
+		if not type(tweet) is types.DictType:
+			tweet = tweet.toJSON()
+		if 'location' not in tweet.keys():
+			if 'geo' not in tweet.keys():
+				return
+			location = {}
+			location['latitude'] = tweet['geo']['coordinates'][1]
+			location['longitude'] = tweet['geo']['coordinates'][0]
+			tweet['location'] = location
+		super(TweetInterface, self).saveDocument(tweet)
+	
+	def rangeQuery(self, region=None, period=None):
+		#period should be specified as: [begin_time end_time]
+		#specify begin_time and end_time as the utctimestamp, string!!
+		
+		
+		region_conditions = {}
+		period_conditions = {}
+		if not region is None:
+		#region should be specified as the class defined in region.py
+			if not type(region) is types.DictType:
+				region = region.toJSON() 
+			region_conditions = {'location.latitude':{'$gte':region['min_lat'], '$lte':region['max_lat']},
+				                   'location.longitude':{'$gte':region['min_lng'], '$lte':region['max_lng']}
+				                   	}
+				                   	
+		if not period is None:
+			period_conditions = {'created_time':{'$gte':period[0], '$lte':period[1]}}
+
+		conditions = dict(region_conditions, **period_conditions)
+		
+		#returns a cursor
+		#sort the photo in chronologically decreasing order
+		return self.getAllDocuments(conditions).sort('created_time', -1)
 	  
 def main():
-	ti = TweetInterface()
-	tweet = ti.getDocument()
-	for key, value in tweet.items():
-		print key
-		print value
-		print
-		print 
+	
+#	ti = TweetInterface()
+#	
+#	fid = open('nyc_tweets.txt')
+#	for line in fid:
+#		tweet = json.loads(line.strip())
+#		ti.saveDocument(tweet)
+#	fid.close()
+
 			
 if __name__ == '__main__':
 	main()
