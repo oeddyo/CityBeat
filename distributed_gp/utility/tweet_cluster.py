@@ -28,6 +28,7 @@ class TweetCluster(object):
 		
 	def setPeriod(self, period):
 		# period should be [begin_time, end time]
+		print period[0], period[1] 
 		self._tweet_cluster['period'] = period
 		
 	def getNumberOfTweets(self):
