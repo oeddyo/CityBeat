@@ -49,19 +49,18 @@ class TweetCluster(object):
 		
 	def computeDifferenceComparedWithHistoricPercentageOfTweetWithKeyword(self, keywords, k, days=7):
 		ti = TweetInterface()
-		
-	  freq = computePercentageOfTweetWithKeyword(keyword, k)
-	  tweets = []
-	  for d in xrange(1, days+1):
-	  	et = int(self._tweet_cluster['period'][1]) + 24*3600*d
-	  	bt = int(self._tweet_cluster['period'][0]) + 24*3600*d
-	  	day_tweets = ti.rangeQuery(self._tweet_cluster['region'], [str(bt), str(et)])
-	  	for tweet in day_tweets:
-	  		tweets.append(tweet)
-	  
-	  historic_tweet_cluster = TweetCluster(tweets)
-	  return (self.computePercentageOfTweetWithKeyword(keywords, k)
-	          - historic_tweet_cluster.computePercentageOfTweetWithKeyword(keywords, k))
+		freq = computePercentageOfTweetWithKeyword(keyword, k)
+		tweets = []
+		for d in xrange(1, days+1):
+			et = int(self._tweet_cluster['period'][1]) + 24*3600*d
+			bt = int(self._tweet_cluster['period'][0]) + 24*3600*d
+			day_tweets = ti.rangeQuery(self._tweet_cluster['region'], [str(bt), str(et)])
+			for tweet in day_tweets:
+				print type(tweet)
+				tweets.append(tweet)
+		historic_tweet_cluster = TweetCluster(tweets)
+		return (self.computePercentageOfTweetWithKeyword(keywords, k) 
+		        - historic_tweet_cluster.computePercentageOfTweetWithKeyword(keywords, k))
 
 	def toJSON(self):
 		return self._tweet_cluster	

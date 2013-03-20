@@ -10,6 +10,7 @@ from stopwords import Stopwords
 from bson.objectid import ObjectId
 from corpus import Corpus
 from representor import Representor
+from event_feature_twitter import EventFeatureTwitter
 
 import operator
 import string
