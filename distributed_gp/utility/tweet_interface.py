@@ -7,6 +7,7 @@
 
 from mongodb_interface import MongoDBInterface
 from event import Event
+from tweet import Tweet
 from config import TwitterConfig
 from datetime import datetime
 from bson.objectid import ObjectId
@@ -72,6 +73,12 @@ def main():
 #		tweet = json.loads(line.strip())
 #		ti.saveDocument(tweet)
 #	fid.close()
+	
+	ti = TweetInterface()
+	tweets = ti.getAllDocuments()
+	for tweet in tweets:
+		tweet = Tweet(tweet)
+		print tweet.getRetweetFreq()
 
 			
 if __name__ == '__main__':

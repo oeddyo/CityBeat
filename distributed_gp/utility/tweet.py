@@ -1,7 +1,5 @@
 from datetime import datetime
 
-from tweet_interface import TweetInterface
-
 from datetime import datetime, timedelta, date
 from email.utils import parsedate_tz
 
@@ -49,13 +47,10 @@ class Tweet(object):
 		return occur
 	
 	def getRetweetFreq(self):
-		return int(self._tween['retweet_count'])
+		return int(self._tweet['retweet_count'])
 		
 def main():
-	ti = TweetInterface()
-	tweet_cur = ti.getAllDocuments()
-	for tweet in tweet_cur:
-		tweet = Tweet(tweet)
+	pass
 	
 if __name__ == '__main__':
 	main()
