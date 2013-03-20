@@ -128,7 +128,7 @@ class EventFeatureTwitter(EventFeature):
 		
 	def extractFeatureFromTweet(self, keyword_num=4):
 		tc = TweetCluster()
-#		tc.setRegion(self._event['region'])
+		tc.setRegion(self._event['region'])
 		tc.setPeriod([str(self.getEarliestPhotoTime()), str(self.getLatestPhotoTime())])
 		tc.getTweetFromRangeQuery()
 		print tc.getNumberOfTweets()

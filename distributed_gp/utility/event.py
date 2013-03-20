@@ -206,10 +206,10 @@ class Event(object):
 			print photo['created_time']
 			
 	def getLatestPhotoTime(self):
-		return int(self._event['photos'][-1]['created_time'])
+		return int(self._event['photos'][0]['created_time'])
 	   
 	def getEarliestPhotoTime(self):
-		return int(self._event['photos'][0]['created_time'])
+		return int(self._event['photos'][-1]['created_time'])
 		
 def main():
 	pass

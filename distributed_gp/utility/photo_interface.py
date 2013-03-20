@@ -21,6 +21,8 @@ class PhotoInterface(MongoDBInterface):
 		#period should be specified as: [begin_time end_time]
 		#specify begin_time and end_time as the utctimestamp, string!!
 		
+		if period is not None:
+			assert period[0] <= period[1]
 		
 		region_conditions = {}
 		period_conditions = {}
