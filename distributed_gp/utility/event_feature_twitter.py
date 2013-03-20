@@ -140,7 +140,7 @@ class EventFeatureTwitter(EventFeature):
 			
 		per = tc.computePercentageOfTweetWithKeyword(keywords, 1)
 		diff_per = tc.computeDifferenceComparedWithHistoricPercentageOfTweetWithKeyword(keywords, 1)
-#		print per, diff_per
+		print per, diff_per
 		return per, diff_per
 
 if __name__=='__main__':
