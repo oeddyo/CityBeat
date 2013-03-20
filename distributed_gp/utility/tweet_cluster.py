@@ -53,6 +53,8 @@ class TweetCluster(object):
 		return 1.0*occ/len(self._tweet_cluster)
 		
 	def computeDifferenceComparedWithHistoricPercentageOfTweetWithKeyword(self, keywords, k, days=7):
+		if self._tweet_cluster['period'] is None:
+			return 0
 		ti = TweetInterface()
 		freq = self.computePercentageOfTweetWithKeyword(keywords, k)
 		tweets = []
