@@ -205,7 +205,7 @@ def main():
 	dataEdition = sys.argv[2]
 	sparse = False
 #	sparse = sys.argv[2] == 'sparse'
-	generateData(not balanced, sparse, dataEdition)
+	generateData2(not balanced, sparse, dataEdition)
 
 if __name__=='__main__':
 	main()
