@@ -206,10 +206,21 @@ class Event(object):
 			print photo['created_time']
 			
 	def getLatestPhotoTime(self):
-		return int(self._event['photos'][0]['created_time'])
+		lt = int(self._event['photos'][0]['created_time'])
+		for photo in self._event['photos']:
+			t = int(photo['created_time'])
+			if t > lt:
+				lt = t
+		return lt
+		
 	   
 	def getEarliestPhotoTime(self):
-		return int(self._event['photos'][-1]['created_time'])
+		et = int(self._event['photos'][-1]['created_time'])
+		for photo in self._event['photos']:
+			t = int(photo['created_time'])
+			if t < et:
+				et = t
+		return et
 		
 def main():
 	pass
