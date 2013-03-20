@@ -127,7 +127,7 @@ class EventFeatureTwitter(EventFeature):
 #		print '@attribute Top3PhotoLocationNameSame real'
 
 		print '@attribute PercentageOfTweetsWithTopWords real'
-		print '@attribute diff_PercentageOfTweetsWithTopWords real'
+#		print '@attribute diff_PercentageOfTweetsWithTopWords real'
 								
 		print '@attribute ID string'
 		print '@attribute label {1,-1}'
