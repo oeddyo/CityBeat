@@ -60,7 +60,7 @@ class TweetInterface(MongoDBInterface):
 				                   	}
 				                   	
 		if not period is None:
-			period_conditions = {'created_time':{'$gte':period[0], '$lte':period[1]}}
+			period_conditions = {'created_time':{'$gte':str(period[0]), '$lte':str(period[1])}}
 
 		conditions = dict(region_conditions, **period_conditions)
 		
