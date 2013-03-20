@@ -64,7 +64,8 @@ class TweetCluster(object):
 			day_tweets = ti.rangeQuery(self._tweet_cluster['region'], [str(bt), str(et)])
 			for tweet in day_tweets:
 				tweets.append(tweet)
-		historic_tweet_cluster = TweetCluster(tweets)
+		historic_tweet_cluster = TweetCluster()
+		historic_tweet_cluster.setTweetCluster(tweets)
 		return (self.computePercentageOfTweetWithKeyword(keywords, k) 
 		        - historic_tweet_cluster.computePercentageOfTweetWithKeyword(keywords, k))
 
