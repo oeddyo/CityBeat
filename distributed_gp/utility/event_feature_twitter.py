@@ -64,9 +64,12 @@ class EventFeatureTwitter(EventFeature):
 #		twitter_features = self.extractFeatureFromTweet()
 		
 		return [avg_cap_len,
-		        min_photo_dis, max_photo_dis, std_photo_dis, avg_photo_dis, median_photo_dis,
-		        min_photo_dis_cap, max_photo_dis_cap,	std_photo_dis_cap,
-		        mean_photo_dis_cap, median_photo_dis_cap,
+#		        min_photo_dis, max_photo_dis,
+						std_photo_dis, avg_photo_dis, 
+#						median_photo_dis,
+#		        min_photo_dis_cap, max_photo_dis_cap,	std_photo_dis_cap,
+		        mean_photo_dis_cap,
+#           median_photo_dis_cap,
 		        cap_per,
 		        std, top_word_pop, zscore, entropy, #ratio,
 		        diff_avg_photo_dis, diff_top_word_pop, diff_entropy,
@@ -92,16 +95,16 @@ class EventFeatureTwitter(EventFeature):
 	def GenerateArffFileHeader(self):
 		print '@relation CityBeatEvents'
 		print '@attribute AvgCaptionLen real'
-		print '@attribute stat_MinPhotoDis real'
-		print '@attribute stat_MaxPhotoDis real'
+#		print '@attribute stat_MinPhotoDis real'
+#		print '@attribute stat_MaxPhotoDis real'
 		print '@attribute stat_StdPhotoDis real'
 		print '@attribute AvgPhotoDis real'
-		print '@attribute stat_MedianPhotoDis real'
-		print '@attribute stat_MinPhotoDisbyCap real'
-		print '@attribute stat_MaxPhotoDisbyCap real'
-		print '@attribute stat_StdPhotoDisbyCap real'
+#		print '@attribute stat_MedianPhotoDis real'
+#		print '@attribute stat_MinPhotoDisbyCap real'
+#		print '@attribute stat_MaxPhotoDisbyCap real'
+#		print '@attribute stat_StdPhotoDisbyCap real'
 		print '@attribute MeanPhotoDisbyCap real'
-		print '@attribute stat_MedianPhotoDisbyCap real'
+#		print '@attribute stat_MedianPhotoDisbyCap real'
 		print '@attribute CaptionPercentage real'
 		print '@attribute PredictedStd real'
 		print '@attribute TopWordPopularity real'
