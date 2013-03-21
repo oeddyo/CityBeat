@@ -79,7 +79,7 @@ class EventFeatureTwitter(EventFeature):
 		        location_name_similarity, 
 #		        location_name_same,
 #						twitter_features,
-						twitter_features[0], twitter_features[1], twitter_features[2]
+						twitter_features[0], twitter_features[1], twitter_features[2],
 		        event_id,
 		        label]
 		        

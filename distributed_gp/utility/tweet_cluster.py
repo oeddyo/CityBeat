@@ -76,17 +76,17 @@ class TweetCluster(object):
 		historic_tweet_cluster.setTweetCluster(tweets)
 		return (self.computePercentageOfTweetWithKeyword(keywords, k) 
 		        - historic_tweet_cluster.computePercentageOfTweetWithKeyword(keywords, k))
-
-  def makeFakeEvent(self):
-  	event = {}
-  	photos = []
-  	for tweet in self._tweet_cluster['tweets']:
-  		fake_photo = {}
-  		fake_photo['caption'] = {}
-  		fake_photo['caption']['text'] = Tweet(tweet).getRawText()
-  		photos.append(fake_photo)
-  	event['photos'] = photo
-  	return event
+	
+	def makeFakeEvent(self):
+		event = {}
+		photos = []
+		for tweet in self._tweet_cluster['tweets']:
+			fake_photo = {}
+			fake_photo['caption'] = {}
+			fake_photo['caption']['text'] = Tweet(tweet).getRawText()
+			photos.append(fake_photo)
+		event['photos'] = photo
+		return event
 
 	def toJSON(self):
 		return self._tweet_cluster	
