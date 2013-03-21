@@ -52,8 +52,8 @@ class EventFeatureTwitter(EventFeature):
 		
 		
 		
-		historic_features = [0]*3  # for test only
-#		historic_features = self.getHistoricFeatures(entropy_para)
+#		historic_features = [0]*3   for test only
+		historic_features = self.getHistoricFeatures(entropy_para)
 		diff_avg_photo_dis = avg_photo_dis - historic_features[0]
 		diff_top_word_pop = historic_features[1]
 		diff_entropy = historic_features[2]
