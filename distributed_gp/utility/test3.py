@@ -19,44 +19,12 @@ import math
 
 import sys
 
-def loadUnbalancedData():
-
-	
-	true_events = []
-	false_events = []
-	
-	fid2 = open('labeled_data_cf/true_label2.txt', 'r')
-	
-	true_event_list = []
-	false_event_list = []
-		
-	for line in fid2:
-		t = line.split(',')
-		id = str(t[0])
-		label = int(t[1])
-		if label == 0:
-			continue
-		if label == 1:
-			true_event_list.append(id)
-		else:
-			false_event_list.append(id)
-	fid2.close()
-	
-	random.shuffle(true_event_list)
-	random.shuffle(false_event_list)
-	
-	mixed_event_list = true_event_list[0:25] + false_event_list[0:25]
-	random.shuffle(mixed_event_list)
-	
-	for id in mixed_event_list:
-		print id
-
-	
-	return true_events, false_events
-
+def main():
+	ei = EventInterface()
+	ei.setCollection('candidate_event_25by25')
 
 if __name__=='__main__':
-	loadUnbalancedData()
+	main()
 	
 	
 	
