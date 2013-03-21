@@ -79,7 +79,7 @@ class EventFeatureTwitter(EventFeature):
 		        location_name_similarity, 
 #		        location_name_same,
 #						twitter_features,
-						twitter_features[0], twitter_features[1], twitter_features[2],
+						twitter_features[0], twitter_features[1], twitter_features[2], twitter_features[3]
 		        event_id,
 		        label]
 		        
@@ -89,7 +89,7 @@ class EventFeatureTwitter(EventFeature):
 		for i in xrange(0, n-1):
 			print feature_list[i],',',
 		print feature_list[-1]
-			
+	
 			
 #	@staticmethod
 	def GenerateArffFileHeader(self):
@@ -132,6 +132,7 @@ class EventFeatureTwitter(EventFeature):
 		print '@attribute PercentageOfTweetsWithTopWords real'
 		print '@attribute diff_PercentageOfTweetsWithTopWords real'
 		print '@attribute TwitterInstagramTopickldiv real'
+		print '@attribute TwitterInstagramTopickldivEddie real'
 								
 		print '@attribute ID string'
 		print '@attribute label {1,-1}'
@@ -146,6 +147,7 @@ class EventFeatureTwitter(EventFeature):
 		fake_event = tc.makeFakeEvent()
 #		print fake_event
 		topic_kldivergence = self.computeWordKLDivergenceWith(fake_event)
+		topic_kldivergence2 = self.computeWordKLDivergenceWithByEddie(fake_event)
 		
 		keywords_pop = self._getTopWords(keyword_num, stopword_removal=True)
 		keywords = []
@@ -154,7 +156,7 @@ class EventFeatureTwitter(EventFeature):
 			
 		per = tc.computePercentageOfTweetWithKeyword(keywords, 1)
 		diff_per = tc.computeDifferenceComparedWithHistoricPercentageOfTweetWithKeyword(keywords, 1)
-		return per, diff_per, topic_kldivergence
+		return per, diff_per, topic_kldivergence, topic_kldivergence2
 
 if __name__== '__main__':
 	generateData()

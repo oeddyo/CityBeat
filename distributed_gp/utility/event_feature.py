@@ -7,8 +7,7 @@ from caption_parser import CaptionParser
 from stopwords import Stopwords
 from corpus import Corpus
 from _kl_divergence import kldiv
-
-
+from _kl_divergence import tokenize
 
 import kl_divergence as KLDivergence
 
@@ -487,6 +486,26 @@ class EventFeature(Event):
 		return [historic_event.getPhotoDisFeatures()[3], topic_divergence,
 #		        historic_event.getEntropy(entropy_para),
 		        entropy_divergence]
+	
+	def computeWordKLDivergenceWithByEddie(self, event):
+		# this method calls the kl divergence computation by eddie's methods
+		text1 = ''
+		text2 = ''
+		for photo in self._event['photos']:
+			p = Photo(photo)
+			text1 += ' '
+			text1 += p.getCaption()
+		
+		if type(event) is types.DictType:
+			pass
+		else:
+			event = event.toJSON()
+			
+		for photo in event['photos']:
+			p = Photo(photo)
+			text2 += ' '
+			text2 += p.getCaption()
+		return kldv(tokenize(text1), tokenize(text2))
 	
 	def computeWordKLDivergenceWith(self, event):
 		if type(event) is types.DictType:

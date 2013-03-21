@@ -34,7 +34,7 @@ def loadUnbalancedData(dataEdition):
 	if dataEdition == 'old':
 		fid2 = open('labeled_data_cf/true_label3_xia.txt', 'r')
 	else:
-		fid2 = open('labeled_data_cf/true_label2.txt', 'r')
+		fid2 = open('labeled_data_cf/correct_label_3_21.txt', 'r')
 		
 	modified_events = {}
 	

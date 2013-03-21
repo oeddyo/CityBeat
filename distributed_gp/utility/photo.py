@@ -36,7 +36,7 @@ class Photo:
 			return ''
 		if self._photo['caption']['text'] is None:
 			return ''
-		return self._photo['caption']['text']
+		return self._photo['caption']['text'].strip()
 	
 	def toJSON(self):
 		return self._photo
