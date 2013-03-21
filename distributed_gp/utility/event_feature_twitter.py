@@ -61,7 +61,7 @@ class EventFeatureTwitter(EventFeature):
 		location_name_similarity = self.getTopPhotosLocationSimilarity()
 #		location_name_same = self.checkIfTopPhotoLocationSame()
 
-#		twitter_features = self.extractFeatureFromTweet()
+		twitter_features = self.extractFeatureFromTweet()
 		
 		return [avg_cap_len,
 #		        min_photo_dis, max_photo_dis,
@@ -79,7 +79,7 @@ class EventFeatureTwitter(EventFeature):
 		        location_name_similarity, 
 #		        location_name_same,
 #						twitter_features,
-#						twitter_features[0], twitter_features[1],
+						twitter_features[0], twitter_features[1],
 		        event_id,
 		        label]
 		        
@@ -129,8 +129,8 @@ class EventFeatureTwitter(EventFeature):
 		print '@attribute Top10PhotoLocationNameFreq real'
 #		print '@attribute Top3PhotoLocationNameSame real'
 
-#		print '@attribute PercentageOfTweetsWithTopWords real'
-#		print '@attribute diff_PercentageOfTweetsWithTopWords real'
+		print '@attribute PercentageOfTweetsWithTopWords real'
+		print '@attribute diff_PercentageOfTweetsWithTopWords real'
 								
 		print '@attribute ID string'
 		print '@attribute label {1,-1}'
@@ -148,7 +148,6 @@ class EventFeatureTwitter(EventFeature):
 			keywords.append(word)
 			
 		per = tc.computePercentageOfTweetWithKeyword(keywords, 1)
-#		return per
 		diff_per = tc.computeDifferenceComparedWithHistoricPercentageOfTweetWithKeyword(keywords, 1)
 		return per, diff_per
 

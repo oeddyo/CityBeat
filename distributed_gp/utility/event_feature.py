@@ -467,8 +467,6 @@ class EventFeature(Event):
 		random.shuffle(photos)
 		photos = photos[0:min(len(self._event['photos']), len(photos))]
 		
-		print len(photos)
-		
 		event = Event()
 		event.setPhotos(photos)
 		event.setRegion(self._event['region'])
