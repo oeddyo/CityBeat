@@ -489,6 +489,8 @@ class EventFeature(Event):
 		        entropy_divergence]
 	
 	def computeWordKLDivergenceWith(self, event):
+		if type(event) is types.DictType:
+			event = EventFeature(event)
 		event_topword_list = self._getTopWords(-1, True)
 		event_topword_list2 = event._getTopWords(-1, True)
 		
