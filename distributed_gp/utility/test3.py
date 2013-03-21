@@ -21,7 +21,35 @@ import sys
 
 def main():
 	ei = EventInterface()
-	ei.setCollection('candidate_event_25by25')
+	ei.setDB('citybeat')
+	ei.setCollection('candidate_event_25by25_merged')
+	events = ei.getAllDocuments()
+	
+	fid2 = open('labeled_data_cf/true_label2.txt', 'r')
+		
+	labels = {}
+	
+	for line in fid2:
+		t = line.split(',')
+		labels[str(t[0])] = int(t[1])
+	fid2.close()
+	
+	pos = 0
+	tot = 0
+	for event in events:
+		region = event['region']
+		id = str(event['_id'])
+		if id not in labels.keys():
+			continue
+		
+		tot += 1
+		if (region['min_lat'] == 40.75419436 and region['max_lat'] == 40.75949964 and
+		   region['min_lng'] == -73.98609448 and region['max_lng'] == -73.9780882):
+			if labels[id] == 1:
+				pos += 1
+				print 'pos'
+	print pos
+	print tot
 
 if __name__=='__main__':
 	main()
