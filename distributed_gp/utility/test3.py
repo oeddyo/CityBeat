@@ -25,6 +25,21 @@ def main():
 	ei.setCollection('candidate_event_25by25_merged')
 	events = ei.getAllDocuments()
 	
+	lat = 40.758648
+	lon =  -73.987373
+	fid1 = open('region_cache/25_25.txt', 'r')
+	for line in fid1:
+		cor = line.split(' ')
+		for i in xrange(len(cor)):
+			cor[i] = float(cor[i])
+		if float(cor[0]) <= lat and lat <= float(cor[2]) and float(cor[1]) <= lon and lon <= float(cor[3]):
+			min_lat = cor[0]
+			max_lat = cor[2]
+			min_lng = cor[1]
+			max_lng = cor[3]
+			break
+	fid1.close()
+	
 	fid2 = open('labeled_data_cf/true_label2.txt', 'r')
 		
 	labels = {}
@@ -42,12 +57,12 @@ def main():
 		if id not in labels.keys():
 			continue
 		
-		tot += 1
-		if (region['min_lat'] == 40.75419436 and region['max_lat'] == 40.75949964 and
-		   region['min_lng'] == -73.98609448 and region['max_lng'] == -73.9780882):
-			if labels[id] == 1:
-				pos += 1
-				print 'pos'
+		if (region['min_lat'] == min_lat and region['max_lat'] == max_lat and
+		   region['min_lng'] == min_lng and region['max_lng'] == max_lng):
+		  tot += 1
+		  if labels[id] == 1:
+		  	pos += 1
+		  	print id
 	print pos
 	print tot
 
