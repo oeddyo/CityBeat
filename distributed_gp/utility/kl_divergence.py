@@ -1,6 +1,6 @@
 import math
 
-error = 1e-5
+error = 1e-8
 
 def _check(pro):
 	s = 0
@@ -26,7 +26,7 @@ def averageKLDivergence(pro1, pro2):
 def normalizeWithSmoothing(pro1):
 	s = 0
 	for i in xrange(0, len(pro1)):
-		pro1[i] += 0.001
+		pro1[i] += error
 		s += pro1[i]
 	for i in xrange(0, len(pro1)):
 		pro1[i] /= s

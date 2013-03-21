@@ -131,7 +131,7 @@ class EventFeatureTwitter(EventFeature):
 
 		print '@attribute PercentageOfTweetsWithTopWords real'
 		print '@attribute diff_PercentageOfTweetsWithTopWords real'
-		print '@attribute topickldivergence real'
+		print '@attribute TwitterInstagramTopickldiv real'
 								
 		print '@attribute ID string'
 		print '@attribute label {1,-1}'
@@ -156,7 +156,7 @@ class EventFeatureTwitter(EventFeature):
 		diff_per = tc.computeDifferenceComparedWithHistoricPercentageOfTweetWithKeyword(keywords, 1)
 		return per, diff_per, topic_kldivergence
 
-if __name__=='__main__':
+if __name__== '__main__':
 	generateData()
 #	ei = EventInterface()
 #	ei.setDB('historic_alarm')
