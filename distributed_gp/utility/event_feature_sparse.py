@@ -50,7 +50,7 @@ class EventFeatureSparse(EventFeature):
 				start = False
 				print ind,freq,
 			else:
-				print ',',ind,freq
+				print ',',ind,freq,
 		print '}'
 		
 	@staticmethod
