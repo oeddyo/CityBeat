@@ -84,6 +84,9 @@ class TweetCluster(object):
 			fake_photo = {}
 			fake_photo['caption'] = {}
 			fake_photo['caption']['text'] = Tweet(tweet).getRawText()
+			fake_photo['user'] = {}
+			# user_id of Instagram is string
+			fake_photo['user']['id'] = str(tweet['user']['id'])
 			photos.append(fake_photo)
 		event['photos'] = photos
 		return event
