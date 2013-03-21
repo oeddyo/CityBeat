@@ -484,8 +484,8 @@ class EventFeature(Event):
 		
 		topic_divergence = self.computeWordKLDivergenceWith(historic_event)
 		
-		return [event.getPhotoDisFeatures()[3], topic_divergence,
-#		        event.getEntropy(entropy_para),
+		return [historic_event.getPhotoDisFeatures()[3], topic_divergence,
+#		        historic_event.getEntropy(entropy_para),
 		        entropy_divergence]
 	
 	def computeWordKLDivergenceWith(self, event):

@@ -144,6 +144,7 @@ class EventFeatureTwitter(EventFeature):
 		tc.getTweetFromRangeQuery()
 		
 		fake_event = tc.makeFakeEvent()
+		print fake_event
 		topic_kldivergence = self.computeWordKLDivergenceWith(fake_event)
 		
 		keywords_pop = self._getTopWords(keyword_num, stopword_removal=True)
