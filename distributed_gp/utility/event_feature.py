@@ -447,8 +447,6 @@ class EventFeature(Event):
 		end_time = self.getLatestPhotoTime()
 		begin_time = self.getEarliestPhotoTime()
 		
-		print 'time', int(begin_time) - int(end_time)
-		
 		pi = PhotoInterface()
 		pi.setDB('citybeat')
 		pi.setCollection('photos')
@@ -466,7 +464,8 @@ class EventFeature(Event):
 				# the most current to the most early
 				photos.append(photo)
 				
-		print 'photo lens = ', len(photos)
+		random.shuffle(photos)
+		photos = photos[0:len(self._event['photos'])]
 				
 		event = Event()
 		event.setPhotos(photos)
