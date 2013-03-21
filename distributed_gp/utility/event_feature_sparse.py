@@ -48,7 +48,7 @@ class EventFeatureSparse(EventFeature):
 		for ind, freq in sorted_tfidf_list:
 			if start:
 				start = False
-				print ind,freq
+				print ind,freq,
 			else:
 				print ',',ind,freq
 		print '}'
