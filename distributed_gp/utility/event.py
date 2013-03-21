@@ -15,7 +15,6 @@ class Event(object):
 				self._event = event
 			else:
 				self._event = event.toJSON()
-				
 			# preprocess, to correct the data
 			self.setActualValue(self._getActualValueByCounting())
 		else:

@@ -490,9 +490,10 @@ class EventFeature(Event):
 	
 	def computeWordKLDivergenceWith(self, event):
 		if type(event) is types.DictType:
-			event = EventFeature(event)
+			fake_event = EventFeature()
+			fake_event.setPhotos(event['photos'])
 		event_topword_list = self._getTopWords(-1, True)
-		event_topword_list2 = event._getTopWords(-1, True)
+		event_topword_list2 = fake_event._getTopWords(-1, True)
 		
 		n_ind = 0
 		ind = {}
