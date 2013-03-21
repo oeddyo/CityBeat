@@ -447,6 +447,8 @@ class EventFeature(Event):
 		end_time = self.getLatestPhotoTime()
 		begin_time = self.getEarliestPhotoTime()
 		
+		print 'time', int(begin_time) - int(end_time)
+		
 		pi = PhotoInterface()
 		pi.setDB('citybeat')
 		pi.setCollection('photos')
