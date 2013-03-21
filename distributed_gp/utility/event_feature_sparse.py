@@ -51,7 +51,7 @@ class EventFeatureSparse(EventFeature):
 				print ind,freq,
 			else:
 				print ',',ind,freq,
-		print len(word_index)+1,int(self.getLabel()),
+		print ',',len(word_index)+1,int(self.getLabel()),
 		print '}'
 		
 	@staticmethod
