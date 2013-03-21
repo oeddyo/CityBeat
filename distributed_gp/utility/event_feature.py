@@ -464,6 +464,8 @@ class EventFeature(Event):
 				# the most current to the most early
 				photos.append(photo)
 				
+		print len(photos)
+				
 		event = Event()
 		event.setPhotos(photos)
 		event.setRegion(self._event['region'])
