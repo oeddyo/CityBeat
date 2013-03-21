@@ -59,35 +59,7 @@ class EventFeatureTwitterSparse(EventFeatureSparse):
 
 		for word in word_list:
 			print '@attribute tfidf_' + word.encode('utf8') + ' real'
-		
-		print '@attribute AvgCaptionLen real'
-		print '@attribute AvgPhotoDis real'
-		print '@attribute AvgPhotoDisbyCap real'
-		print '@attribute CaptionPercentage real'
-		print '@attribute PredictedStd real'
-		print '@attribute TopWordPopularity real'
-		print '@attribute Zscore real'
-		print '@attribute Entropy real'
-#		print '@attribute diff_AvgPhotoDis real'
-#		print '@attribute diff_TopWordPopularity real'
-#		print '@attribute diff_Entropy real'
-
-		print '@attribute tfidf1 real'	
-		print '@attribute tfidf2 real'	
-		print '@attribute tfidf3 real'
-		
-		print '@attribute NumberOfHashtages1 real'	
-		print '@attribute NumberOfHashtages2 real'	
-		print '@attribute NumberOfHashtages3 real'	
-		
-		print '@attribute NumberOfPhotsoContaingTopWord1 real'
-		print '@attribute NumberOfPhotsoContaingTopWord2 real'
-		print '@attribute NumberOfPhotsoContaingTopWord3 real'
-		
-		print '@attribute Top10PhotoLocationNameFreq real'
-		print '@attribute Top3PhotoLocationNameSame real'
-								
-		print '@attribute ID string'
+			
 		print '@attribute label {1,-1}'
 		print '@data'
 		

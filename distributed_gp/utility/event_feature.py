@@ -505,7 +505,7 @@ class EventFeature(Event):
 			p = Photo(photo)
 			text2 += ' '
 			text2 += p.getCaption()
-		return kldv(tokenize(text1), tokenize(text2))
+		return kldiv(tokenize(text1), tokenize(text2))
 	
 	def computeWordKLDivergenceWith(self, event):
 		if type(event) is types.DictType:
