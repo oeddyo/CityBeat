@@ -24,19 +24,18 @@ import sys
 
 
 def main():
-	ei = EventInterface()
-	ei.setCollection('candidate_event_25by25_merged')
-	event_cur = ei.getAllDocuments()
-#	for event in event_cur:
-#		print event['created_time']
+	fid1 = open('arff\mod1.arff')
+	fid2 = open('arff\mod2.arff')
 	
-	ti = TweetInterface()
-	tweet_cur = ti.getAllDocuments()
-	i = 0
-	for tweet in tweet_cur:
-		i += 1
-		if i % 10 == 0:
-			print Tweet(tweet).getCreatedUTCTimestamp()
+	dict2 = {}
+	for line in fid2:
+		tup = line.strip().split(',')
+		dict2[tup[0]] = tup[1]
+	
+	for line in fid1:
+		tup = line.strip().split(',')
+		if tup[0] not in dict2.keys() or dict2[tup[0]]!=tup[1]:
+			print tup[0]
 	
 	
 	

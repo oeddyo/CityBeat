@@ -6,10 +6,11 @@ from math import sqrt
 import numpy as np
 from scipy.sparse import *
 from sklearn.metrics.pairwise import linear_kernel
+from tweet_cluster import TweetCluster
 
 import re
 class Representor():
-    def __init__(self, vectorizer = None):
+    def __init__(self, vectorizer = None, twitter = False):
         """Given an event, return a list incices of the photos in 'photos' filed 
         which are representative to stands for this cluster
         
@@ -17,7 +18,7 @@ class Representor():
         your own tfidf parameters. 
         see http://scikit-learn.org/dev/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html
         """
-
+        
         self.ei = EventInterface()
         self.ei.setDB('AmazonMT')
         self.ei.setCollection('candidate_event_25by25_merged')
