@@ -12,6 +12,7 @@ from corpus import Corpus
 from representor import Representor
 from tweet_interface import TweetInterface
 from tweet import Tweet
+from tweet_cluster import TweetCluster
 
 
 import operator
@@ -19,24 +20,30 @@ import string
 import types
 import random
 import math
+import time
 
 import sys
 
 
 def main():
-	fid1 = open('arff\mod1.arff')
-	fid2 = open('arff\mod2.arff')
+	ei = EventInterface()
+	ei.setDB('citybeat')
+	ei.setCollection('candidate_event_25by25_merged')
+	events = ei.getAllDocuments()
 	
-	dict2 = {}
-	for line in fid2:
-		tup = line.strip().split(',')
-		dict2[tup[0]] = tup[1]
-	
-	for line in fid1:
-		tup = line.strip().split(',')
-		if tup[0] not in dict2.keys() or dict2[tup[0]]!=tup[1]:
-			print tup[0]
-	
+	ti = TweetInterface()
+	zero = 0
+	for event in events:
+		tweet_cluster = TweetCluster()
+		tweet_cluster.setRegion(event['region'])
+		e = EventFeature(event)
+		tweet_cluster.setPeriod([e.getEarliestPhotoTime(), e.getLatestPhotoTime()])
+		tweet_cluster.getTweetFromRangeQuery()
+		nt = tweet_cluster.getNumberOfTweets()
+		if nt == 0:
+			zero += 1
+			print e.getDuration(),  time.gmtime(e.getEarliestPhotoTime())
+	print zero
 	
 	
 

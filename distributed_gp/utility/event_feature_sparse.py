@@ -44,14 +44,13 @@ class EventFeatureSparse(EventFeature):
 			
 		sorted_tfidf_list.sort(key=operator.itemgetter(0))
 		
+		start = True
 		for ind, freq in sorted_tfidf_list:
-			print ind, freq,',',
-					
-		feature_list = self.extractFeatures()
-		n = len(feature_list)
-		for i in xrange(0, n-1):
-			print i+len(word_index), feature_list[i],',',
-		print n-1+len(word_index), feature_list[-1],
+			if start:
+				start = False
+				print ind,freq
+			else:
+				print ',',ind,freq
 		print '}'
 		
 	@staticmethod
@@ -60,35 +59,7 @@ class EventFeatureSparse(EventFeature):
 
 		for word in word_list:
 			print '@attribute tfidf_' + word.encode('utf8') + ' real'
-		
-		print '@attribute AvgCaptionLen real'
-		print '@attribute AvgPhotoDis real'
-		print '@attribute AvgPhotoDisbyCap real'
-		print '@attribute CaptionPercentage real'
-		print '@attribute PredictedStd real'
-		print '@attribute TopWordPopularity real'
-		print '@attribute Zscore real'
-		print '@attribute Entropy real'
-#		print '@attribute diff_AvgPhotoDis real'
-#		print '@attribute diff_TopWordPopularity real'
-#		print '@attribute diff_Entropy real'
 
-		print '@attribute tfidf1 real'	
-		print '@attribute tfidf2 real'	
-		print '@attribute tfidf3 real'
-		
-		print '@attribute NumberOfHashtages1 real'	
-		print '@attribute NumberOfHashtages2 real'	
-		print '@attribute NumberOfHashtages3 real'	
-		
-		print '@attribute NumberOfPhotsoContaingTopWord1 real'
-		print '@attribute NumberOfPhotsoContaingTopWord2 real'
-		print '@attribute NumberOfPhotsoContaingTopWord3 real'
-		
-		print '@attribute Top10PhotoLocationNameFreq real'
-		print '@attribute Top3PhotoLocationNameSame real'
-								
-		print '@attribute ID string'
 		print '@attribute label {1,-1}'
 		print '@data'
 		

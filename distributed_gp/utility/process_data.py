@@ -20,7 +20,7 @@ import math
 
 import sys
 
-def loadUnbalancedData(dataEdition):
+def loadUnbalancedData():
 	
 	# load modified 
 	
@@ -31,10 +31,7 @@ def loadUnbalancedData(dataEdition):
 	true_events = []
 	false_events = []
 	
-	if dataEdition == 'old':
-		fid2 = open('labeled_data_cf/true_label3_xia.txt', 'r')
-	else:
-		fid2 = open('labeled_data_cf/true_label2.txt', 'r')
+	fid2 = open('labeled_data_cf/true_label2.txt', 'r')
 		
 	modified_events = {}
 	
@@ -77,38 +74,6 @@ def loadUnbalancedData(dataEdition):
 			
 	fid.close()
 	return true_events, false_events
-	
-def loadBalancedData(dataEdition):
-	ei = EventInterface()
-	ei.setDB('citybeat')
-	ei.setCollection('candidate_event_25by25_merged')
-	if dataEdition == 'old':
-		fid1 = open('labeled_data_cf/true_label3_xia.txt', 'r')
-	else:
-		fid1 = open('labeled_data_cf/true_label2.txt', 'r')
-		
-	true_events = []
-	false_events = []
-	
-	for line in fid1:
-		t = line.split(',')
-		ID = str(t[0])
-		label = int(t[1])
-		event = ei.getDocument({'_id':ObjectId(ID)})
-		event['label'] = label
-		e = Event(event)
-		if e.getActualValue() < 8:
-#			print 'bad event ' + id
-			continue
-		if event['label'] == -1:
-			false_events.append(event)
-		else:
-			if event['label'] == 1:
-				true_events.append(event)
-	
-	fid1.close()
-	return true_events, false_events
-
 
 
 def getCorpusWordList(rep, event_list):
@@ -161,19 +126,14 @@ def generateData(use_all_event=False, sparse=False, dataEdition='new'):
 			EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
 		
 
-def generateData2(use_all_event=False, sparse=False, dataEdition='new'):
+def generateData2(sparse=False):
 	rep = Representor()
 #	rep = None
 	corpus = Corpus()
 	corpus.buildCorpusOnDB('citybeat', 'candidate_event_25by25_merged')
 	
-#	true_event_list, false_event_list = loadRawLabeledData()
-#	true_event_list, false_event_list = loadBalancedData()
-#	true_event_list, false_event_list = loadUnbalancedData()
-	if use_all_event:
-		true_event_list, false_event_list = loadUnbalancedData(dataEdition)
-	else:
-		true_event_list, false_event_list = loadBalancedData(dataEdition)
+	true_event_list, false_event_list = loadUnbalancedData()
+
 	
 	if sparse:
 		word_index, word_list = getCorpusWordList(rep, true_event_list + false_event_list)
@@ -181,31 +141,18 @@ def generateData2(use_all_event=False, sparse=False, dataEdition='new'):
 	else:
 		EventFeatureTwitter(None).GenerateArffFileHeader()
 		
-	for event in true_event_list:
-		if not sparse:
-			EventFeatureTwitter(event, corpus, rep).printFeatures()
-		else:
-			EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
-		
-	random.shuffle(false_event_list)
-	
-	for event in false_event_list:
+	for event in true_event_list + false_event_list:
 		if not sparse:
 			EventFeatureTwitter(event, corpus, rep).printFeatures()
 		else:
 			EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
 
 def main():
-	assert len(sys.argv) == 3
-	assert sys.argv[1] == 'balanced' or sys.argv[1] == 'unbalanced'
-	assert sys.argv[2] == 'old' or sys.argv[2] == 'new'
-#	assert sys.argv[2] == 'unsparse' or sys.argv[2] == 'sparse'
-	
-	balanced = sys.argv[1] == 'balanced'
-	dataEdition = sys.argv[2]
-	sparse = False
-#	sparse = sys.argv[2] == 'sparse'
-	generateData2(not balanced, sparse, dataEdition)
+	assert len(sys.argv) <= 2
+	if len(sys.argv) == 2 and sys.argv[1] == 'baseline':
+		generateData2(True)
+	else:
+		generateData2(False)
 
 if __name__=='__main__':
 	main()
