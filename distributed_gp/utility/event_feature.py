@@ -467,44 +467,46 @@ class EventFeature(Event):
 		random.shuffle(photos)
 		photos = photos[0:min(len(self._event['photos']), len(photos))]
 		
-		event = Event()
-		event.setPhotos(photos)
-		event.setRegion(self._event['region'])
-		event.setActualValue(event._getActualValueByCounting())
-		event = EventFeature(event)
+		# fake a historic event
+		historic_event = Event()
+		historic_event.setPhotos(photos)
+		historic_event.setRegion(self._event['region'])
+		historic_event.setActualValue(historic_event._getActualValueByCounting())
+		historic_event = EventFeature(historic_event)
 		
 		# compute the difference between entropy
 		# this has been smoothed
 		pro1 = self._divideAndCount(entropy_para)
-		pro2 = event._divideAndCount(entropy_para)
+		pro2 = historic_event._divideAndCount(entropy_para)
 		entropy_divergence = KLDivergence.averageKLDivergence(pro1, pro2)
 		
 		# compute the difference between top words
-		event_topword_list = self._getTopWords(-1, True)
-		historic_topword_list = event._getTopWords(-1, True)
 		
-		n_ind = 0
-		ind = {}
-		for word, freq in event_topword_list + historic_topword_list:
-			if not ind.has_key(word):
-				ind[word] = n_ind
-				n_ind += 1
-		
-		freq1 = [0] * n_ind
-		freq2 = [0] * n_ind
-		
-		for word, freq in event_topword_list:
-			freq1[ind[word]] = freq
-		for word, freq in historic_topword_list:
-			freq2[ind[word]] = freq
-		
-		topic_divergence = KLDivergence.averageKLDivergence(freq1, freq2)
-		
-		
+		topic_divergence = self.computeWordKLDivergenceWith(historic_event)
 		
 		return [event.getPhotoDisFeatures()[3], topic_divergence,
 #		        event.getEntropy(entropy_para),
 		        entropy_divergence]
+	
+	def computeWordKLDivergenceWith(self, event):
+		event_topword_list = self._getTopWords(-1, True)
+		event_topword_list2 = event._getTopWords(-1, True)
+		
+		n_ind = 0
+		ind = {}
+		for word, freq in event_topword_list + event_topword_list2:
+			if not ind.has_key(word):
+				ind[word] = n_ind
+				n_ind += 1
+		freq1 = [0] * n_ind
+		freq2 = [0] * n_ind
+		for word, freq in event_topword_list:
+			freq1[ind[word]] = freq
+		for word, freq in event_topword_list2:
+			freq2[ind[word]] = freq
+		topic_divergence = KLDivergence.averageKLDivergence(freq1, freq2)
+		return topic_divergence
+	
 			
 if __name__=='__main__':
 	generateData()

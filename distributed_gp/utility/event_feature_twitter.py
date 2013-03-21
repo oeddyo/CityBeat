@@ -79,7 +79,7 @@ class EventFeatureTwitter(EventFeature):
 		        location_name_similarity, 
 #		        location_name_same,
 #						twitter_features,
-						twitter_features[0], twitter_features[1],
+						twitter_features[0], twitter_features[1], twitter_features[2]
 		        event_id,
 		        label]
 		        
@@ -131,6 +131,7 @@ class EventFeatureTwitter(EventFeature):
 
 		print '@attribute PercentageOfTweetsWithTopWords real'
 		print '@attribute diff_PercentageOfTweetsWithTopWords real'
+		print '@attribute topickldivergence real'
 								
 		print '@attribute ID string'
 		print '@attribute label {1,-1}'
@@ -142,6 +143,9 @@ class EventFeatureTwitter(EventFeature):
 		tc.setPeriod([str(self.getEarliestPhotoTime()), str(self.getLatestPhotoTime())])
 		tc.getTweetFromRangeQuery()
 		
+		fake_event = tc.makeFakeEvent()
+		topic_kldivergence = self.computeWordKLDivergenceWith(fake_event)
+		
 		keywords_pop = self._getTopWords(keyword_num, stopword_removal=True)
 		keywords = []
 		for word, freq in keywords_pop:
@@ -149,7 +153,7 @@ class EventFeatureTwitter(EventFeature):
 			
 		per = tc.computePercentageOfTweetWithKeyword(keywords, 1)
 		diff_per = tc.computeDifferenceComparedWithHistoricPercentageOfTweetWithKeyword(keywords, 1)
-		return per, diff_per
+		return per, diff_per, topic_kldivergence
 
 if __name__=='__main__':
 	generateData()
