@@ -85,7 +85,7 @@ class TweetCluster(object):
 			fake_photo['caption'] = {}
 			fake_photo['caption']['text'] = Tweet(tweet).getRawText()
 			photos.append(fake_photo)
-		event['photos'] = photo
+		event['photos'] = photos
 		return event
 
 	def toJSON(self):
