@@ -40,6 +40,7 @@ def main():
 			if len(cap) > 0:
 				l += len(cap)
 				c += 1
+				
 	print l * 1.0 / c
 #	ei = EventInterface()
 #	ei.setDB('citybeat')
