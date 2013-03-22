@@ -29,8 +29,10 @@ def main():
 	pi.setCollection('photos')
 	photos = pi.getAllDocuments()
 	for photo in photos:
-		if len(photo['tags']) > 0:
-			photo['tags'] 
+		p = Photo(photo)
+		name = p.getLocationName()
+		if not name == '':
+			print name
 #	ei = EventInterface()
 #	ei.setDB('citybeat')
 #	ei.setCollection('candidate_event_25by25_merged')
