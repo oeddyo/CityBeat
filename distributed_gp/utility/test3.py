@@ -29,10 +29,10 @@ def main():
 	pi.setCollection('photos')
 	photos = pi.getAllDocuments()
 	for photo in photos:
-		p = Photo(photo)
-		name = p.getLocationName()
-		if not name == '':
-			print name
+		try:
+			print photo['location']['name']
+		except Exception as e:
+			pass
 #	ei = EventInterface()
 #	ei.setDB('citybeat')
 #	ei.setCollection('candidate_event_25by25_merged')
