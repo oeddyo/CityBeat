@@ -28,11 +28,15 @@ def main():
 	pi.setDB('citybeat')
 	pi.setCollection('photos')
 	photos = pi.getAllDocuments()
+	l = 0
+	c = 0
 	for photo in photos:
 		try:
-			print photo['location']['name']
-		except Exception as e:
-			pass
+			cap = photo['caption']['text']
+			if len(cap) > 0:
+				l += len(cap)
+				c += 1
+	print l * 1.0 / c
 #	ei = EventInterface()
 #	ei.setDB('citybeat')
 #	ei.setCollection('candidate_event_25by25_merged')
