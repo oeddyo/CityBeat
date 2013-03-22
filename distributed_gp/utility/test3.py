@@ -26,11 +26,15 @@ def floatEqual(f1, f2):
 def main():
 	pi = PhotoInterface()
 	pi.setDB('citybeat')
-	pi.setCollection('photos')
+	pi.setCollection('photos_no_duplicate')
 	photos = pi.getAllDocuments()
 	l = 0
 	c = 0
+	i = 0
 	for photo in photos:
+		i += 1
+		if i == 50000:
+			break
 		try:
 			cap = photo['caption']['text']
 			if len(cap) > 0:
