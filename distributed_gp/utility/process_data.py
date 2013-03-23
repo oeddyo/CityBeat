@@ -116,7 +116,7 @@ def generateData2(_182):
 
 def main():
 	assert len(sys.argv) == 2
-	aasert sys.argv[1] == '181' or sys.argv[1] == '182'
+	assert sys.argv[1] == '181' or sys.argv[1] == '182'
 	if sys.argv[1] == '182':
 		generateData2(_182=True)
 	else:
