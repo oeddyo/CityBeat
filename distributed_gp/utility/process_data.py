@@ -20,7 +20,7 @@ import math
 
 import sys
 
-def loadUnbalancedData():
+def loadUnbalancedData(_182):
 	
 	# load modified 
 	
@@ -30,8 +30,10 @@ def loadUnbalancedData():
 	
 	true_events = []
 	false_events = []
-	
-	fid2 = open('labeled_data_cf/true_label2.txt', 'r')
+	if _182:
+		fid2 = open('labeled_data_cf/182_positive.txt', 'r')
+	else:
+		fid2 = open('labeled_data_cf/181_positive.txt', 'r')
 		
 	modified_events = {}
 	
@@ -91,13 +93,13 @@ def getCorpusWordList(rep, event_list):
 				word_list.append(word)
 	return word_index, word_list
 
-def generateData2(sparse=False):
+def generateData2(_182):
 	rep = Representor()
 #	rep = None
 	corpus = Corpus()
 	corpus.buildCorpusOnDB('citybeat', 'candidate_event_25by25_merged')
 	
-	true_event_list, false_event_list = loadUnbalancedData()
+	true_event_list, false_event_list = loadUnbalancedData(_182)
 
 	
 	if sparse:
@@ -113,11 +115,12 @@ def generateData2(sparse=False):
 			EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
 
 def main():
-	assert len(sys.argv) <= 2
-	if len(sys.argv) == 2 and sys.argv[1] == 'baseline':
-		generateData2(True)
+	assert len(sys.argv) == 2
+	aasert sys.argv[1] == '181' or sys.argv[1] == '182'
+	if sys.argv[1] == '182':
+		generateData2(_182=True)
 	else:
-		generateData2(False)
+		generateData2(_182=False)
 
 if __name__=='__main__':
 	main()
