@@ -109,7 +109,7 @@ def generateData2(_182, sparse=False):
 		
 	for event in true_event_list + false_event_list:
 		if not sparse:
-			EventFeatureTwitter(event, corpus, rep).printFeatures()
+			EventFeatureTwitter(event, corpus).printFeatures()
 		else:
 			EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
 
