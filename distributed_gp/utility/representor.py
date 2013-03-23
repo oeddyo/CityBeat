@@ -32,7 +32,7 @@ class Representor():
         self._captions = self._getAllCaptions()
         
         if vectorizer is None:
-            self.vectorizer = TfidfVectorizer( max_df=0.05, min_df = 2, strip_accents='ascii', smooth_idf=True, preprocessor = self._preProcessor, sublinear_tf=True, norm = 'l2', analyzer='word', ngram_range=(1,1), stop_words = 'english')
+            self.vectorizer = TfidfVectorizer( max_df=0.05, min_df = 1, strip_accents='ascii', smooth_idf=True, preprocessor = self._preProcessor, sublinear_tf=True, norm = 'l2', analyzer='char_wb', ngram_range=(4,4), stop_words = 'english')
         else:
             self.vectorizer = vectorizer
         self.vectorizer.fit_transform(self._captions)
