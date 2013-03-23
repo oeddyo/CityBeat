@@ -1,4 +1,5 @@
 from event_interface import EventInterface
+from event_feature_twitter import EventFeatureTwitter
 from event_feature import EventFeature
 from event_feature_sparse import EventFeatureSparse
 from photo_interface import PhotoInterface
@@ -55,10 +56,10 @@ def generateData():
 	corpus = Corpus()
 	corpus.buildCorpusOnDB('citybeat', 'next_week_candidate_event_25by25_merged')
 	true_event_list, false_event_list = loadNextWeekData()
-	EventFeature(None).GenerateArffFileHeader()
+	EventFeatureTwitter(None).GenerateArffFileHeader()
 		
 	for event in true_event_list + false_event_list:
-		EventFeature(event, corpus).printFeatures()
+		EventFeatureTwitter(event, corpus).printFeatures()
 
 		
 def main():
