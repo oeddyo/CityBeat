@@ -93,15 +93,14 @@ def getCorpusWordList(rep, event_list):
 				word_list.append(word)
 	return word_index, word_list
 
-def generateData2(_182):
-	rep = Representor()
-#	rep = None
+def generateData2(_182, sparse=False):
+	if sparse:
+		rep = Representor()
 	corpus = Corpus()
 	corpus.buildCorpusOnDB('citybeat', 'candidate_event_25by25_merged')
 	
 	true_event_list, false_event_list = loadUnbalancedData(_182)
 
-	
 	if sparse:
 		word_index, word_list = getCorpusWordList(rep, true_event_list + false_event_list)
 		EventFeatureSparse(None).GenerateArffFileHeader(word_list)
