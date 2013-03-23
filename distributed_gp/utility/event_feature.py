@@ -239,8 +239,8 @@ class EventFeature(Event):
 			cap2 = p2.getCaption()
 			cp1 = CaptionParser(True)
 			cp1.insertCaption(cap1)
-			cp2 = (True)
-			cp2.insertCaptionParserCaption(cap2)
+			cp2 = CaptionParser(True)
+			cp2.insertCaption(cap2)
 			word_list1 = cp1.getTopWords(-1)
 			word_list2 = cp2.getTopWords(-1)
 			if len(word_list1) == 0 or len(word_list2) == 0:
