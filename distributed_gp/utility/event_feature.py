@@ -37,9 +37,10 @@ class EventFeature(Event):
 	
 	def preprocess(self):
 		self.selectOnePhotoForOneUser()
-#		self.selectRelaventPhotos()
+		self.selectRelaventPhotos()
 	
 	def selectRelaventPhotos(self, k=10):
+		assert self._representor is not None
 		photos = self._representor.getRepresentivePhotos(self.toJSON())
 		# choose first 30%
 #		k = max(k, 0.3*len(photos))
@@ -85,6 +86,7 @@ class EventFeature(Event):
 		res = []
 		for (word, fre) in top_keywords:
 			photos = self.getPhotosbyKeyword(word)
+			# this has the shuffling process
 			random.shuffle(photos)
 			k = min(len(photos), k)
 			# discard the keywords with only one photo
@@ -149,7 +151,7 @@ class EventFeature(Event):
 		
 		tfidf_top3 = self.getTopWordByTFIDF(3)
 		res = self.countHashtagsFromPhotosContainingTopKeywords(3)
-		hashtage_cnt3 = res[0]
+		hashtag_cnt3 = res[0]
 		number_photos_associated_with_keywords3 = res[1]
 		
 		
@@ -171,7 +173,7 @@ class EventFeature(Event):
 		        std, top_word_pop, zscore, entropy, #ratio,
 		        diff_avg_photo_dis, diff_top_word_pop, diff_entropy,
 		        tfidf_top3[0], tfidf_top3[1], tfidf_top3[2], 
-		        hashtage_cnt3[0], hashtage_cnt3[1], hashtage_cnt3[2],
+		        hashtag_cnt3[0], hashtag_cnt3[1], hashtag_cnt3[2],
 		        number_photos_associated_with_keywords3[0], number_photos_associated_with_keywords3[1], number_photos_associated_with_keywords3[2],
 		        location_name_similarity, 
 #		        location_name_same,
@@ -213,9 +215,9 @@ class EventFeature(Event):
 		print '@attribute tfidf2 real'	
 		print '@attribute tfidf3 real'
 		
-		print '@attribute NumberOfHashtages1 real'	
-		print '@attribute NumberOfHashtages2 real'	
-		print '@attribute NumberOfHashtages3 real'	
+		print '@attribute NumberOfhashtags1 real'	
+		print '@attribute NumberOfhashtags2 real'	
+		print '@attribute NumberOfhashtags3 real'	
 		
 		print '@attribute NumberOfPhotsoContaingTopWord1 real'
 		print '@attribute NumberOfPhotsoContaingTopWord2 real'
