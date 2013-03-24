@@ -26,26 +26,23 @@ import sys
 
 
 def main():
-	ei = EventInterface()
-	ei.setDB('citybeat')
-	ei.setCollection('candidate_event_25by25_merged')
-	events = ei.getAllDocuments()
+	pi = PhotoInterface()
+	pi.setDB('citybeat')
+	pi.setCollection('photos')
 	
-	ti = TweetInterface()
-	zero = 0
-	for event in events:
-		tweet_cluster = TweetCluster()
-		tweet_cluster.setRegion(event['region'])
-		e = EventFeature(event)
-		tweet_cluster.setPeriod([e.getEarliestPhotoTime(), e.getLatestPhotoTime()])
-		tweet_cluster.getTweetFromRangeQuery()
-		nt = tweet_cluster.getNumberOfTweets()
-		if nt == 0:
-			zero += 1
-			print e.getDuration(),  time.gmtime(e.getEarliestPhotoTime())
-	print zero
+	pi2 = PhotoInterface()
+	pi2.setDB('citybeat')
+	pi2.setCollection('photos_no_duplicate')
 	
-	
+	region = {}
+	region['min_lat'] = 40.690531
+	region['min_lng'] = -74.058151
+	region['max_lat'] = 40.823163
+	region['max_lng'] = -73.857994
+	st = '1352937600'
+	et = '1355529600'
+	print pi.rangeQuery(region, [st, et]).count()
+	print pi2.rangeQuery(region, [st, et]).count()
 
 
 if __name__=='__main__':
