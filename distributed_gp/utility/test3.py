@@ -46,7 +46,7 @@ import sys
 
 
 
-def queryEvents():
+def main():
 	ei = EventInterface()
 	ei.setDB('citybeat')
 	ei.setCollection('candidate_event_25by25_merged')
