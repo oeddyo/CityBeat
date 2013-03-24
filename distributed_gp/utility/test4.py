@@ -41,7 +41,14 @@ def main():
 	region['max_lng'] = -73.857994
 	st = '1352937600'
 	et = '1355529600'
-	print pi.rangeQuery(region, [st, et]).count()
+	pc = pi.rangeQuery(region, [st, et])
+	print pc.count()
+	
+	ids = set()
+	for photo in pc:
+		ids.add(photo['id'])
+
+	print len(ids)
 	print pi2.rangeQuery(region, [st, et]).count()
 
 
