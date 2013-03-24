@@ -10,7 +10,7 @@ from tweet_cluster import TweetCluster
 
 import re
 class Representor():
-    def __init__(self, vectorizer = None, twitter = False):
+    def __init__(self, vectorizer = None, db='AmazonMT', collection='candidate_event_25by25_merged'):
         """Given an event, return a list incices of the photos in 'photos' filed 
         which are representative to stands for this cluster
         
@@ -20,8 +20,8 @@ class Representor():
         """
         
         self.ei = EventInterface()
-        self.ei.setDB('AmazonMT')
-        self.ei.setCollection('candidate_event_25by25_merged')
+        self.ei.setDB(db)
+        self.ei.setCollection(collection)
         self.events = []
         for e in self.ei.getAllDocuments():
             event = Event(e)

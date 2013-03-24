@@ -53,7 +53,7 @@ def loadNextWeekData():
 	return true_events, false_events
 
 def generateData():
-	rep = Representor()
+	rep = Representor(None, 'citybeat', 'next_week_candidate_event_25by25_merged')
 	corpus = Corpus()
 	corpus.buildCorpusOnDB('citybeat', 'next_week_candidate_event_25by25_merged')
 	true_event_list, false_event_list = loadNextWeekData()
