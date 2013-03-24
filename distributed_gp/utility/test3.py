@@ -20,9 +20,9 @@ import math
 import sys
 
 
-#def floatEqual(f1, f2):
-#	return abs(f1 - f2) <= 1e-8
-#
+def floatEqual(f1, f2):
+	return abs(f1 - f2) <= 1e-8
+
 #def main():
 #	pi = PhotoInterface()
 #	pi.setDB('citybeat')
@@ -72,7 +72,7 @@ def main():
 			break
 	fid1.close()
 	
-	fid2 = open('labeled_data_cf/true_label2.txt', 'r')
+	fid2 = open('labeled_data_cf/181_positive.txt', 'r')
 		
 	labels = {}
 	
