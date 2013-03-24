@@ -94,8 +94,8 @@ def getCorpusWordList(rep, event_list):
 	return word_index, word_list
 
 def generateData2(_182, sparse=False):
-	if sparse:
-		rep = Representor()
+#	if sparse:
+	rep = Representor()
 	corpus = Corpus()
 	corpus.buildCorpusOnDB('citybeat', 'candidate_event_25by25_merged')
 	
@@ -109,7 +109,7 @@ def generateData2(_182, sparse=False):
 		
 	for event in true_event_list + false_event_list:
 		if not sparse:
-			EventFeatureTwitter(event, corpus).printFeatures()
+			EventFeatureTwitter(event, corpus, rep).printFeatures()
 		else:
 			EventFeatureSparse(event, corpus, rep).printFeatures(word_index)
 
