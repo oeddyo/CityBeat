@@ -46,7 +46,7 @@ def main():
 	
 	ids = set()
 	for photo in pc:
-		ids.add(photo['id'])
+		ids.add(photo['link'])
 
 	print len(ids)
 	print pi2.rangeQuery(region, [st, et]).count()
