@@ -87,5 +87,5 @@ if __name__=="__main__":
 	pi = PhotoInterface()
 	pi.setDB('citybeat')
 	pi.setCollection('photos_no_duplicate')
-	print findTimeInterval()
+	print pi.findTimeInterval()
 	  
