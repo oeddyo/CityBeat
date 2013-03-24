@@ -40,7 +40,7 @@ def main():
 	region['max_lat'] = 40.823163
 	region['max_lng'] = -73.857994
 	st = '1352937600'
-	et = '1355529600'
+	et = '1355615999'
 	pc = pi.rangeQuery(region, [st, et])
 	print pc.count()
 	
