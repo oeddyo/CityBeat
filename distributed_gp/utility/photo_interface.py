@@ -88,4 +88,4 @@ if __name__=="__main__":
 	pi.setDB('citybeat')
 	pi.setCollection('photos')
 	print pi.findTimeInterval()
-	a = 1
+#	a = 1
