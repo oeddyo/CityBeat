@@ -64,11 +64,28 @@ class PhotoInterface(MongoDBInterface):
 			if cnt % 10000 == 0:
 				print cnt
 		return [min_lat, max_lat, min_lng, max_lng]
+		
+	def findTimeInterval(self):
+		pc = self.getAllDocuments()
+		t1 = -1
+		t2 = -1
+		for photo in pc:
+			if t1 == -1:
+				t1 = int(photo['created_time'])
+				t2 = t1
+			else:
+				t = int(photo['created_time'])
+				if t < t1:
+					t1 = t
+				if t > t2:
+					t2 = t
+		return [t1, t2]
 	
 
 
 if __name__=="__main__":
 	pi = PhotoInterface()
-	pi.rangeQuery()
-	pass
+	pi.setDB('citybeat')
+	pi.setCollection('photos_no_duplicate')
+	print findTimeInterval
 	  
