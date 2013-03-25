@@ -42,7 +42,7 @@ def main():
 	st = '1352937600'
 	et = '1355615999'
 	pc = pi.rangeQuery(region, [st, et])
-	print pc.count()
+#	print pc.count()
 	
 	ids = set()
 	for photo in pc:
