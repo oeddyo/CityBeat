@@ -25,6 +25,23 @@ import time
 import sys
 
 
+def getBaselineEvents():
+	ei = EventInterface()
+	ei.setDB('citybeat')
+	ei.setCollection('baseline_candidate_events')
+	
+	events = ei.getAllDocuments()
+	
+	event_list = []
+	
+	for event in events:
+		event_list.append(event)
+	
+	random.shuffle(event_list)
+	
+	for i in xrange(100):
+		print event_list[i]['_id']	
+
 def main():
 	pi = PhotoInterface()
 	pi.setDB('citybeat')
@@ -53,7 +70,7 @@ def main():
 
 
 if __name__=='__main__':
-	main()
+	getBaselineEvents()
 	
 	
 	
