@@ -20,7 +20,7 @@ def generateTrueLabelFile():
 	ei.setCollection('candidate_event_25by25_merged')
 	
 	events = {}
-	fid1 = open('labeled_data_cf/true_label.txt', 'r')
+	fid1 = open('labeled_data_cf/181_positive.txt', 'r')
 	true_events = []
 	false_events = []
 	unknown_events = []
@@ -52,6 +52,36 @@ def generateTrueLabelFile():
 	for event in true_events + false_events + unknown_events:
 		print str(event['_id'])+','+str(event['label'])
 	
-if __name__=='__main__':
-	generateTrueLabelFile()
+	
+def findTree():
+	ei = EventInterface()
+	ei.setDB('citybeat')
+	ei.setCollection('candidate_event_25by25_merged')
+	
+	events = {}
+	fid1 = open('labeled_data_cf/181_positive.txt', 'r')
+	true_events = []
+	
+	for line in fid1:
+		t = line.split(',')
+		id = str(t[0])
+		label = int(t[1])
+		if label == 1:
+			pass
+		else:
+			continue
+		events[id] = label
+		
+	fid1.close()
+	
+	words = ['motor']
+	for id, label in events.items():
+		event = ei.getEventByID(id)
+		e = Event(event)
+		if e.containKeywords(words, 1):
+			print id
+		
 
+if __name__=='__main__':
+#	generateTrueLabelFile()
+	findTree()

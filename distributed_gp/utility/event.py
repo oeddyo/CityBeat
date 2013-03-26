@@ -85,6 +85,13 @@ class Event(object):
 			
 		return num_duplicate
 		
+	def containKeywords(self, words, freq=1):
+		for word in words:
+			res = self.getPhotosbyKeyword(word.lower())
+			if len(res) >= freq:
+				return True
+		return False
+	
 	def getPhotosbyKeyword(self, word):
 		# return a list of photos containg the word
 		res_photo = []
