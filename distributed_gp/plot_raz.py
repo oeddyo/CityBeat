@@ -38,20 +38,22 @@ def run():
     alarm_region_size = 25
 
     regions = huge_region.divideRegions(alarm_region_size,alarm_region_size)
-    filtered_regions = huge_region.filterRegions( regions)
+    #filtered_regions = huge_region.filterRegions( regions, test=True)
     
-    regions = filtered_regions
+    #regions = filtered_regions
     test_cnt = 0
     print 'all regions',len(regions)
+    pi = PhotoInterface('tmp_citybeat', 'photos');
     for region in regions:
         #delete the last 7*24*3600 to set it back to Dec 1st
-        start_of_time =  1354320000 #+ 7*24*3600
-        end_of_time = 1354320000 + 7*24*3600 #+ 7*24*3600
-        series =  InstagramTimeSeries( region, start_of_time, end_of_time)
-        series =  series.buildTimeSeries()
-        region.display()
-        for t in series.index:
-            print t,',',series[t]
-        print '\n'
+        start_of_time =  1364571565 - 7*24*3600 #+ 7*24*3600
+        end_of_time = 1364571565  #+ 7*24*3600
+        res = pi.rangeQuery(region, [str(start_of_time), str(end_of_time)]);
+        for r in res:
+            try:
+                print r['location']['latitude'],',',r['location']['longitude']
+            except:
+                continue
+
 if __name__ == "__main__":
     run()                            
