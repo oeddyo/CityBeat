@@ -41,7 +41,7 @@ def save_to_mongo(_results, _saved, model_update_time):
                     p.setPredictedValues( float(single_hour_prediction[0][1]), math.sqrt(float(single_hour_prediction[0][2])))
                     p.setTime( str(single_hour_prediction[1]) )
                     p_json = p.toJSON()
-                    save_interface = PredictionInterface('citybeat','online_prediction')
+                    save_interface = PredictionInterface()
                     save_interface.saveDocument( p_json )
     return done
 
@@ -74,16 +74,12 @@ def run():
         test_region = regions[i]
         try:
             gp = GaussianProcessJob( test_region, str(fourteen_days_ago), str(cur_utc_timestamp) , redis_queue)
-            
-            print gp.ts
-            gp.region.display()
             res, pred_time = gp.submit()
         except Exception as e:
             print 'Initialization of gp error. continue, error message %s'%(e)
             continue
         _results[gp.getID()] = (test_region, res, pred_time)
         _saved[ gp.getID() ] = False
-        break   #comment this
 
     save_to_mongo(_results, _saved, cur_utc_timestamp) 
     done = False

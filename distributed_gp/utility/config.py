@@ -8,17 +8,17 @@ mongodb_address = 'grande.rutgers.edu'
 mongodb_port = 27017
 
 class InstagramConfig:
-    photo_db = 'citybeat'
+    photo_db = 'citybeat_production'
     #notice. seperate online setting and experiment setting
-    event_db = 'citybeat'
+    event_db = 'citybeat_production'
 
     #experiment setting as follow (uncomment them)
     #photo_collection = 'photos_no_duplicate'
     #event_collection = 'next_week_candidate_event_25by25'
     #online setting
-    photo_collection = 'photos_no_duplicate'
+    photo_collection = 'photos'
     event_collection = 'online_candidate'
-    prediction_db = 'citybeat'
+    prediction_db = 'citybeat_production'
     #prediction_collection = 'next_week_prediction_25by25'
     prediction_collection = 'online_prediction'
     # in seconds
